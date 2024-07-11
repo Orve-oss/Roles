@@ -52,7 +52,20 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            Client::addClient($request);
+            return response()->json([
+                'message' => 'Liste des Clients',
+                'Client'=> Client::addClient($request),
+                'Status'=> 201
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'Status'=> 'Fail'
+            ]);
+        }
+
     }
 
     /**

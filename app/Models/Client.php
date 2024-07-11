@@ -18,4 +18,11 @@ class Client extends Model
     public static function getAllclients(){
         return Self::all();
     }
+
+    public static function addClient($request){
+        $clt = new Self();
+        $clt->nom_clt = $request->nom_clt;
+        $clt->email_clt = $request->email_clt;
+        $clt->save();
+    }
 }
