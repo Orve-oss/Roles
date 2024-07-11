@@ -21,7 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum', 'role:Admin'])->group(function (){
-    Route::get('/clients', [ClientController::class, 'index']);
+    Route::get('/clients', [ClientController::class, 'index'])->name('listeClient');
+    Route::post('/clients', [ClientController::class, 'store'])->name('CreerClient');
 });
 
 Route::post('/login', [UserController::class, 'register']);

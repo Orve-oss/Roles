@@ -13,7 +13,7 @@ class Client extends Model
         'email_clt'
     ];
 
-    protected $table = 'Client';
+    protected $table = 'clients';
 
     public static function getAllclients(){
         return Self::all();
