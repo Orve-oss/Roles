@@ -1,6 +1,12 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CommentaireController;
+use App\Http\Controllers\HistoriqueController;
+use App\Http\Controllers\PrioriteController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TypeTicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,3 +32,40 @@ Route::middleware(['auth:sanctum', 'role:Admin'])->group(function (){
 });
 
 Route::post('/login', [UserController::class, 'register']);
+
+
+Route::get('/services', [ServiceController::class,'index']);
+Route::post('/services', [ServiceController::class, 'store']);
+Route::get('/services/{id}', [ServiceController::class,'show']);
+Route::put('/update/{id}', [ServiceController::class, 'update']);
+Route::delete('/delete/{id}', [ServiceController::class, 'destroy']);
+
+Route::get('/types', [TypeTicketController::class, 'index']);
+Route::post('/types', [TypeTicketController::class, 'store']);
+Route::get('/types/{id}', [TypeTicketController::class, 'show']);
+Route::put('/updatetype/{id}', [TypeTicketController::class, 'update']);
+Route::delete('/deletetype/{id}', [TypeTicketController::class, 'destroy']);
+
+Route::get('/priorites', [PrioriteController::class, 'index']);
+Route::post('/priorites', [PrioriteController::class, 'store']);
+Route::get('/priorites/{id}', [PrioriteController::class, 'show']);
+Route::put('/updatepriorite/{id}', [PrioriteController::class, 'update']);
+Route::delete('/deletepriorite/{id}', [PrioriteController::class, 'destroy']);
+
+Route::get('/tickets', [TicketController::class, 'index']);
+Route::post('/tickets', [TicketController::class, 'store']);
+Route::get('/tickets/{id}', [PrioriteController::class, 'show']);
+Route::put('/updateticket/{id}', [TicketController::class, 'update']);
+Route::delete('/deleteticket/{id}', [TicketController::class, 'destroy']);
+
+Route::get('/commentaires', [CommentaireController::class, 'index']);
+Route::post('/commentaires', [CommentaireController::class, 'store']);
+Route::get('/comment/{id}', [PrioriteController::class, 'show']);
+Route::put('/updatecomment/{id}', [CommentaireController::class, 'update']);
+Route::delete('/deletecomment/{id}', [CommentaireController::class, 'destroy']);
+
+Route::get('/historiques', [HistoriqueController::class, 'index']);
+Route::post('/historiques', [HistoriqueController::class, 'store']);
+Route::get('/hist/{id}', [PrioriteController::class, 'show']);
+Route::put('/updatehist/{id}', [HistoriqueController::class, 'update']);
+Route::delete('/deletehist/{id}', [HistoriqueController::class, 'destroy']);

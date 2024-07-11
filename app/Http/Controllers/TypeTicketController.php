@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TypeTicket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TypeTicketController extends Controller
 {
@@ -12,7 +13,15 @@ class TypeTicketController extends Controller
      */
     public function index()
     {
-        //
+        $list = TypeTicket::getAlltypes();
+        if ($list->isEmpty()) {
+            return response()->json(['message'=>'Aucun Enregistrement']);
+        }
+        return response()->json([
+            'message'=>'Liste des types',
+            'Types de services'=>$list,
+            'status'=> 200,
+        ]);
     }
 
     /**
@@ -28,15 +37,40 @@ class TypeTicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'libelle'=>'required|string'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "message" => "La validation a échoué",
+                "status" => "Error"
+            ]);
+        }
+        TypeTicket::addType($request);
+        return response()->json([
+            'message'=> 'Type de ticket crée',
+            'status'=>200
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(TypeTicket $typeTicket)
+    public function show($id)
     {
-        //
+        if (TypeTicket::where('id', $id)->exists()) {
+            $type = TypeTicket::getOneType($id);
+            return response()->json([
+                'message'=> 'Type de ticket',
+                'service'=>$type,
+                'status'=>200
+            ]);
+        } else {
+            return response()->json([
+                'message'=> 'Le type de ticket n\'existe pas',
+                'status'=>401
+            ]);
+        }
     }
 
     /**
@@ -50,7 +84,7 @@ class TypeTicketController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, TypeTicket $typeTicket)
+    public function update(Request $request, $id)
     {
         //
     }

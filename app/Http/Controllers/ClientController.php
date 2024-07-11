@@ -23,7 +23,10 @@ class ClientController extends Controller
                     'Clients'=> $resp,
                     'Status'=> 201
                 ]);
-            } else {
+            } elseif($list->isEmpty()) {
+                return response()->json(['message'=>'Aucun Enregistrement']);
+            }
+            else{
                 return response()->json([
                     'message' => 'Aucun client n\'existe',
                     'Status'=> 'None'

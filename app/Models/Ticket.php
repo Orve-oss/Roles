@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'sujet',
+        'description',
+        'user_id',
+        'service_id',
+        'type_ticket_id',
+        'priorite_id'
+    ];
+    protected $table = 'tickets';
+    public static function getAllTickets(){
+        return Self::all();
+    }
 }
