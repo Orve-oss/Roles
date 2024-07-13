@@ -20,7 +20,7 @@ class Service extends Model
         $src = new Self();
         $src->nom_service = $request->nom_service;
         $src->description = $request->description;
-        $src->saveOrFail();
+        $src->save();
     }
 
     public static function getOneService($id){
