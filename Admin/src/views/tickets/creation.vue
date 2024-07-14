@@ -3,6 +3,7 @@ import Datepicker from "vue3-datepicker";
 import CKEditor from '@ckeditor/ckeditor5-vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { ref } from 'vue'
+import Multiselect from "@vueform/multiselect";
 
 import Layout from '../../layouts/main'
 import PageHeader from '@/components/page-header'
@@ -11,12 +12,20 @@ import PageHeader from '@/components/page-header'
  * Task-create component
  */
 export default {
-  components: { Datepicker, ckeditor: CKEditor.component, Layout, PageHeader },
+  components: { Datepicker, ckeditor: CKEditor.component, Layout, PageHeader, Multiselect },
   data() {
     return {
       daterange: ref(new Date()),
       editor: ClassicEditor,
-    }
+
+      formData: new FormData(),
+      submitted: false,
+      options: [
+        "Incident",
+        "Problème"
+      ],
+    };
+
   },
 
 }
@@ -36,9 +45,19 @@ export default {
                 <div data-repeater-item class="outer">
                   <BFormGroup class="row mb-4">
                     <div class="d-flex flex-column flex-lg-row">
+                      <label for="sujet" class="col-form-label col-lg-2">Type</label>
+                      <BCol lg="10">
+                        <multiselect v-model="value" :options="options" class="checkout-multiselect-form"
+                          placeholder="Select"></multiselect>
+                      </BCol>
+                    </div>
+                  </BFormGroup>
+                  <BFormGroup class="row mb-4">
+                    <div class="d-flex flex-column flex-lg-row">
                       <label for="sujet" class="col-form-label col-lg-2">Sujet</label>
                       <BCol lg="10">
-                        <BFormInput id="sujet" name="sujet" type="text" class="form-control" placeholder="Entrez le sujet du ticket" />
+                        <BFormInput id="sujet" name="sujet" type="text" class="form-control"
+                          placeholder="Entrez le sujet du ticket" />
                       </BCol>
                     </div>
                   </BFormGroup>
@@ -47,7 +66,7 @@ export default {
                       <label class="col-form-label col-lg-2">Description</label>
                       <BCol lg="10">
                         <div class="form-ckeditor">
-                          <ckeditor :editor="editor" ></ckeditor>
+                          <ckeditor :editor="editor"></ckeditor>
                         </div>
                       </BCol>
                     </div>
@@ -59,6 +78,15 @@ export default {
                       <BCol lg="10">
                         <datepicker class="form-control" v-model="daterange" range append-to-body lang="en" confirm>
                         </datepicker>
+                      </BCol>
+                    </div>
+                  </BFormGroup>
+                  <BFormGroup class="row mb-4">
+                    <div class="d-flex flex-column flex-lg-row">
+                      <label for="sujet" class="col-form-label col-lg-2">Priorité</label>
+                      <BCol lg="10">
+                        <multiselect v-model="value" :options="options" class="checkout-multiselect-form"
+                          placeholder="Select"></multiselect>
                       </BCol>
                     </div>
                   </BFormGroup>
@@ -83,14 +111,7 @@ export default {
                       </div>
                     </div>
                   </div>
-                  <BFormGroup class="row mb-4">
-                    <div class="d-flex flex-column flex-lg-row">
-                      <label for="taskbudget" class="col-form-label col-lg-2">Budget</label>
-                      <BCol lg="10">
-                        <BFormInput id="taskbudget" name="taskbudget" type="text" placeholder="Enter Task Budget..." class="form-control" />
-                      </BCol>
-                    </div>
-                  </BFormGroup>
+
                 </div>
               </div>
             </BForm>

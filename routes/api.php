@@ -33,6 +33,11 @@ Route::middleware(['auth:sanctum', 'role:Admin'])->group(function (){
 
 Route::post('/login', [UserController::class, 'register']);
 
+Route::get('/users', [UserController::class,'index']);
+Route::post('/users', [UserController::class, 'store']);
+Route::get('/users/{id}', [UserController::class,'show']);
+Route::put('/update/{id}', [UserController::class, 'update']);
+Route::delete('/delete/{id}', [UserController::class, 'destroy']);
 
 Route::get('/services', [ServiceController::class,'index']);
 Route::post('/services', [ServiceController::class, 'store']);

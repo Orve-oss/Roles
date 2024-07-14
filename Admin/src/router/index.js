@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { useAuthStore } from "@/state/pinia";
 import routes from "./routes";
-import appConfig from "../app.config.json";
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -106,7 +106,7 @@ router.beforeResolve(async (routeTo, routeFrom, next) => {
     return;
   }
 
-  document.title = routeTo.meta.title + " | " + appConfig.title;
+  document.title = routeTo.meta.title ;
   // If we reach this point, continue resolving the route.
   next();
 });
