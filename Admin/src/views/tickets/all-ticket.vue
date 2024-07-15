@@ -1,6 +1,7 @@
 <script>
 import Layout from "../../layouts/main";//besoin
-import PageHeader from "@/components/page-header";//besoin
+import PageHeader from "@/components/page-header";
+
 
 /**
  * Customers component
@@ -10,6 +11,7 @@ export default {
 
     data() {
         return {
+
             showModal: false,
         }
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TypeTicket;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +20,7 @@ class TypeTicketController extends Controller
         }
         return response()->json([
             'message'=>'Liste des types',
-            'Types de services'=>$list,
+            'Types de tickets'=>$list,
             'status'=> 200,
         ]);
     }
@@ -38,7 +39,7 @@ class TypeTicketController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'libelle'=>'required|string'
+            'libelle'=>'required|string|max:50'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -86,13 +87,32 @@ class TypeTicketController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            if (TypeTicket::where('id', $id)->exists()) {
+                TypeTicket::updateType($request, $id);
+                return response()->json([
+                    'message'=> 'Type modifié',
+                    'status'=>200
+                ]);
+            } else {
+                return response()->json([
+                    'message'=> 'Le type n\'existe pas',
+                    'status'=>401
+                ]);
+            }
+
+        } catch (Exception $e) {
+            return response()->json([
+                "statut" => "fail",
+                "Error" => $e->getMessage()
+            ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TypeTicket $typeTicket)
+    public function destroy($id)
     {
         //
     }

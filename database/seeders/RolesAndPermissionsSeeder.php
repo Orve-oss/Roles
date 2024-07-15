@@ -17,12 +17,17 @@ class RolesAndPermissionsSeeder extends Seeder
         $permissions = [
             'manage-admins',
             'manage-clients',
-            'manage-tickets'
+            'manage-tickets',
+            'manage-users',
+            'manage-services',
+            'manage-priorites',
+            'manage-types'
         ];
 
         //Create roles
         $admin = Role::create(['name' => 'Admin']);
         $client = Role::create(['name' => 'Client']);
+        $agent = Role::create(['name' => 'Agent']);
 
         //Create permissions
         foreach ($permissions as $key => $permission) {
@@ -33,6 +38,11 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin->givePermissionTo('manage-clients');
         $admin->givePermissionTo('manage-admins');
         $admin->givePermissionTo('manage-tickets');
+        $admin->givePermissionTo('manage-users');
+        $admin->givePermissionTo('manage-services');
+        $admin->givePermissionTo('manages-priorites');
+        $admin->givePermissionTo('manages-types');
         $client->givePermissionTo('manage-tickets');
+        $agent->givePermissionTo('manage-tickets');
     }
 }

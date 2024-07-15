@@ -77,7 +77,7 @@ export const menuItems = [
             {
                 id: 51,
                 label: "Liste des clients",
-                link: "/listticket",
+                link: "/listeClients",
                 parentId: 50
             },
             {

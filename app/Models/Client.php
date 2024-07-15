@@ -25,4 +25,19 @@ class Client extends Model
         $clt->email_clt = $request->email_clt;
         $clt->save();
     }
+
+    public static function getOneClient($id){
+        return Self::where('id', $id)->get();
+    }
+    public static function updateClient($request, $id){
+        $clt = Client::findOrFail($id);
+        $clt->nom_clt = $request->nom_clt;
+        $clt->email_clt = $request->email_clt;
+        $clt->password = $request->password;
+        $clt->update();
+    }
+    public static function deleteClient($id){
+        $clt = Client::findOrFail($id);
+        $clt->delete();
+    }
 }

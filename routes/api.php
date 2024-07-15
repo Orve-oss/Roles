@@ -26,22 +26,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware(['auth:sanctum', 'role:Admin'])->group(function (){
-    Route::get('/clients', [ClientController::class, 'index'])->name('listeClient');
-    Route::post('/clients', [ClientController::class, 'store'])->name('CreerClient');
+Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
+
+
 });
+Route::get('/clients', [ClientController::class, 'index']);
+Route::post('/clients', [ClientController::class, 'store']);
+Route::delete('/delete/{id}', [ClientController::class, 'destroy']);
 
 Route::post('/login', [UserController::class, 'register']);
 
-Route::get('/users', [UserController::class,'index']);
+Route::get('/users', [UserController::class, 'index']);
 Route::post('/users', [UserController::class, 'store']);
-Route::get('/users/{id}', [UserController::class,'show']);
+Route::get('/users/{id}', [UserController::class, 'show']);
 Route::put('/update/{id}', [UserController::class, 'update']);
 Route::delete('/delete/{id}', [UserController::class, 'destroy']);
 
-Route::get('/services', [ServiceController::class,'index']);
+Route::get('/services', [ServiceController::class, 'index']);
 Route::post('/services', [ServiceController::class, 'store']);
-Route::get('/services/{id}', [ServiceController::class,'show']);
+Route::get('/services/{id}', [ServiceController::class, 'show']);
 Route::put('/update/{id}', [ServiceController::class, 'update']);
 Route::delete('/delete/{id}', [ServiceController::class, 'destroy']);
 
@@ -57,11 +60,15 @@ Route::get('/priorites/{id}', [PrioriteController::class, 'show']);
 Route::put('/updatepriorite/{id}', [PrioriteController::class, 'update']);
 Route::delete('/deletepriorite/{id}', [PrioriteController::class, 'destroy']);
 
-Route::get('/tickets', [TicketController::class, 'index']);
-Route::post('/tickets', [TicketController::class, 'store']);
-Route::get('/tickets/{id}', [PrioriteController::class, 'show']);
-Route::put('/updateticket/{id}', [TicketController::class, 'update']);
-Route::delete('/deleteticket/{id}', [TicketController::class, 'destroy']);
+Route::middleware(['auth:sanctum', 'role:Admin,Client'])->group(function () {
+    Route::get('/tickets', [TicketController::class, 'index']);
+    Route::post('/tickets', [TicketController::class, 'store']);
+    Route::get('/tickets/{id}', [PrioriteController::class, 'show']);
+    Route::put('/updateticket/{id}', [TicketController::class, 'update']);
+    Route::delete('/deleteticket/{id}', [TicketController::class, 'destroy']);
+});
+
+
 
 Route::get('/commentaires', [CommentaireController::class, 'index']);
 Route::post('/commentaires', [CommentaireController::class, 'store']);

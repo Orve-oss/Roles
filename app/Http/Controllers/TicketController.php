@@ -12,7 +12,15 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        $list = Ticket::getAllTickets();
+        if ($list->isEmpty()) {
+            return response()->json(['message'=>'Aucun Enregistrement']);
+        }
+        return response()->json([
+            'message'=>'Liste des tickets',
+            'tickets'=>$list,
+            'status'=> 200,
+        ]);
     }
 
     /**
@@ -62,4 +70,6 @@ class TicketController extends Controller
     {
         //
     }
+
+    public function assign(Request $request, $id){}
 }

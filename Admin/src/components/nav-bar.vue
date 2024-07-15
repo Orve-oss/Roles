@@ -139,9 +139,9 @@ export default {
             <span class="logo-sm">
               <img src="@/assets/images/logo-light.svg" alt height="22" />
             </span>
-            <span class="logo-lg">
+            <!-- <span class="logo-lg">
               <img src="@/assets/images/logo-light.png" alt height="19" />
-            </span>
+            </span> -->
           </router-link>
         </div>
 
@@ -383,72 +383,6 @@ export default {
           </BForm>
         </BDropdown>
 
-        <BDropdown variant="white" class="d-flex align-center" menu-class="dropdown-menu-end" toggle-class="header-item">
-          <template v-slot:button-content>
-            <img id="header-lang-img" src="@/assets/images/flags/us.jpg" alt="Header Language" height="16" />
-          </template>
-          <BLink href="#" v-for="(entry, i) in languages" :key="`Lang${i}`" :value="entry" @click="setLanguage(entry.language, entry.title, entry.flag)" :class="{ active: lan === entry.language }" class="dropdown-item notify-item language">
-            <img :src="entry.flag" alt="user-image" class="me-1" height="12" />
-            <span class="align-middle">{{ entry.title }}</span>
-          </BLink>
-        </BDropdown>
-
-        <BDropdown class="d-none d-lg-inline-block noti-icon ms-1" menu-class="dropdown-menu-lg dropdown-menu-end" right toggle-class="header-item" variant="black">
-          <template v-slot:button-content>
-            <i class="bx bx-customize"></i>
-          </template>
-
-          <div class="px-lg-2">
-            <BRow class="no-gutters">
-              <BCol>
-                <BLink class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/github.png" alt="Github" />
-                  <span>{{ $t("navbar.dropdown.site.list.github") }}</span>
-                </BLink>
-              </BCol>
-              <BCol>
-                <BLink class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/bitbucket.png" alt="bitbucket" />
-                  <span>{{ $t("navbar.dropdown.site.list.github") }}</span>
-                </BLink>
-              </BCol>
-              <BCol>
-                <BLink class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/dribbble.png" alt="dribbble" />
-                  <span>{{ $t("navbar.dropdown.site.list.dribbble") }}</span>
-                </BLink>
-              </BCol>
-            </BRow>
-
-            <BRow class="no-gutters">
-              <BCol>
-                <BLink class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/dropbox.png" alt="dropbox" />
-                  <span>{{ $t("navbar.dropdown.site.list.dropbox") }}</span>
-                </BLink>
-              </BCol>
-              <BCol>
-                <BLink class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/mail_chimp.png" alt="mail_chimp" />
-                  <span>{{ $t("navbar.dropdown.site.list.mailchimp") }}</span>
-                </BLink>
-              </BCol>
-              <BCol>
-                <BLink class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/slack.png" alt="slack" />
-                  <span>{{ $t("navbar.dropdown.site.list.slack") }}</span>
-                </BLink>
-              </BCol>
-            </BRow>
-          </div>
-        </BDropdown>
-
-        <div class="dropdown d-none d-lg-inline-block ms-1">
-          <BButton variant="white" type="button" class="btn header-item noti-icon" @click="initFullScreen">
-            <i class="bx bx-fullscreen"></i>
-          </BButton>
-        </div>
-
         <BDropdown right menu-class="dropdown-menu-lg p-0 dropdown-menu-end" toggle-class="header-item noti-icon" variant="black">
           <template v-slot:button-content>
             <i class="bx bx-bell bx-tada"></i>
@@ -583,19 +517,6 @@ export default {
                 {{ $t("navbar.dropdown.henry.list.profile") }}
               </span>
             </router-link>
-          </BDropdownItem>
-          <BDropdownItem href="javascript: void(0);">
-            <i class="bx bx-wallet font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.mywallet") }}
-          </BDropdownItem>
-          <BDropdownItem class="d-block" href="javascript: void(0);">
-            <span class="badge bg-success float-end">11</span>
-            <i class="bx bx-wrench font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.settings") }}
-          </BDropdownItem>
-          <BDropdownItem href="javascript: void(0);">
-            <i class="bx bx-lock-open font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.lockscreen") }}
           </BDropdownItem>
           <BDropdownDivider></BDropdownDivider>
           <a href="/logout" class="dropdown-item text-danger">

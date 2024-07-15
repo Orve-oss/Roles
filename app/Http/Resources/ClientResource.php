@@ -16,7 +16,8 @@ class ClientResource extends JsonResource
     {
         return [
             'nom_clt' => $this->nom_clt,
-            'email_clt' => $this->email_clt
+            'email_clt' => $this->email_clt,
+            'created_at'=> $this->created_at
         ];
     }
 }

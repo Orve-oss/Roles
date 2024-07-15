@@ -37,6 +37,24 @@ export default [
     component: () => import("../views/tickets/history")
   },
   {
+    path: "/listeClients",
+    name: "ClientList",
+    meta: { title: "ClientList", authRequired: true },
+    component: () => import("../views/clients/listClient")
+  },
+  {
+    path: "/historiqueticket",
+    name: "Historique",
+    meta: { title: "Historique", authRequired: true },
+    component: () => import("../views/tickets/history")
+  },
+  {
+    path: "/historiqueticket",
+    name: "Historique",
+    meta: { title: "Historique", authRequired: true },
+    component: () => import("../views/tickets/history")
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("../views/account/login"),

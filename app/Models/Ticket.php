@@ -16,6 +16,10 @@ class Ticket extends Model
         'type_ticket_id',
         'priorite_id'
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
     protected $table = 'tickets';
     public static function getAllTickets(){
         return Self::all();

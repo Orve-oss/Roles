@@ -18,11 +18,7 @@ class ClientController extends Controller
             $list = Client::getAllclients();
             if ($list) {
                 $resp = ClientResource::collection($list);
-                return response()->json([
-                    'message' => 'Liste des Clients',
-                    'Clients'=> $resp,
-                    'Status'=> 201
-                ]);
+                return response()->json($resp);
             } elseif($list->isEmpty()) {
                 return response()->json(['message'=>'Aucun Enregistrement']);
             }
@@ -74,9 +70,21 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Client $client)
+    public function show($id)
     {
-        //
+        if (Client::where('id', $id)->exists()) {
+            $client = Client::getOneClient($id);
+            return response()->json([
+                'message'=> 'Voici le client',
+                'client'=>$client,
+                'status'=>201
+            ]);
+        } else {
+            return response()->json([
+                'message'=> 'Le client n\'existe pas',
+                'status'=>401
+            ]);
+        }
     }
 
     /**
@@ -90,16 +98,45 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Client $client)
+    public function update(Request $request,$id)
     {
-        //
+        try {
+            if (Client::where('id', $id)->exists()) {
+                Client::updateClient($request, $id);
+                return response()->json([
+                    'message'=> 'Client modifié'
+                ]);
+            } else {
+                return response()->json([
+                    'message'=> 'Le client n\'existe pas',
+                    'status'=>401
+                ]);
+            }
+
+        } catch (Exception $e) {
+            return response()->json([
+                "statut" => "fail",
+                "Error" => $e->getMessage()
+            ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Client $client)
+    public function destroy($id)
     {
-        //
+        if (Client::where('id', $id)->exists()) {
+            Client::deleteClient($id);
+            return response()->json([
+                'message'=> 'Client supprimé',
+                'status'=>201
+            ]);
+        } else {
+            return response()->json([
+                'message'=> 'Le Client n\'existe pas',
+                'status'=>401
+            ]);
+        }
     }
 }
