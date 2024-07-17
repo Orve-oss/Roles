@@ -13,53 +13,54 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function register(UserRequest $request){
+    public function login(UserRequest $request)
+    {
 
         try {
             $creds =  $request->validated();
-            // Auth::attempt($creds);
-            // return response()->json([
-            //     'message' => 'You are logged',
-            //     'Status'=> 201
-            // ]);
-
-           if (!Auth::attempt($creds)) {
+            if (!Auth::attempt($creds)) {
+                return response()->json([
+                    'message' => 'Email ou mot de passe invalide'
+                ]);
+            }
+            Auth::attempt($creds);
             return response()->json([
-                'message' => 'Email ou mot de passe invalide',
-                'Status'=> 401
+                'message' => 'You are logged',
+                'status' => 'success'
             ]);
-           }
-           $user = Auth::user();
-           $token = $user->createToken('auth_token', ['*']);
+
+            $user = Auth::user();
+            $token = $user->createToken('auth_token', ['*']);
 
             return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
-                'Status'=> 'Fail'
+                'Status' => 'Fail'
             ]);
         }
-
     }
 
-    public function index(){
+    public function index()
+    {
         $list = User::getAllUsers();
         if ($list->isEmpty()) {
-            return response()->json(['message'=>'Aucun Enregistrement']);
+            return response()->json(['message' => 'Aucun Enregistrement']);
         }
         return response()->json([
-            'message'=>'Liste des utilisateurs',
-            'users'=>$list,
-            'status'=> 200,
+            'message' => 'Liste des utilisateurs',
+            'users' => $list,
+            'status' => 200,
         ]);
     }
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         try {
             $validator = $request->validate([
-                'name'=>'required|string|unique:users,name',
-                'email'=>'required|email|unique:users,email',
-                'password'=>'required|string',
-                'role'=>'required|string|exists:roles,name'
+                'name' => 'required|string|unique:users,name',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string',
+                'role' => 'required|string|exists:roles,name'
             ]);
             if (!$validator) {
                 return response()->json([
@@ -68,16 +69,16 @@ class UserController extends Controller
                 ]);
             }
             $user = User::create([
-                'name'=>$validator['name'],
-                'email'=>$validator['email'],
-                'password'=>$validator['password'],
+                'name' => $validator['name'],
+                'email' => $validator['email'],
+                'password' => $validator['password'],
             ]);
             $role = Role::findByName($validator['role']);
             $user->assignRole($role);
             return response()->json([
-                'message'=> 'Utilisateur crée',
-                'user'=>$user,
-                'status'=>201
+                'message' => 'Utilisateur crée',
+                'user' => $user,
+                'status' => 201
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -85,10 +86,14 @@ class UserController extends Controller
                 "Error" => $e->getMessage()
             ]);
         }
-
-
     }
-    public function show(){}
-    public function update(){}
-    public function destroy(){}
+    public function show()
+    {
+    }
+    public function update()
+    {
+    }
+    public function destroy()
+    {
+    }
 }

@@ -35,7 +35,7 @@ Route::post('/clients', [ClientController::class, 'store']);
 Route::put('/update/{id}', [ClientController::class, 'update']);
 Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
 
-Route::post('/login', [UserController::class, 'register']);
+Route::post('/login', [UserController::class, 'login']);
 
 Route::get('/users', [UserController::class, 'index']);
 Route::post('/users', [UserController::class, 'store']);

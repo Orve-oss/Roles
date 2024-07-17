@@ -1,15 +1,14 @@
 <script>
 import axios from "axios";
-import { ref } from "vue";
+
 
 import Layout from "../../layouts/auth";
 
 import { required, email, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 
-import {useNotificationStore } from '@/state/pinia'
-import { usePinia } from 'pinia';
-import { useAuthStore } from "../../state/pinia";
+import { useNotificationStore } from '@/state/pinia'
+
 
 const notificationStore = useNotificationStore();
 
@@ -18,15 +17,11 @@ const notificationStore = useNotificationStore();
  */
 export default {
     setup() {
-        const pinia = usePinia();
-        const authStore = useAuthStore(pinia);
-        const v$ = useVuelidate() ;
-        const email = ref('');
-        const password = ref('');
-        const submitted = ref(false);
-        const authError = ref(null);
-        const tryingToLogIn = ref(false);
-        const isAuthError = ref(false);
+
+        return {
+            v$: useVuelidate(),
+        };
+
     },
 
     components: {
@@ -37,6 +32,8 @@ export default {
             email: "",
             password: "",
             submitted: false,
+            authSucces: false,
+            isAuthSucces: false,
             authError: null,
             tryingToLogIn: false,
             isAuthError: false,
@@ -69,12 +66,17 @@ export default {
             } else {
 
                 axios.post("http://127.0.0.1:8000/api/login", {
-                        email: this.email,
-                        password: this.password,
-                    })
+                    email: this.email,
+                    password: this.password,
+                })
                     .then((res) => {
                         if (res.data.status === "success") {
-                            console.log("Login successful!")
+                            console.log("Login successful!");
+                            localStorage.setItem("authToken", res.data.token);//stocker le token de l'utilisateur
+                            console.log(res.data.token);
+                            this.$router.push("/");
+                            this.authSucces = res.data.message;
+                            this.isAuthSucces = true;
                         } else {
                             this.authError = res.data.message;
                             this.isAuthError = true;
@@ -101,6 +103,10 @@ export default {
                         <div v-if="notification.message" :class="'alert ' + notification.type">
                             {{ notification.message }}
                         </div>
+                        <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{ authSucces }}</BAlert>
+                        <div v-if="notification.message" :class="'alert ' + notification.type">
+                            {{ notification.message }}
+                        </div>
 
                         <BForm class="p-5" @submit.prevent="tryToLogIn">
                             <BFormGroup class="mb-3" id="input-group-1" label="Email" label-for="input-1">
@@ -120,14 +126,9 @@ export default {
                                 <div v-if="submitted && v$.password.$error" class="invalid-feedback">
                                     <span v-if="v$.password.required.$message">{{
                                         v$.password.required.$message
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </BFormGroup>
-
-                            <div class="mb-2">
-                                <BFormCheckbox class="me-2 form-check-input" id="customControlInline" name="checkbox-1"
-                                    value="accepted" unchecked-value="not_accepted"> Remember me</BFormCheckbox>
-                            </div>
 
                             <div class="mt-3 d-grid">
                                 <BButton type="submit" variant="primary" class="btn-block">Log In</BButton>
