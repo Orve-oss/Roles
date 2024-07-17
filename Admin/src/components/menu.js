@@ -102,7 +102,7 @@ export const menuItems = [
             {
                 id: 56,
                 label: "menuitems.authentication.list.login",
-                link: "/auth/login-1",
+                link: "/auth/login",
                 parentId: 55
             },
             {
@@ -115,12 +115,6 @@ export const menuItems = [
                 id: 60,
                 label: "menuitems.authentication.list.recoverpwd",
                 link: "/auth/recoverpwd",
-                parentId: 55
-            },
-            {
-                id: 62,
-                label: "menuitems.authentication.list.lockscreen",
-                link: "/auth/lock-screen",
                 parentId: 55
             },
             {

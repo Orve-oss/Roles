@@ -140,34 +140,8 @@ export default [
       }
     }
   },
-  // Redirect any unmatched routes to the 404 page. This may
-  // require some server configuration to work in production:
-  // https://router.vuejs.org/en/essentials/history-mode.html#example-server-configurations
-  // {
-  //   path: "*",
-  //   redirect: "404",
-  // },
-
   {
-    path: "/pages/starter",
-    name: "Starter",
-    meta: { title: "Starter Page", authRequired: true },
-    component: () => import("../views/utility/starter")
-  },
-  {
-    path: "/pages/maintenance",
-    name: "Maintenance",
-    meta: { title: "Maintenance Page", authRequired: true },
-    component: () => import("../views/utility/maintenance")
-  },
-  {
-    path: "/pages/coming-soon",
-    name: "coming-soon",
-    meta: { title: "Coming Soon", authRequired: true },
-    component: () => import("../views/utility/coming-soon")
-  },
-  {
-    path: "/auth/login-1",
+    path: "/auth/login",
     name: "Login sample",
     meta: { title: "Login", authRequired: true },
     component: () => import("../views/sample-pages/login-sample")
@@ -201,18 +175,6 @@ export default [
     name: "Recover pwd-2",
     meta: { title: "Recover Password 2", authRequired: true },
     component: () => import("../views/sample-pages/recoverpwd-2")
-  },
-  {
-    path: "/auth/lock-screen",
-    name: "Lock screen",
-    meta: { title: "Lock Screen", authRequired: true },
-    component: () => import("../views/sample-pages/lockscreen")
-  },
-  {
-    path: "/auth/lock-screen-2",
-    name: "Lock screen-2",
-    meta: { title: "Lock Screen 2", authRequired: true },
-    component: () => import("../views/sample-pages/lockscreen-2")
   },
   {
     path: "/auth/confirm-mail",

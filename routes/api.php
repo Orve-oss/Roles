@@ -32,7 +32,8 @@ Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
 });
 Route::get('/clients', [ClientController::class, 'index']);
 Route::post('/clients', [ClientController::class, 'store']);
-Route::delete('/delete/{id}', [ClientController::class, 'destroy']);
+Route::put('/update/{id}', [ClientController::class, 'update']);
+Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
 
 Route::post('/login', [UserController::class, 'register']);
 

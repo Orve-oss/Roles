@@ -102,7 +102,7 @@ export default {
       <BCol md="8" lg="6" xl="5">
         <BCard no-body class="overflow-hidden">
           <div class="bg-primary-subtle">
-            <BRow>
+            <!-- <BRow>
               <BCol cols="7">
                 <div class="text-primary p-4">
                   <h5 class="text-primary">Welcome Back !</h5>
@@ -112,18 +112,10 @@ export default {
               <BCol cols="5" class="align-self-end">
                 <img src="@/assets/images/profile-img.png" alt class="img-fluid" />
               </BCol>
-            </BRow>
+            </BRow> -->
           </div>
           <BCardBody class="pt-0">
-            <div>
-              <router-link to="/">
-                <div class="avatar-md profile-user-wid mb-4">
-                  <span class="avatar-title rounded-circle bg-light">
-                    <img src="@/assets/images/logo.svg" alt height="34" />
-                  </span>
-                </div>
-              </router-link>
-            </div>
+            
             <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{ authError }}</BAlert>
             <div v-if="notification.message" :class="'alert ' + notification.type">
               {{ notification.message }}

@@ -10,7 +10,7 @@ import axios from 'axios';
 export default {
     components: { Layout, PageHeader },
     name: 'Client list',
-    props:{
+    props: {
         client: {
             type: Object,
             default: null
@@ -21,6 +21,11 @@ export default {
         return {
             clients: [],
             showModal: false,
+            form: {
+                name: '',
+                email: '',
+                password: ''
+            }
 
         };
     },
@@ -36,8 +41,26 @@ export default {
                 console.error('Erreur lors de la récupération des clients:', error);
             }
         },
+        openCreateModal() {
+            this.showModal = true;
+            this.form.name = '';
+            this.form.email = '';
+            this.form.password = '';
+        },
+        closeModal() {
+            this.showModal = false;
+        },
+        async createClient() {
+            try {
+                await axios.post('http://127.0.0.1:8000/api/clients', this.form);
+                this.fetchClients();
+                this.closeModal();
+            } catch (error) {
+                console.error('Erreur lors de la création du client:', error);
+            }
+        },
         // async deleteClient(id) {
-        //     if (confirm("Etes vous sur de vouloir supprimer ce client??")) {
+        //    if (confirm("Etes vous sur de vouloir supprimer ce client??")) {
         //         try {
         //             await axios.delete('http://127.0.0.1:8000/api/delete/${id}');
         //             this.fetchClients();
@@ -45,7 +68,7 @@ export default {
         //         } catch (error) {
         //             console.log('Erreur lors de la suppression du client:', error);
         //         }
-        //     }
+        //      }
         // }
     },
 };
