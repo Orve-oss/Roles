@@ -2,7 +2,9 @@
 import axios from "axios";
 
 
+
 import Layout from "../../layouts/auth";
+
 
 import { required, email, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
@@ -37,6 +39,7 @@ export default {
             authError: null,
             tryingToLogIn: false,
             isAuthError: false,
+            role: null
         };
     },
     validations: {
@@ -56,6 +59,7 @@ export default {
     methods: {
         // Try to log the user in with the username
         // and password they provided.
+
         tryToLogIn() {
             this.submitted = true;
             // stop here if form is invalid
@@ -74,7 +78,8 @@ export default {
                             console.log("Login successful!");
                             localStorage.setItem("authToken", res.data.token);//stocker le token de l'utilisateur
                             console.log(res.data.token);
-                            this.$router.push("/");
+                            this.$router.push('/activite');
+
                             this.authSucces = res.data.message;
                             this.isAuthSucces = true;
                         } else {
@@ -103,7 +108,8 @@ export default {
                         <div v-if="notification.message" :class="'alert ' + notification.type">
                             {{ notification.message }}
                         </div>
-                        <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{ authSucces }}</BAlert>
+                        <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{ authSucces }}
+                        </BAlert>
                         <div v-if="notification.message" :class="'alert ' + notification.type">
                             {{ notification.message }}
                         </div>

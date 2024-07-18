@@ -4,6 +4,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\PrioriteController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TypeTicketController;
@@ -36,6 +37,7 @@ Route::put('/updateclt/{id}', [ClientController::class, 'update']);
 Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
 
 Route::post('/login', [UserController::class, 'login']);
+Route::get('/roles', [RoleController::class, 'index']);
 
 Route::get('/users', [UserController::class, 'index']);
 Route::post('/users', [UserController::class, 'store']);

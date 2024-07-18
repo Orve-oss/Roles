@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import store from './store';
 
 import App from './App.vue'
 import router from "./router";
@@ -22,20 +23,20 @@ import "@vueform/multiselect/themes/default.css"
 import pinia from '@/state/pinia'
 
 const firebaseConfig = {
-  apiKey: process.env.VUE_APP_APIKEY,
-  authDomain: process.env.VUE_APP_AUTHDOMAIN,
-  databaseURL: process.env.VUE_APP_VUE_APP_DATABASEURL,
-  projectId: process.env.VUE_APP_PROJECTId,
-  storageBucket: process.env.VUE_APP_STORAGEBUCKET,
-  messagingSenderId: process.env.VUE_APP_MESSAGINGSENDERID,
-  appId: process.env.VUE_APP_APPId,
-  measurementId: process.env.VUE_APP_MEASUREMENTID
+    apiKey: process.env.VUE_APP_APIKEY,
+    authDomain: process.env.VUE_APP_AUTHDOMAIN,
+    databaseURL: process.env.VUE_APP_VUE_APP_DATABASEURL,
+    projectId: process.env.VUE_APP_PROJECTId,
+    storageBucket: process.env.VUE_APP_STORAGEBUCKET,
+    messagingSenderId: process.env.VUE_APP_MESSAGINGSENDERID,
+    appId: process.env.VUE_APP_APPId,
+    measurementId: process.env.VUE_APP_MEASUREMENTID
 };
 
 if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
-  initFirebaseBackend(firebaseConfig);
+    initFirebaseBackend(firebaseConfig);
 } else {
-  configureFakeBackend();
+    configureFakeBackend();
 }
 
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -45,13 +46,14 @@ import '@vueform/slider/themes/default.css';
 
 
 createApp(App)
-  .use(pinia)
-  .use(router)
-  .use(require('vue-chartist'))
-  .use(BootstrapVueNext)
-  .use(VueApexCharts)
-  .use(vClickOutside)
-  .use(i18n)
-  .use(registerScrollSpy)
-  .directive("maska", vMaska)
-  .mount('#app')
+    .use(store)
+    .use(pinia)
+    .use(router)
+    .use(require('vue-chartist'))
+    .use(BootstrapVueNext)
+    .use(VueApexCharts)
+    .use(vClickOutside)
+    .use(i18n)
+    .use(registerScrollSpy)
+    .directive("maska", vMaska)
+    .mount('#app')

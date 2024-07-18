@@ -91,6 +91,7 @@ export default {
                 });
         },
         deleteClient($id) {
+            console.log($id);
             Swal.fire({
                 title: 'Etes vous sûr de vouloir supprimer ce client?',
                 text: 'Cette action est irreversible',
@@ -101,17 +102,33 @@ export default {
                 confirmButtonText: 'Yes delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete('http://127.0.0.1:8000/api/deleteclt/' + $id)
+                    axios.delete('http://127.0.0.1:8000/api/deleteclt/{$id}')
                         .then((response) => {
-                            this.fetchClients()
-                            console.log(response)
+                            if (response.status === 200) {
+                                this.fetchClients();
+                                Swal.fire(
+                                    'Supprimé!',
+                                    'Le client a été supprimé',
+                                    'success'
+                                );
+                            } else {
+                                Swal.fire(
+                                    'Erreur!',
+                                    response.data.message,
+                                    'error'
+
+                                );
+                            }
+
                         })
-                    Swal.fire(
-                        'Deleted!',
-                        'Le client a été supprimé'
-                    )
+
                 }
-            })
+                Swal.fire(
+                    'Deleted!',
+                    'Le client a été supprimé'
+                )
+            });
+
         }
         // async deleteClient(client_id) {
         //    if (confirm("Etes vous sur de vouloir supprimer ce client??")) {

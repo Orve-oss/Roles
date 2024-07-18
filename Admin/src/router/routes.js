@@ -1,10 +1,22 @@
 import { useAuthStore, useAuthFakeStore } from "@/state/pinia";
 export default [
   {
-    path: "/",
+    path: "/activite",
     name: "default",
     meta: { title: "Dashboard", authRequired: true },
     component: () => import("../views/dashboards/activite")
+  },
+  {
+    path: "/listuser",
+    name: "listUser",
+    meta: { title: "listUser", authRequired: true },
+    component: () => import("../views/users/listeUser")
+  },
+  {
+    path: "/createUser",
+    name: "createUsers",
+    meta: { title: "createUsers", authRequired: true },
+    component: () => import("../views/users/createUser")
   },
   {
     path: "/listticket",
@@ -141,7 +153,7 @@ export default [
     }
   },
   {
-    path: "/auth/login",
+    path: "/",
     name: "Login sample",
     meta: { title: "Login", authRequired: true },
     component: () => import("../views/sample-pages/login-sample")

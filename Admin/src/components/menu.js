@@ -1,4 +1,5 @@
-export const menuItems = [
+
+ export const menuItems = [
     {
         id: 1,
         label: "Tableaux de Bords",
@@ -12,13 +13,13 @@ export const menuItems = [
             {
                 id: 3,
                 label: "Activité",
-                link: "/",
+                link: "/activite",
                 parentId: 2
             },
             {
                 id: 4,
                 label: "Statistiques",
-                link: "/",
+                link: "/statistiques",
                 parentId: 2
             },
         ]
@@ -31,6 +32,25 @@ export const menuItems = [
         id: 54,
         label: "menuitems.pages.text",
         isTitle: true
+    },
+    {
+        id: 20,
+        label: "Utilisateurs",
+        icon: "bx-user-circle",
+        subItems: [
+            {
+                id: 21,
+                label: "Liste des utilisateurs",
+                link: "/listuser",
+                parentId: 20
+            },
+            {
+                id: 22,
+                label: "Créer un utilisateur",
+                link: "/createUser",
+                parentId: 20
+            },
+        ]
     },
     {
         id: 43,
@@ -102,7 +122,7 @@ export const menuItems = [
             {
                 id: 56,
                 label: "menuitems.authentication.list.login",
-                link: "/auth/login",
+                link: "/",
                 parentId: 55
             },
             {
@@ -139,3 +159,4 @@ export const menuItems = [
     },
 
 ];
+

@@ -44,7 +44,10 @@ class Client extends Model
     }
     public static function deleteClient($id)
     {
-        $clt = Client::findOrFail($id);
-        $clt->delete();
+        if (Client::where('id', $id)->exists()) {
+            $clt = Client::find($id);
+            $clt->delete();
+
+        }
     }
 }

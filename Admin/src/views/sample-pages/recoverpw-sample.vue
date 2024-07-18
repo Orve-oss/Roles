@@ -62,34 +62,8 @@ export default {
       <BRow class="justify-content-center">
         <BCol md="8" lg="6" xl="5">
           <BCard no-body class="overflow-hidden">
-            <div class="bg-primary-subtle">
-              <BRow>
-                <BCol cols="7">
-                  <div class="text-primary p-4">
-                    <h5 class="text-primary">Reset Password</h5>
-                    <p>Re-Password with Skote.</p>
-                  </div>
-                </BCol>
-                <BCol cols="5">
-                  <img src="@/assets/images/profile-img.png" alt class="img-fluid" />
-                </BCol>
-              </BRow>
-            </div>
             <BCardBody class="pt-0">
-              <div>
-                <BLink href="/">
-                  <div class="avatar-md profile-user-wid mb-4">
-                    <span class="avatar-title rounded-circle bg-light">
-                      <img src="@/assets/images/logo.svg" alt class="rounded-circle" height="34" />
-                    </span>
-                  </div>
-                </BLink>
-              </div>
-
-              <div class="p-2">
-                <BAlert :model-value="true" variant="success" class="text-center mb-4">
-                  Enter your Email and instructions will be sent to you!
-                </BAlert>
+              <div class="p-4">
                 <BForm class="form-horizontal" @submit.prevent="tryToResetpwd">
                   <BFormGroup>
                     <label for="useremail">Email</label>
@@ -136,16 +110,7 @@ export default {
               </div>
             </BCardBody>
           </BCard>
-          <div class="mt-5 text-center">
-            <p>
-              Remember It ?
-              <router-link to="/auth/login-1" class="fw-medium text-primary">Sign In here</router-link>
-            </p>
-            <p>
-              © {{ new Date().getFullYear() }} Skote. Crafted with
-              <i class="mdi mdi-heart text-danger"></i> by Themesbrand
-            </p>
-          </div>
+          
         </BCol>
       </BRow>
     </BContainer>

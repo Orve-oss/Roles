@@ -61,7 +61,8 @@
     "vue3-datepicker": "^0.4.0",
     "vue3-echarts": "^1.1.0",
     "vue3-google-map": "^0.18.0",
-    "vue3-scroll-spy": "^1.0.8"
+    "vue3-scroll-spy": "^1.0.8",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@achrinza/node-ipc": "^10.1.7",

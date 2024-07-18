@@ -77,8 +77,7 @@ class UserController extends Controller
             $user->assignRole($role);
             return response()->json([
                 'message' => 'Utilisateur crée',
-                'user' => $user,
-                'status' => 201
+                'status' => 'success'
             ]);
         } catch (Exception $e) {
             return response()->json([
