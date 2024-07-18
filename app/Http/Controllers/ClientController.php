@@ -130,7 +130,7 @@ class ClientController extends Controller
             Client::deleteClient($id);
             return response()->json([
                 'message'=> 'Client supprimé',
-                'status'=>201
+                'status'=>200
             ]);
         } else {
             return response()->json([

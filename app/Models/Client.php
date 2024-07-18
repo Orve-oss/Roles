@@ -15,28 +15,35 @@ class Client extends Model
 
     protected $table = 'clients';
 
-    public static function getAllclients(){
+    public static function getAllclients()
+    {
         return Self::all();
     }
 
-    public static function addClient($request){
+    public static function addClient($request)
+    {
         $clt = new Self();
         $clt->nom_clt = $request->nom_clt;
         $clt->email_clt = $request->email_clt;
         $clt->save();
     }
 
-    public static function getOneClient($id){
+    public static function getOneClient($id)
+    {
         return Self::where('id', $id)->get();
     }
-    public static function updateClient($request, $id){
+    public static function updateClient($request, $id)
+    {
         $clt = Client::findOrFail($id);
         $clt->nom_clt = $request->nom_clt;
         $clt->email_clt = $request->email_clt;
-        $clt->password = $request->password;
+        if ($request->has('password')) {
+            $clt->password = bcrypt($request->password);
+        }
         $clt->update();
     }
-    public static function deleteClient($id){
+    public static function deleteClient($id)
+    {
         $clt = Client::findOrFail($id);
         $clt->delete();
     }
