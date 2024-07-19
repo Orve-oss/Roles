@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
 {
@@ -14,12 +15,11 @@ class TicketController extends Controller
     {
         $list = Ticket::getAllTickets();
         if ($list->isEmpty()) {
-            return response()->json(['message'=>'Aucun Enregistrement']);
+            return response()->json(['message' => 'Aucun Enregistrement']);
         }
         return response()->json([
-            'message'=>'Liste des tickets',
-            'tickets'=>$list,
-            'status'=> 200,
+            'message' => 'Liste des tickets',
+            'status' => 200,
         ]);
     }
 
@@ -36,7 +36,28 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'sujet' => 'required|string|max:100',
+            'description' => 'required|string',
+            'service_id' => 'required',
+            'type_ticket_id' => 'required',
+            'priorite_id' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        $ticket = Ticket::create([
+            'sujet'=>$request->sujet,
+            'description'=>$request->description,
+            'service_id'=>$request->service_id,
+            'type_ticket_id'=>$request->type_ticket_id,
+            'priorite_id'=>$request->priorite_id,
+        ]);
+        return response()->json([
+            'message' => 'Ticket Crée',
+            'status'=> 200,
+            'client_id'=> $ticket->id
+        ]);
     }
 
     /**
@@ -71,5 +92,7 @@ class TicketController extends Controller
         //
     }
 
-    public function assign(Request $request, $id){}
+    public function assign(Request $request, $id)
+    {
+    }
 }

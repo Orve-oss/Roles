@@ -30,14 +30,14 @@ export default {
     },
     methods: {
         fetchRoles() {
-      axios.get('http://127.0.0.1:8000/api/roles')
-        .then(response => {
-            this.roles = response.data.filter(role => role.name !== 'Client');
-        })
-        .catch(error => {
-          console.error('Error fetching roles:', error);
-        });
-    },
+            axios.get('http://127.0.0.1:8000/api/roles')
+                .then(response => {
+                    this.roles = response.data.filter(role => role.name !== 'Client');
+                })
+                .catch(error => {
+                    console.error('Error fetching roles:', error);
+                });
+        },
         createUser() {
             axios.post('http://127.0.0.1:8000/api/users', this.user)
                 .then(response => {

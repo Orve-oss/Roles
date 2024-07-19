@@ -21,17 +21,6 @@ class Client extends Model
     {
         return Self::all();
     }
-
-    // public static function addClient($request)
-    // {
-    //     $clt = new Self();
-    //     $clt->nom_clt = $request->nom_clt;
-    //     $clt->email_clt = $request->email_clt;
-    //     $clt->password = bcrypt($request->password);
-    //     $clt->activation_token = Str::random(60);
-    //     $clt->save();
-    // }
-
     public static function getOneClient($id)
     {
         return Self::where('id', $id)->get();

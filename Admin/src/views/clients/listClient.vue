@@ -21,8 +21,8 @@ export default {
             },
             showCreateModal: false,
             showEditModal: false,
-            editClientId: null,
             editClient: {
+                id: null,
                 nom_clt: '',
                 email_clt: '',
             },
@@ -60,8 +60,36 @@ export default {
 
 
         },
+        editclient(client){
+            this.editClient = {...client };
+            this.showEditModal = true;
+        },
+        updateClient(){
+            axios.put(`http://127.0.0.1:8000/api/updateclt/${this.editClient.id}`, this.editClient)
+            .then(response => {
+                console.log(response);
+                this.fetchClients();
+                this.showEditModal = false;
+                this.editClient = {
+                    id: null,
+                    nom_clt: '',
+                    email_clt: ''
+                };
+                Swal.fire(
+                    'Mise à jour',
+                    'Le client a été mis à jour',
+                    'success'
+                );
+            })
+            // .catch(error => {
+            //     if(error.response){
+            //         this.errors = error.response.data.errors;
+            //     }
+            //     console.log(response);
+            // })
+        },
+
         deleteClient(id) {
-            console.log('Client ID to delete:', id);
             Swal.fire({
                 title: 'Etes vous sûr de vouloir supprimer ce client?',
                 text: 'Cette action est irreversible',
@@ -138,18 +166,6 @@ export default {
     //             }
     //         });
     // },
-
-    // async deleteClient(client_id) {
-    //    if (confirm("Etes vous sur de vouloir supprimer ce client??")) {
-    //         try {
-    //             await axios.delete('http://127.0.0.1:8000/api/delete/${id}');
-    //             this.fetchClients();
-
-    //         } catch (error) {
-    //             console.log('Erreur lors de la suppression du client:', error);
-    //         }
-    //      }
-    // }
 };
 </script>
 
@@ -219,7 +235,7 @@ export default {
                                                     <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                                 </template>
 
-                                                <BDropdownItem @click="showEditModal = !showEditModal">
+                                                <BDropdownItem @click="editclient(clist)">
                                                     <i class="fas fa-pencil-alt text-success me-1"></i>
                                                     Edit
                                                 </BDropdownItem>
@@ -266,7 +282,7 @@ export default {
             </div>
         </BForm>
     </BModal>
-    <!--<BModal v-model="showEditModal" title="Modifier un client" title-class="font-18" body-class="p-3" hide-footer
+    <BModal v-model="showEditModal" title="Modifier un client" title-class="font-18" body-class="p-3" hide-footer
         class="v-modal-custom">
         <BForm @submit.prevent="updateClient">
             <BRow>
@@ -288,5 +304,5 @@ export default {
                 <BButton type="submit" variant="success" class="ms-1">Modifier le client</BButton>
             </div>
         </BForm>
-    </BModal> -->
+    </BModal>
 </template>

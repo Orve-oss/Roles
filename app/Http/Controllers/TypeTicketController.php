@@ -18,11 +18,7 @@ class TypeTicketController extends Controller
         if ($list->isEmpty()) {
             return response()->json(['message'=>'Aucun Enregistrement']);
         }
-        return response()->json([
-            'message'=>'Liste des types',
-            'Types de tickets'=>$list,
-            'status'=> 200,
-        ]);
+        return response()->json($list);
     }
 
     /**

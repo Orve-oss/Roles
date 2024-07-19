@@ -1,5 +1,5 @@
 
- export const menuItems = [
+export const menuItems = [
     {
         id: 1,
         label: "Tableaux de Bords",

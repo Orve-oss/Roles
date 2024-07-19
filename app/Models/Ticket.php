@@ -11,7 +11,6 @@ class Ticket extends Model
     protected $fillable = [
         'sujet',
         'description',
-        'user_id',
         'service_id',
         'type_ticket_id',
         'priorite_id'
@@ -19,6 +18,15 @@ class Ticket extends Model
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+    public function type(){
+        return $this->belongsTo(TypeTicket::class);
+    }
+    public function service(){
+        return $this->belongsTo(Service::class);
+    }
+    public function priorite(){
+        return $this->belongsTo(Priorite::class);
     }
     protected $table = 'tickets';
     public static function getAllTickets(){

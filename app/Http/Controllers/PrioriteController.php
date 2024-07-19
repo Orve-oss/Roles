@@ -14,7 +14,7 @@ class PrioriteController extends Controller
      */
     public function index()
     {
-        $list = Priorite::getAllservices();
+        $list = Priorite::getAllpriorites();
         if ($list->isEmpty()) {
             return response()->json(['message'=>'Aucun Enregistrement']);
         }

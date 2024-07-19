@@ -105,9 +105,7 @@ export default {
             </BCol>
         </BRow>
     </Layout>
-    <BModal v-model="showModal" title="Order Details" centered>
-    <p class="mb-2">Product id: <span class="text-primary">#SK2540</span></p>
-    <p class="mb-4">Billing Name: <span class="text-primary">Neal Matthews</span></p>
+    <BModal v-model="showModal" title="Détail du ticket" centered>
 
     <div class="table-responsive">
       <BTableSimple class="align-middle table-nowrap">
@@ -131,10 +129,18 @@ export default {
           </BTr>
           <BTr>
             <BTd colspan="2">
-              <h6 class="m-0 text-right">Total:</h6>
+              <h6 class="m-0 text-right">Priorité:</h6>
             </BTd>
             <BTd>
-              $ 400
+              Urgent
+            </BTd>
+          </BTr>
+          <BTr>
+            <BTd colspan="2">
+              <h6 class="m-0 text-right">Statut:</h6>
+            </BTd>
+            <BTd>
+              Ouvert
             </BTd>
           </BTr>
         </BTbody>
