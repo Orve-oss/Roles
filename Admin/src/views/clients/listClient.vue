@@ -11,8 +11,6 @@ import Swal from 'sweetalert2';
 export default {
     components: { Layout, PageHeader },
     name: 'Client list',
-
-
     data() {
         return {
             clients: [],
@@ -62,36 +60,8 @@ export default {
 
 
         },
-        editClientById(id) {
-            this.editClientId = id;
-            const foundClient = this.clients.find((client) => client.id === id);
-            if (foundClient) {
-                this.editClient = { ...foundClient };
-                this.showEditModal = true;
-            }
-        },
-        updateClient() {
-            this.errors = {};
-            axios.put(`http://127.0.0.1:8000/api/updateclt/${this.editClientId}`, this.editClient)
-                .then((response) => {
-                    this.fetchClients();
-                    this.showEditModal = false;
-                    this.editClient = { nom_clt: '', email_clt: '' };
-                    console.log(response);
-                })
-            Swal.fire(
-                'Modifié',
-                'Le client a été modifié',
-                'success'
-            )
-                .catch((error) => {
-                    if (error.response) {
-                        this.errors = error.response.data.errors;
-                    }
-                });
-        },
-        deleteClient($id) {
-            console.log($id);
+        deleteClient(id) {
+            console.log('Client ID to delete:', id);
             Swal.fire({
                 title: 'Etes vous sûr de vouloir supprimer ce client?',
                 text: 'Cette action est irreversible',
@@ -102,7 +72,7 @@ export default {
                 confirmButtonText: 'Yes delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete('http://127.0.0.1:8000/api/deleteclt/{$id}')
+                    axios.delete(`http://127.0.0.1:8000/api/deleteclt/${id}`)
                         .then((response) => {
                             if (response.status === 200) {
                                 this.fetchClients();
@@ -120,30 +90,67 @@ export default {
                                 );
                             }
 
+                        }).catch((error) => {
+                           if (error.response) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Le client a été supprimé'
+
+                            );
+
+                           }
+
                         })
 
                 }
-                Swal.fire(
-                    'Deleted!',
-                    'Le client a été supprimé'
-                )
+
             });
 
         }
-        // async deleteClient(client_id) {
-        //    if (confirm("Etes vous sur de vouloir supprimer ce client??")) {
-        //         try {
-        //             await axios.delete('http://127.0.0.1:8000/api/delete/${id}');
-        //             this.fetchClients();
 
-        //         } catch (error) {
-        //             console.log('Erreur lors de la suppression du client:', error);
-        //         }
-        //      }
-        // }
+
     },
-};
+    // editClientById(id) {
+    //     this.editClientId = id;
+    //     const foundClient = this.clients.find((client) => client.id === id);
+    //     if (foundClient) {
+    //         this.editClient = { ...foundClient };
+    //         this.showEditModal = true;
+    //     }
+    // },
+    // updateClient() {
+    //     this.errors = {};
+    //     axios.put(`http://127.0.0.1:8000/api/updateclt/${this.editClientId}`, this.editClient)
+    //         .then((response) => {
+    //             this.fetchClients();
+    //             this.showEditModal = false;
+    //             this.editClient = { nom_clt: '', email_clt: '' };
+    //             console.log(response);
+    //         })
+    //     Swal.fire(
+    //         'Modifié',
+    //         'Le client a été modifié',
+    //         'success'
+    //     )
+    //         .catch((error) => {
+    //             if (error.response) {
+    //                 this.errors = error.response.data.errors;
+    //             }
+    //         });
+    // },
 
+    // async deleteClient(client_id) {
+    //    if (confirm("Etes vous sur de vouloir supprimer ce client??")) {
+    //         try {
+    //             await axios.delete('http://127.0.0.1:8000/api/delete/${id}');
+    //             this.fetchClients();
+
+    //         } catch (error) {
+    //             console.log('Erreur lors de la suppression du client:', error);
+    //         }
+    //      }
+    // }
+};
 </script>
 
 <template>
@@ -217,7 +224,7 @@ export default {
                                                     Edit
                                                 </BDropdownItem>
 
-                                                <BDropdownItem @click="deleteClient()">
+                                                <BDropdownItem @click="deleteClient(clist.id)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>
@@ -259,7 +266,7 @@ export default {
             </div>
         </BForm>
     </BModal>
-    <BModal v-model="showEditModal" title="Modifier un client" title-class="font-18" body-class="p-3" hide-footer
+    <!--<BModal v-model="showEditModal" title="Modifier un client" title-class="font-18" body-class="p-3" hide-footer
         class="v-modal-custom">
         <BForm @submit.prevent="updateClient">
             <BRow>
@@ -281,5 +288,5 @@ export default {
                 <BButton type="submit" variant="success" class="ms-1">Modifier le client</BButton>
             </div>
         </BForm>
-    </BModal>
+    </BModal> -->
 </template>

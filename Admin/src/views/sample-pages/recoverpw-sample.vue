@@ -1,5 +1,5 @@
 <script>
-// import axios from "axios";
+import axios from "axios";
 import { required, email, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 
@@ -11,7 +11,7 @@ export default {
     return { v$: useVuelidate() };
   },
   validations: {
-    email: {
+    email_clt: {
       required: helpers.withMessage("Email is required", required),
       email: helpers.withMessage("Please enter valid email", email),
     },
@@ -39,16 +39,16 @@ export default {
       if (this.v$.$invalid) {
         return;
       } else {
-        // axios
-        //     .post("http://127.0.0.1:8000/api/password/reset", {
-        //         token: this.$route.query.token,
-        //         email: this.email,
-        //         password: this.password,
-        //         password_confirmation: this.password_confirmation,
-        //     })
-        //     .then((result) => {
-        //        return result;
-        //     });
+        axios
+            .post("http://127.0.0.1:8000/api/reset-password", {
+                token: this.$route.query.token,
+                email: this.email,
+                password: this.password,
+                password_confirmation: this.password_confirmation,
+            })
+            .then((result) => {
+               return result;
+            });
       }
     },
   },
@@ -67,7 +67,7 @@ export default {
                 <BForm class="form-horizontal" @submit.prevent="tryToResetpwd">
                   <BFormGroup>
                     <label for="useremail">Email</label>
-                    <BFormInput class="mb-2" v-model="email" id="useremail" placeholder="Enter email" :class="{ 'is-invalid': submitted && v$.email.$error }" />
+                    <BFormInput class="mb-2" v-model="email_clt" id="useremail" placeholder="Enter email" :class="{ 'is-invalid': submitted && v$.email.$error }" />
                     <div v-for="(item, index) in v$.email.$errors" :key="index" class="invalid-feedback">
                       <span v-if="item.$message">{{ item.$message }}</span>
                     </div>
@@ -110,7 +110,7 @@ export default {
               </div>
             </BCardBody>
           </BCard>
-          
+
         </BCol>
       </BRow>
     </BContainer>

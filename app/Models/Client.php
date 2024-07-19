@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+
 
 class Client extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
     protected $fillable = [
         'nom_clt',
         'email_clt'
@@ -20,13 +22,15 @@ class Client extends Model
         return Self::all();
     }
 
-    public static function addClient($request)
-    {
-        $clt = new Self();
-        $clt->nom_clt = $request->nom_clt;
-        $clt->email_clt = $request->email_clt;
-        $clt->save();
-    }
+    // public static function addClient($request)
+    // {
+    //     $clt = new Self();
+    //     $clt->nom_clt = $request->nom_clt;
+    //     $clt->email_clt = $request->email_clt;
+    //     $clt->password = bcrypt($request->password);
+    //     $clt->activation_token = Str::random(60);
+    //     $clt->save();
+    // }
 
     public static function getOneClient($id)
     {

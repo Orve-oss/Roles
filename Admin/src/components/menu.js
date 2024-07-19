@@ -134,7 +134,7 @@
             {
                 id: 60,
                 label: "menuitems.authentication.list.recoverpwd",
-                link: "/auth/recoverpwd",
+                link: "/auth-recoverpwd/:token",
                 parentId: 55
             },
             {

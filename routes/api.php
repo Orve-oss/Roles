@@ -38,6 +38,8 @@ Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
 
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/roles', [RoleController::class, 'index']);
+Route::post('/reset-password', [ClientController::class, 'reset']);
+Route::post('/send-activation/{id}', [ClientController::class, 'send']);
 
 Route::get('/users', [UserController::class, 'index']);
 Route::post('/users', [UserController::class, 'store']);

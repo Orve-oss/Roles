@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
+use App\Notifications\AccountActivation;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
@@ -51,20 +55,57 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            Client::addClient($request);
-            return response()->json([
-                'message' => 'Liste des Clients',
-                'Client'=> Client::addClient($request),
-                'Status'=> 201
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'Status'=> 'Fail'
-            ]);
+        $validator = Validator::make($request->all(), [
+            'nom_clt' => 'required|string',
+            'email_clt' => 'required|string|email|unique:clients',
+            'activation_token'=> 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
         }
 
+        $client = Client::create([
+            'nom_clt'=>$request->nom_clt,
+            'email_clt'=>$request->email_clt,
+            'password'=>bcrypt($request->password),
+            'activation_token'=>Str::random(60),
+        ]);
+        return response()->json([
+                    'message' => 'Client Crée',
+                    'status'=> 200,
+                    'client_id'=> $client->id
+                ]);
+
+    }
+    public function send($id){
+        $client = Client::find($id);
+        if (!$client) {
+            return response()->json([
+                'message' => 'Client non trouve',
+            ]);
+        }
+        $client->notify(new AccountActivation($client->activation_token));
+        return response()->json([
+                    'message' => 'Voulez vous l\'envoyer le mail d\'activation?',
+                ]);
+    }
+
+    public function reset(Request $request){
+        $request->validate([
+            'token'=>'required|string',
+            'password'=>'required|min:4|string|confirmed'
+        ]);
+        $user = Client::where('activation_token', $request->token)->first();
+        if (!$user) {
+            return response()->json(['message'=>'Token invalide']);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->activation_token = null; //Invalide le token après la réinitialisation du mot de passe
+        $user->save();
+
+        return response()->json(['message'=>'Compte activé avec succès']);
     }
 
     /**
@@ -126,7 +167,7 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-         
+
         if (Client::deleteClient($id)) {
             return response()->json([
                 'message'=> 'Client supprimé',
