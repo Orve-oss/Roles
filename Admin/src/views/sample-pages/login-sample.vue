@@ -76,12 +76,24 @@ export default {
                     .then((res) => {
                         if (res.data.status === "success") {
                             console.log("Login successful!");
-                            localStorage.setItem("authToken", res.data.token);//stocker le token de l'utilisateur
-                            console.log(res.data.token);
-                            this.$router.push('/activite');
-
                             this.authSucces = res.data.message;
                             this.isAuthSucces = true;
+                            localStorage.setItem("authToken", res.data.token);//stocker le token de l'utilisateur
+                            const user = res.data.user.role;
+
+                            localStorage.setItem("userRole", user);
+                            // this.$router.push('/activite');
+
+                            let redirectRoute = '/activite';
+
+                            if (user === 'Admin') {
+                                redirectRoute = '/listuser';
+                            } else if (user == 'Client'){
+                                redirectRoute = '/createtickets'
+                            }
+                            this.$router.push(redirectRoute);
+
+
                         } else {
                             this.authError = res.data.message;
                             this.isAuthError = true;
@@ -132,7 +144,7 @@ export default {
                                 <div v-if="submitted && v$.password.$error" class="invalid-feedback">
                                     <span v-if="v$.password.required.$message">{{
                                         v$.password.required.$message
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </BFormGroup>
 

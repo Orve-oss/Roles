@@ -3,13 +3,13 @@ export default [
   {
     path: "/activite",
     name: "default",
-    meta: { title: "Dashboard", authRequired: true },
+    meta: { title: "Dashboard", authRequired: true, role: 'Admin' },
     component: () => import("../views/dashboards/activite")
   },
   {
     path: "/listuser",
     name: "listUser",
-    meta: { title: "listUser", authRequired: true },
+    meta: { title: "listUser", authRequired: true, role: 'Admin' },
     component: () => import("../views/users/listeUser")
   },
   {
@@ -39,7 +39,7 @@ export default [
   {
     path: "/createtickets",
     name: "CreationTicket",
-    meta: { title: "CreationTicket", authRequired: true },
+    meta: { title: "CreationTicket", authRequired: true, role: 'Client' },
     component: () => import("../views/tickets/creation")
   },
   {

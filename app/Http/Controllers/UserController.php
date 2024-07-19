@@ -23,16 +23,26 @@ class UserController extends Controller
                     'message' => 'Email ou mot de passe invalide'
                 ]);
             }
-            Auth::attempt($creds);
-            return response()->json([
-                'message' => 'You are logged',
-                'status' => 'success'
-            ]);
+            $user = Auth::attempt($creds);
+            // return response()->json([
+            //     'message' => 'You are logged',
+            //     'status' => 'success'
+            // ]);
 
             $user = Auth::user();
             $token = $user->createToken('auth_token', ['*']);
 
-            return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
+            return response()->json([
+                'message'=>'Connexion réussie',
+                'access_token' => $token, 'token_type' => 'Bearer',
+                'status'=> 'success',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->roles->pluck('name')
+                ]
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),

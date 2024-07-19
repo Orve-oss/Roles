@@ -50,16 +50,16 @@ export default {
     };
   },
   components: { simplebar },
-  mounted() {
-    if (process.env.VUE_APP_I18N_LOCALE) {
-      this.flag = this.$i18n.locale || process.env.VUE_APP_I18N_LOCALE;
-      this.languages.forEach((item) => {
-        if (item.language == this.flag) {
-          document.getElementById("header-lang-img")?.setAttribute("src", item.flag);
-        }
-      });
-    }
-  },
+//   mounted() {
+//     if (process.env.VUE_APP_I18N_LOCALE) {
+//       this.flag = this.$i18n.locale || process.env.VUE_APP_I18N_LOCALE;
+//       this.languages.forEach((item) => {
+//         if (item.language == this.flag) {
+//           document.getElementById("header-lang-img")?.setAttribute("src", item.flag);
+//         }
+//       });
+//     }
+//   },
   computed: {
     currentUser() {
       return auth.currentUser
@@ -139,9 +139,6 @@ export default {
             <span class="logo-sm">
               <img src="@/assets/images/logo-light.svg" alt height="22" />
             </span>
-            <!-- <span class="logo-lg">
-              <img src="@/assets/images/logo-light.png" alt height="19" />
-            </span> -->
           </router-link>
         </div>
 

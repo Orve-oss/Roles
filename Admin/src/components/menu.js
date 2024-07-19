@@ -3,24 +3,28 @@ export const menuItems = [
     {
         id: 1,
         label: "Tableaux de Bords",
-        isTitle: true
+        isTitle: true,
+        roles: ['Admin', 'Client']
     },
     {
         id: 2,
         label: "Tableau de bord",
         icon: "bx-home-circle",
+        roles: ['Admin', 'Client'],
         subItems: [
             {
                 id: 3,
                 label: "Activité",
                 link: "/activite",
-                parentId: 2
+                parentId: 2,
+                roles: ['Admin']
             },
             {
                 id: 4,
                 label: "Statistiques",
                 link: "/statistiques",
-                parentId: 2
+                parentId: 2,
+                roles: ['Admin', 'Client']
             },
         ]
     },
@@ -37,18 +41,21 @@ export const menuItems = [
         id: 20,
         label: "Utilisateurs",
         icon: "bx-user-circle",
+        roles: ['Admin'],
         subItems: [
             {
                 id: 21,
                 label: "Liste des utilisateurs",
                 link: "/listuser",
-                parentId: 20
+                parentId: 20,
+                roles: ['Admin']
             },
             {
                 id: 22,
                 label: "Créer un utilisateur",
                 link: "/createUser",
-                parentId: 20
+                parentId: 20,
+                roles: ['Admin']
             },
         ]
     },
@@ -56,36 +63,42 @@ export const menuItems = [
         id: 43,
         label: "Tickets",
         icon: "bx-receipt",
+        roles: ['Admin', 'Client'],
         subItems: [
             {
                 id: 44,
                 label: "All tickets",
                 link: "/listticket",
-                parentId: 43
+                parentId: 43,
+                roles: ['Admin', 'Client']
             },
             {
                 id: 45,
                 label: "Tickets ouverts",
                 link: "/openticket",
-                parentId: 43
+                parentId: 43,
+                roles: ['Admin','Client']
             },
             {
                 id: 46,
                 label: "Tickets fermés",
                 link: "/closedticket",
-                parentId: 43
+                parentId: 43,
+                roles: ['Admin', 'Client']
             },
             {
                 id: 47,
                 label: "Creation",
                 link: "/createtickets",
-                parentId: 43
+                parentId: 43,
+                roles: ['Client']
             },
             {
                 id: 48,
                 label: "Historique",
                 link: "/historiqueticket",
-                parentId: 43
+                parentId: 43,
+                roles: ['Client']
             },
         ]
     },
@@ -93,24 +106,28 @@ export const menuItems = [
         id: 50,
         label: "Clients",
         icon: "bx-user",
+        roles: ['Admin'],
         subItems: [
             {
                 id: 51,
                 label: "Liste des clients",
                 link: "/listeClients",
-                parentId: 50
+                parentId: 50,
+                roles: ['Admin']
             },
             {
                 id: 52,
                 label: "Creer un client",
                 link: "/openticket",
-                parentId: 50
+                parentId: 50,
+                roles: ['Admin']
             },
             {
                 id: 53,
                 label: "Profil Client",
                 link: "/closedticket",
-                parentId: 50
+                parentId: 50,
+                roles: ['Admin']
             },
         ]
     },
