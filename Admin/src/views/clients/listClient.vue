@@ -17,14 +17,14 @@ export default {
             showModal: false,
             newClient: {
                 nom_clt: '',
-                email_clt: '',
+                email: '',
             },
             showCreateModal: false,
             showEditModal: false,
             editClient: {
                 id: null,
                 nom_clt: '',
-                email_clt: '',
+                email: '',
             },
             errors: {},
 
@@ -73,7 +73,7 @@ export default {
                 this.editClient = {
                     id: null,
                     nom_clt: '',
-                    email_clt: ''
+                    email: ''
                 };
                 Swal.fire(
                     'Mise à jour',
@@ -213,7 +213,7 @@ export default {
                                         <BTd>{{ index + 1 }}</BTd>
                                         <BTd>{{ clist.nom_clt }}</BTd>
                                         <BTd>
-                                            <p class="mb-0">{{ clist.email_clt }}</p>
+                                            <p class="mb-0">{{ clist.email }}</p>
                                         </BTd>
                                         <!-- <BTd>
                                             <span class="badge bg-success font-size-12">
@@ -271,7 +271,7 @@ export default {
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="email">Email</label>
-                        <input id="email" v-model="newClient.email_clt" type="email" class="form-control"
+                        <input id="email" v-model="newClient.email" type="email" class="form-control"
                             placeholder="Insert email">
                     </div>
                 </BCol>
@@ -295,7 +295,7 @@ export default {
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="email">Email</label>
-                        <input id="email" v-model="editClient.email_clt" type="email" class="form-control" />
+                        <input id="email" v-model="editClient.email" type="email" class="form-control" />
                     </div>
                 </BCol>
             </BRow>

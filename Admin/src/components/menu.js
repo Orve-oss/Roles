@@ -4,13 +4,13 @@ export const menuItems = [
         id: 1,
         label: "Tableaux de Bords",
         isTitle: true,
-        roles: ['Admin', 'Client']
+        roles: ['Admin', 'Client', 'Agent']
     },
     {
         id: 2,
         label: "Tableau de bord",
         icon: "bx-home-circle",
-        roles: ['Admin', 'Client'],
+        roles: ['Admin', 'Client', 'Agent'],
         subItems: [
             {
                 id: 3,
@@ -24,7 +24,7 @@ export const menuItems = [
                 label: "Statistiques",
                 link: "/statistiques",
                 parentId: 2,
-                roles: ['Admin', 'Client']
+                roles: ['Admin', 'Client', 'Agent']
             },
         ]
     },
@@ -63,28 +63,28 @@ export const menuItems = [
         id: 43,
         label: "Tickets",
         icon: "bx-receipt",
-        roles: ['Admin', 'Client'],
+        roles: ['Admin', 'Client', 'Agent'],
         subItems: [
             {
                 id: 44,
                 label: "All tickets",
                 link: "/listticket",
                 parentId: 43,
-                roles: ['Admin', 'Client']
+                roles: ['Admin', 'Client', 'Agent']
             },
             {
                 id: 45,
                 label: "Tickets ouverts",
                 link: "/openticket",
                 parentId: 43,
-                roles: ['Admin','Client']
+                roles: ['Admin','Client', 'Agent']
             },
             {
                 id: 46,
                 label: "Tickets fermés",
                 link: "/closedticket",
                 parentId: 43,
-                roles: ['Admin', 'Client']
+                roles: ['Admin', 'Client', 'Agent']
             },
             {
                 id: 47,

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\HistoriqueController;
@@ -36,7 +37,7 @@ Route::post('/clients', [ClientController::class, 'store']);
 Route::put('/updateclt/{id}', [ClientController::class, 'update']);
 Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
 
-Route::post('/login', [UserController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
 Route::get('/roles', [RoleController::class, 'index']);
 Route::post('/reset-password', [ClientController::class, 'reset']);
 Route::post('/send-activation/{id}', [ClientController::class, 'send']);

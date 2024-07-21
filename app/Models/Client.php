@@ -4,18 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
-
-class Client extends Model
+class Client extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
     protected $fillable = [
         'nom_clt',
-        'email_clt'
+        'email',
+        'password'
     ];
 
     protected $table = 'clients';
+    protected $guard_name = 'clients';
 
     public static function getAllclients()
     {
@@ -29,7 +32,7 @@ class Client extends Model
     {
         $clt = Client::findOrFail($id);
         $clt->nom_clt = $request->nom_clt;
-        $clt->email_clt = $request->email_clt;
+        $clt->email = $request->email;
         if ($request->has('password')) {
             $clt->password = bcrypt($request->password);
         }

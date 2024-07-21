@@ -84,14 +84,19 @@ export default {
                             localStorage.setItem("userRole", user);
                             // this.$router.push('/activite');
 
-                            let redirectRoute = '/activite';
+                            let redirectRoute = '/listuser';
+                            let redirRoute = '/listticket'
 
                             if (user === 'Admin') {
                                 redirectRoute = '/listuser';
                             } else if (user == 'Client'){
                                 redirectRoute = '/createtickets'
                             }
+                            else if(user === 'Agent'){
+                                redirRoute = '/listticket'
+                            }
                             this.$router.push(redirectRoute);
+                            this.$router.push(redirRoute);
 
 
                         } else {

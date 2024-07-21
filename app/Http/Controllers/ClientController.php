@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ClientResource;
+use App\Mail\ClientMail;
 use App\Models\Client;
 use App\Notifications\AccountActivation;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -57,20 +59,34 @@ class ClientController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nom_clt' => 'required|string',
-            'email_clt' => 'required|string|email|unique:clients',
-            'activation_token'=> 'required|string'
+            'email' => 'required|string|email|unique:clients',
+            // 'password'=> 'nullable|min:4'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-
-        $client = Client::create([
+        $clientdata = [
             'nom_clt'=>$request->nom_clt,
-            'email_clt'=>$request->email_clt,
-            'password'=>bcrypt($request->password),
-            'activation_token'=>Str::random(60),
-        ]);
+            'email'=>$request->email,
+            'activation_token'=> Str::random(60),
+
+        ];
+        if($request->has('password') && !empty($request->password)) {
+            $clientdata['password'] = bcrypt($request->password); // Hachage du mot de passe
+        }
+
+        $client = Client::create($clientdata);
+        $client->assignRole('Client');
+        $details = [
+            'name' => $client->nom_clt,
+            'email' => $client->email,
+            'activation_token'=> $client->activation_token,
+            'reset_link'=> url('http://127.0.0.1:8000'. $client->activation_token),
+
+        ];
+        Mail::to($client->email)->send(new ClientMail($details));
+
         return response()->json([
                     'message' => 'Client Crée',
                     'status'=> 200,

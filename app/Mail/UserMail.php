@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ClientMail extends Mailable
+class UserMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -39,10 +39,9 @@ class ClientMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'pageEmail',
+            view: 'userMail',
         );
     }
-
 
     /**
      * Get the attachments for the message.

@@ -13,43 +13,43 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function login(UserRequest $request)
-    {
+    // public function login(UserRequest $request)
+    // {
 
-        try {
-            $creds =  $request->validated();
-            if (!Auth::attempt($creds)) {
-                return response()->json([
-                    'message' => 'Email ou mot de passe invalide'
-                ]);
-            }
-            $user = Auth::attempt($creds);
-            // return response()->json([
-            //     'message' => 'You are logged',
-            //     'status' => 'success'
-            // ]);
+    //     try {
+    //         $creds =  $request->validated();
+    //         if (!Auth::attempt($creds)) {
+    //             return response()->json([
+    //                 'message' => 'Email ou mot de passe invalide'
+    //             ]);
+    //         }
+    //         $user = Auth::attempt($creds);
+    //         // return response()->json([
+    //         //     'message' => 'You are logged',
+    //         //     'status' => 'success'
+    //         // ]);
 
-            $user = Auth::user();
-            $token = $user->createToken('auth_token', ['*']);
+    //         $user = Auth::user();
+    //         $token = $user->createToken('auth_token', ['*']);
 
-            return response()->json([
-                'message'=>'Connexion réussie',
-                'access_token' => $token, 'token_type' => 'Bearer',
-                'status'=> 'success',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->roles->pluck('name')
-                ]
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'Status' => 'Fail'
-            ]);
-        }
-    }
+    //         return response()->json([
+    //             'message'=>'Connexion réussie',
+    //             'access_token' => $token, 'token_type' => 'Bearer',
+    //             'status'=> 'success',
+    //             'user' => [
+    //                 'id' => $user->id,
+    //                 'name' => $user->name,
+    //                 'email' => $user->email,
+    //                 'role' => $user->roles->pluck('name')
+    //             ]
+    //         ]);
+    //     } catch (Exception $e) {
+    //         return response()->json([
+    //             'message' => $e->getMessage(),
+    //             'Status' => 'Fail'
+    //         ]);
+    //     }
+    // }
 
     public function index()
     {
@@ -85,6 +85,11 @@ class UserController extends Controller
             ]);
             $role = Role::findByName($validator['role']);
             $user->assignRole($role);
+            $details = [
+                'name'=>$user->name,
+                'email'=>$user->email,
+                
+            ];
             return response()->json([
                 'message' => 'Utilisateur crée',
                 'status' => 'success'
