@@ -138,34 +138,7 @@ export default {
 
 
     },
-    // editClientById(id) {
-    //     this.editClientId = id;
-    //     const foundClient = this.clients.find((client) => client.id === id);
-    //     if (foundClient) {
-    //         this.editClient = { ...foundClient };
-    //         this.showEditModal = true;
-    //     }
-    // },
-    // updateClient() {
-    //     this.errors = {};
-    //     axios.put(`http://127.0.0.1:8000/api/updateclt/${this.editClientId}`, this.editClient)
-    //         .then((response) => {
-    //             this.fetchClients();
-    //             this.showEditModal = false;
-    //             this.editClient = { nom_clt: '', email_clt: '' };
-    //             console.log(response);
-    //         })
-    //     Swal.fire(
-    //         'Modifié',
-    //         'Le client a été modifié',
-    //         'success'
-    //     )
-    //         .catch((error) => {
-    //             if (error.response) {
-    //                 this.errors = error.response.data.errors;
-    //             }
-    //         });
-    // },
+    
 };
 </script>
 

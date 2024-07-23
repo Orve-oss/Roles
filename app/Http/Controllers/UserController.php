@@ -9,6 +9,7 @@ use Exception;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -57,11 +58,7 @@ class UserController extends Controller
         if ($list->isEmpty()) {
             return response()->json(['message' => 'Aucun Enregistrement']);
         }
-        return response()->json([
-            'message' => 'Liste des utilisateurs',
-            'users' => $list,
-            'status' => 200,
-        ]);
+        return response()->json($list);
     }
     public function store(Request $request)
     {
@@ -79,17 +76,18 @@ class UserController extends Controller
                 ]);
             }
             $user = User::create([
-                'name' => $validator['name'],
-                'email' => $validator['email'],
-                'password' => $validator['password'],
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
             ]);
-            $role = Role::findByName($validator['role']);
+            $role = Role::where('name', $request->role)->get();
+            // $role = Role::findByName($validator['role']);
             $user->assignRole($role);
-            $details = [
-                'name'=>$user->name,
-                'email'=>$user->email,
+            // $details = [
+            //     'name'=>$user->name,
+            //     'email'=>$user->email,
 
-            ];
+            // ];
             return response()->json([
                 'message' => 'Utilisateur crée',
                 'status' => 'success'

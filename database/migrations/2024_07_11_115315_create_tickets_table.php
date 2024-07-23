@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('sujet', 100);
             $table->text('description');
             $table->string('image')->nullable();
+            $table->string('status')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users', 'id');
             $table->foreignId('client_id')->nullable()->constrained('clients', 'id');
             $table->foreignId('service_id')->constrained('services', 'id');

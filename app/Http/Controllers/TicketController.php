@@ -18,10 +18,7 @@ class TicketController extends Controller
         if ($list->isEmpty()) {
             return response()->json(['message' => 'Aucun Enregistrement']);
         }
-        return response()->json([
-            'message' => 'Liste des tickets',
-            'status' => 200,
-        ]);
+        return response()->json($list);
     }
 
     /**

@@ -13,6 +13,7 @@ export default {
 
     data() {
         return {
+            tickets: [],
             ticketId: null,
             agents: [],
             selectedAgent: null,
@@ -20,45 +21,56 @@ export default {
             showModal: false,
         };
     },
-    mounted(){
+    mounted() {
+        this.fetchTickets();
         this.fetchAgents();
     },
     methods: {
-        fetchAgents() {
-            axios.get(`http://127.0.0.1:8000/api/agents`)
-            .then(response => {
-                this.agents = response.data.map(agent => ({
-                    value: agent.id,
-                    text: agent.name,
-                }));
-            })
-            .catch(error => {
-                console.error('Error fetching agents:', error);
-            });
+
+        fetchTickets() {
+            axios.get(`http://127.0.0.1:8000/api/tickets`)
+                .then(response => {
+                    this.tickets = response.data;
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des tickets:', error);
+                });
+        },
+        async fetchAgents() {
+            await axios.get(`http://127.0.0.1:8000/api/agents`)
+                .then(response => {
+                    this.agents = response.data.map(agent => ({
+                        value: agent.id,
+                        text: agent.name,
+                    }));
+                })
+                .catch(error => {
+                    console.error('Error fetching agents:', error);
+                });
 
         },
-        openAssignModal(){
+        openAssignModal() {
             this.$refs.assignModal.show();
         },
-        assignTicket(){
+        assignTicket() {
             axios.post(`http://127.0.0.1:8000/api/tickets/${this.ticketId}/assign`, {
                 agent_id: this.selectedAgent
             })
-            .then(response => {
-                this.$refs.assignModal.hide();
-                Swal.fire(
-                    'Assigné',
-                    response.data.message,
-                    'success'
-                );
-            }).catch(error => {
-                console.error('Erreur d\'assignation de ticket :', error);
-                Swal.fire(
-                    'Erreur',
-                    'Une erreur est survenue',
-                    'error'
-                );
-            });
+                .then(response => {
+                    this.$refs.assignModal.hide();
+                    Swal.fire(
+                        'Assigné',
+                        response.data.message,
+                        'success'
+                    );
+                }).catch(error => {
+                    console.error('Erreur d\'assignation de ticket :', error);
+                    Swal.fire(
+                        'Erreur',
+                        'Une erreur est survenue',
+                        'error'
+                    );
+                });
         }
     }
 }
@@ -87,6 +99,10 @@ export default {
                                     <BButton variant="secondary" class="btn-rounded mb-2 me-2">
                                         Tout
                                     </BButton>
+                                    <BButton class="btn-rounded mb-2 me-2" variant="dark">
+                                        <i class="bx bx-hourglass bx-spin font-size-16 align-middle"></i>
+                                        En attente
+                                    </BButton>
                                     <BButton variant="primary" class="btn-rounded mb-2 me-2">
                                         En cours
                                     </BButton>
@@ -103,26 +119,22 @@ export default {
                             <BTableSimple class="table-centered table-nowrap align-middle">
                                 <BThead>
                                     <BTr>
-                                        <BTh>Id</BTh>
+                                        <BTh>Index</BTh>
                                         <BTh>Sujet</BTh>
-
                                         <BTh>Type-Ticket</BTh>
-                                        <BTh>Status</BTh>
+                                        <BTh>Priorite</BTh>
                                         <BTh>Date</BTh>
                                         <BTh>Detail</BTh>
                                         <BTh>Action</BTh>
                                     </BTr>
                                 </BThead>
                                 <BTbody>
-                                    <BTr>
-                                        <BTd>
-                                            209#
-                                        </BTd>
-                                        <BTd>Probleme de connexion</BTd>
-
-                                        <BTd>Probleme </BTd>
-                                        <BTd>En cours</BTd>
-                                        <BTd>13-06-2024</BTd>
+                                    <BTr v-for="(ticket, index) in tickets" :key="index">
+                                        <BTd> {{ index + 1 }} </BTd>
+                                        <BTd> {{ ticket.sujet }} </BTd>
+                                        <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd>
+                                        <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd>
+                                        <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
                                         <BTd>
                                             <BButton variant="primary" class="btn-sm btn-rounded"
                                                 @click="showModal = !showModal">
@@ -147,7 +159,7 @@ export default {
                                                 </BDropdownItem>
                                                 <BDropdownItem @click="openAssignModal">
                                                     <i class="fas fa-user-alt text-primary me-1"></i>
-                                                    Assigné à
+                                                    Assigner à
                                                 </BDropdownItem>
                                             </BDropdown>
                                         </BTd>
@@ -163,60 +175,62 @@ export default {
     </Layout>
     <BModal id="assignModal" ref="assignModal" title="Assigner un ticket à">
         <BForm @submit.prevent="assignTicket">
-            <BFormGroup label="Choisir un agent"  label-for="agent-select">
+            <BFormGroup label="Choisir un agent" label-for="agent-select">
                 <BFormSelect v-model="selectedAgent" :options="agents" id="agent-select">
                     <BFormSelectOption :value="null">Select</BFormSelectOption>
                     <BFormSelectOption v-for="agent in agents" :key="agent.id" :value="agent.id">
                         {{ agent.name }}
                     </BFormSelectOption>
                 </BFormSelect>
+            </BFormGroup>
+            <BFormGroup>
                 <BButton variant="primary" type="submit">Assigner</BButton>
             </BFormGroup>
         </BForm>
     </BModal>
     <BModal v-model="showModal" title="Détail du ticket" centered>
 
-    <div class="table-responsive">
-      <BTableSimple class="align-middle table-nowrap">
-        <BTbody>
+        <div class="table-responsive">
+            <BTableSimple class="align-middle table-nowrap">
+                <BTbody>
 
-          <BTr>
-            <BTd colspan="2">
-              <h6 class="m-0 text-right">Id:</h6>
-            </BTd>
-            <BTd>
-              209#
-            </BTd>
-          </BTr>
-          <BTr>
-            <BTd colspan="2">
-              <h6 class="m-0 text-right">Sujet:</h6>
-            </BTd>
-            <BTd>
-              Probleme de connexion
-            </BTd>
-          </BTr>
-          <BTr>
-            <BTd colspan="2">
-              <h6 class="m-0 text-right">Priorité:</h6>
-            </BTd>
-            <BTd>
-              Urgent
-            </BTd>
-          </BTr>
-          <BTr>
-            <BTd colspan="2">
-              <h6 class="m-0 text-right">Statut:</h6>
-            </BTd>
-            <BTd>
-              Ouvert
-            </BTd>
-          </BTr>
-        </BTbody>
-      </BTableSimple>
-    </div>
-    <template v-slot:modal-footer>
-      <BButton variant="secondary" @click="showModal = !showModal">Close</BButton>
-    </template>
-  </BModal>
+                    <BTr>
+                        <BTd colspan="2">
+                            <h6 class="m-0 text-right">Id:</h6>
+                        </BTd>
+                        <BTd>
+                            209#
+                        </BTd>
+                    </BTr>
+                    <BTr>
+                        <BTd colspan="2">
+                            <h6 class="m-0 text-right">Sujet:</h6>
+                        </BTd>
+                        <BTd>
+                            Probleme de connexion
+                        </BTd>
+                    </BTr>
+                    <BTr>
+                        <BTd colspan="2">
+                            <h6 class="m-0 text-right">Priorité:</h6>
+                        </BTd>
+                        <BTd>
+                            Urgent
+                        </BTd>
+                    </BTr>
+                    <BTr>
+                        <BTd colspan="2">
+                            <h6 class="m-0 text-right">Statut:</h6>
+                        </BTd>
+                        <BTd>
+                            Ouvert
+                        </BTd>
+                    </BTr>
+                </BTbody>
+            </BTableSimple>
+        </div>
+        <template v-slot:modal-footer>
+            <BButton variant="secondary" @click="showModal = !showModal">Close</BButton>
+        </template>
+    </BModal>
 </template>

@@ -20,16 +20,16 @@ class Ticket extends Model
         return $this->belongsTo(User::class);
     }
     public function type(){
-        return $this->belongsTo(TypeTicket::class);
+        return $this->belongsTo(TypeTicket::class, 'type_ticket_id');
     }
     public function service(){
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Service::class, 'service_id');
     }
     public function priorite(){
-        return $this->belongsTo(Priorite::class);
+        return $this->belongsTo(Priorite::class, 'priorite_id');
     }
     protected $table = 'tickets';
     public static function getAllTickets(){
-        return Self::all();
+        return Self::with(['type','service', 'priorite'])->get();
     }
 }

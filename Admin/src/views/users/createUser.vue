@@ -2,7 +2,7 @@
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import axios from "axios";
-
+import Swal from "sweetalert2";
 /**
  * Dashboard Component
  */
@@ -38,17 +38,23 @@ export default {
                     console.error('Error fetching roles:', error);
                 });
         },
-        createUser() {
-            axios.post('http://127.0.0.1:8000/api/users', this.user)
+        async createUser() {
+            await axios.post('http://127.0.0.1:8000/api/users', this.user)
                 .then(response => {
                     this.errors = null;
                     this.successMessage = response.data.message;
+                    Swal.fire(
+                        'Créé!',
+                        this.successMessage = response.data.message,
+                        'success'
+                    );
                     this.user = {
                         name: '',
                         email: '',
                         password: '',
                         role: '',
                     };
+
                 })
                 .catch(error => {
                     this.successMessage = null;
@@ -74,7 +80,7 @@ export default {
                     <BCardBody>
                         <BCardTitle class="mb-4">Ajouter un utilisateur</BCardTitle>
 
-                        <BForm>
+                        <BForm @submit.prevent="createUser">
                             <BFormGroup class="mb-3" label="Nom" label-for="horizontal-firstname-input"
                                 label-cols-sm="3">
                                 <BFormInput id="horizontal-firstname-input" v-model="user.name" type="text"
@@ -96,7 +102,7 @@ export default {
                             <BFormGroup class="mb-4" label="Role" label-for="horizontal-role-input" label-cols-sm="3">
                                 <BFormSelect v-model="user.role" class="form-select" aria-placeholder="Selectionner">
                                     <BFormSelectOption :value="null">Select</BFormSelectOption>
-                                    <BFormSelectOption v-for="role in roles" :key="role.id" value="role.name">{{
+                                    <BFormSelectOption v-for="role in roles" :key="role.id" :value="role.id">{{
                                         role.name }}</BFormSelectOption>
                                 </BFormSelect>
 
@@ -106,7 +112,7 @@ export default {
                                 <BCol sm="9">
 
                                     <div>
-                                        <BButton type="submit" variant="primary">Submit</BButton>
+                                        <BButton type="submit" variant="primary">Créer</BButton>
                                     </div>
                                 </BCol>
                             </BRow>

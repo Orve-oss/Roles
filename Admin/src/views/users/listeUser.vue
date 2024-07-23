@@ -1,4 +1,5 @@
 <script>
+import axios from "axios";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 
@@ -10,6 +11,28 @@ export default {
         Layout,
         PageHeader,
     },
+
+    data() {
+        return {
+            users: []
+
+        };
+
+    },
+    mounted() {
+        this.fetchUsers();
+    },
+    methods: {
+        fetchUsers() {
+            axios.get(`http://127.0.0.1:8000/api/users`)
+                .then(response => {
+                    this.users = response.data;
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des tickets:', error);
+                });
+        }
+    }
 }
 </script>
 
@@ -17,7 +40,7 @@ export default {
     <Layout>
         <PageHeader title="Liste des utilisateurs" pageTitle="utilisateurs" />
         <BRow>
-            <BCol xl="4" sm="4">
+            <BCol xl="4" sm="4" v-for="(user, index) in users" :key="index">
                 <BCard no-body>
                     <BCardBody>
                         <div class="d-flex">
@@ -29,9 +52,9 @@ export default {
 
                             <div class="flex-grow-1 overflow-hidden">
                                 <h5 class="text-truncate font-size-15">
-                                    <BLink href="javascript: void(0);" class="text-dark">Orvelight </BLink>
+                                    <BLink href="javascript: void(0);" class="text-dark">{{ user.name }} </BLink>
                                 </h5>
-                                <p class="text-muted mb-4">Administrateur</p>
+                                <p class="text-muted mb-4">{{ user.role?.name || 'N/A' }}</p>
 
                             </div>
                         </div>
@@ -40,7 +63,7 @@ export default {
                         <ul class="list-inline mb-0">
                             <li v-b-tooltip.hover.top class="list-inline-item me-3" title="Date de création">
                                 <i class="bx bx-calendar me-1"></i>
-                                18 Jul, 24
+                                {{ new Date(user.created_at).toLocaleDateString() }}
                             </li>
                         </ul>
                     </div>
