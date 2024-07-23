@@ -52,13 +52,18 @@ class TicketController extends Controller
             $ticketData['image'] = $imagePath;
         }
 
-        $ticket = Ticket::create($ticketData);
+        $ticket = Ticket::create([$ticketData, 'status'=>'En attente']);
 
         return response()->json([
             'message' => 'Ticket créé avec succès',
             'status' => 200,
             'ticket' => $ticket
         ]);
+    }
+
+    public function getTicketByStatus($status){
+        $tickets = Ticket::where('status', $status)->get();
+        return response()->json($tickets);
     }
 
     /**
@@ -93,15 +98,20 @@ class TicketController extends Controller
         //
     }
 
-    public function assign(Request $request, Ticket $ticket)
+    public function assign(Request $request, $id)
     {
         $request->validate([
-            'agent_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id'
         ]);
 
-        $agent = User::findOrFail($request->agent_id);
-        $ticket->agent_id = $agent->agent_id;
+        $ticket = User::findOrFail($id);
+        $ticket->user_id = $request->user_id;
         $ticket->save();
         return response()->json(['message'=> 'Ticket assigné aves succès']);
+    }
+
+    public function getticketsByAgent($agentId){
+        $tickets = Ticket::where('user_id', $agentId)->get();
+        return response()->json($tickets);
     }
 }

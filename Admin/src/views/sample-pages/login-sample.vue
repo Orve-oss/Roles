@@ -1,8 +1,6 @@
 <script>
 import axios from "axios";
 
-
-
 import Layout from "../../layouts/auth";
 
 
@@ -10,6 +8,10 @@ import { required, email, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 
 import { useNotificationStore } from '@/state/pinia'
+import router from "../../router";
+// import { ref } from "vue";
+// import { useRouter } from "vue-router";
+// import router from "../../router";
 
 
 const notificationStore = useNotificationStore();
@@ -19,8 +21,16 @@ const notificationStore = useNotificationStore();
  */
 export default {
     setup() {
+        // const router = useRouter();
+
+        // const email = ref('');
+        // const password = ref('');
+        // const authSucces = ref('');
+        // const authError = ref('');
+        // const role = ref(null);
 
         return {
+
             v$: useVuelidate(),
         };
 
@@ -28,9 +38,11 @@ export default {
 
     components: {
         Layout,
+
     },
     data() {
         return {
+
             email: "",
             password: "",
             submitted: false,
@@ -60,7 +72,7 @@ export default {
         // Try to log the user in with the username
         // and password they provided.
 
-        tryToLogIn() {
+        async tryToLogIn() {
             this.submitted = true;
             // stop here if form is invalid
             this.v$.$touch();
@@ -69,9 +81,10 @@ export default {
                 return;
             } else {
 
-                axios.post("http://127.0.0.1:8000/api/login", {
+                await axios.post("http://127.0.0.1:8000/api/login", {
                     email: this.email,
                     password: this.password,
+                    role: this.role
                 })
                     .then((res) => {
                         if (res.data.status === "success") {
@@ -79,27 +92,30 @@ export default {
                             this.authSucces = res.data.message;
                             this.isAuthSucces = true;
                             localStorage.setItem("authToken", res.data.token);//stocker le token de l'utilisateur
-                            const user = res.data.user.role;
+                            localStorage.setItem("userRole", res.data.user.role);
+                            // const user = res.data.user.role;
+                            const userRole = res.data.user.role;
+                            console.log(userRole);
+                            let redirectRoute;
 
-                            localStorage.setItem("userRole", user);
-                            // this.$router.push('/activite');
-
-                            let redirectRoute = '/listuser';
-                            let redirRoute = '/listticket';
-                            // let redRoute = '/createtickets';
-
-                            if (user === 'Admin') {
+                            if (userRole === 'Admin') {
                                 redirectRoute = '/listuser';
-                            // } else if (user === 'Client'){
-                            //     redRoute = '/createtickets'
-                            // }
                             }
-                            else if(user === 'Agent'){
-                                redirRoute = '/listticket'
+                            else if (userRole === 'Agent') {
+                                redirectRoute = '/ticket';
+
                             }
-                            this.$router.push(redirectRoute);
-                            this.$router.push(redirRoute);
-                            // this.$router.push(redRoute);
+                            else {
+                                redirectRoute = '/listuser';
+                            }
+                            console.log("Redirecting to:", redirectRoute);
+                            router.push(redirectRoute);
+
+
+
+
+
+
 
 
                         } else {

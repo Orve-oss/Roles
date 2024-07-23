@@ -14,9 +14,9 @@ export default {
     data() {
         return {
             tickets: [],
-            ticketId: null,
+            userId: null,
             agents: [],
-            selectedAgent: null,
+
 
             showModal: false,
         };
@@ -27,8 +27,12 @@ export default {
     },
     methods: {
 
-        fetchTickets() {
-            axios.get(`http://127.0.0.1:8000/api/tickets`)
+        fetchTickets(status) {
+            let url = `http://127.0.0.1:8000/api/tickets`;
+            if (status) {
+                url = `http://127.0.0.1:8000/api/tickets/status/${status}`;
+            }
+            axios.get(url)
                 .then(response => {
                     this.tickets = response.data;
                 })
@@ -37,12 +41,9 @@ export default {
                 });
         },
         async fetchAgents() {
-            await axios.get(`http://127.0.0.1:8000/api/agents`)
+            await axios.get(`http://127.0.0.1:8000/api/users`)
                 .then(response => {
-                    this.agents = response.data.map(agent => ({
-                        value: agent.id,
-                        text: agent.name,
-                    }));
+                    this.agents = response.data.filter(user => user.role === 'Agent');
                 })
                 .catch(error => {
                     console.error('Error fetching agents:', error);
@@ -52,9 +53,10 @@ export default {
         openAssignModal() {
             this.$refs.assignModal.show();
         },
-        assignTicket() {
-            axios.post(`http://127.0.0.1:8000/api/tickets/${this.ticketId}/assign`, {
-                agent_id: this.selectedAgent
+        async assignTicket() {
+            const ticketId = this.$route.params.id;
+            await axios.post(`http://127.0.0.1:8000/api/tickets/${ticketId}/assign`, {
+                user_id: this.userId
             })
                 .then(response => {
                     this.$refs.assignModal.hide();
@@ -96,20 +98,20 @@ export default {
                             </BCol>
                             <BCol sm="8">
                                 <div class="text-sm-end">
-                                    <BButton variant="secondary" class="btn-rounded mb-2 me-2">
+                                    <BButton @click="fetchTickets('')" variant="secondary" class="btn-rounded mb-2 me-2">
                                         Tout
                                     </BButton>
-                                    <BButton class="btn-rounded mb-2 me-2" variant="dark">
+                                    <BButton @click="fetchTickets('En attente')" class="btn-rounded mb-2 me-2" variant="dark">
                                         <i class="bx bx-hourglass bx-spin font-size-16 align-middle"></i>
                                         En attente
                                     </BButton>
-                                    <BButton variant="primary" class="btn-rounded mb-2 me-2">
+                                    <BButton @click="fetchTickets('En cours')" variant="primary" class="btn-rounded mb-2 me-2">
                                         En cours
                                     </BButton>
-                                    <BButton variant="success" class="btn-rounded mb-2 me-2">
+                                    <BButton @click="fetchTickets('Terminé')" variant="success" class="btn-rounded mb-2 me-2">
                                         Terminé
                                     </BButton>
-                                    <BButton variant="danger" class="btn-rounded mb-2 me-2">
+                                    <BButton @click="fetchTickets('Fermé')" variant="danger" class="btn-rounded mb-2 me-2">
                                         Fermé
                                     </BButton>
                                 </div>
@@ -121,7 +123,7 @@ export default {
                                     <BTr>
                                         <BTh>Index</BTh>
                                         <BTh>Sujet</BTh>
-                                        <BTh>Type-Ticket</BTh>
+                                        <BTh>Statut</BTh>
                                         <BTh>Priorite</BTh>
                                         <BTh>Date</BTh>
                                         <BTh>Detail</BTh>
@@ -132,7 +134,8 @@ export default {
                                     <BTr v-for="(ticket, index) in tickets" :key="index">
                                         <BTd> {{ index + 1 }} </BTd>
                                         <BTd> {{ ticket.sujet }} </BTd>
-                                        <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd>
+                                        <BTd> {{ ticket.status }} </BTd>
+                                        <!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
                                         <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd>
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
                                         <BTd>
@@ -176,8 +179,8 @@ export default {
     <BModal id="assignModal" ref="assignModal" title="Assigner un ticket à">
         <BForm @submit.prevent="assignTicket">
             <BFormGroup label="Choisir un agent" label-for="agent-select">
-                <BFormSelect v-model="selectedAgent" :options="agents" id="agent-select">
-                    <BFormSelectOption :value="null">Select</BFormSelectOption>
+                <BFormSelect v-model="userId" :options="agents" id="agent-select">
+                    <!-- <BFormSelectOption :value="null">Select</BFormSelectOption> -->
                     <BFormSelectOption v-for="agent in agents" :key="agent.id" :value="agent.id">
                         {{ agent.name }}
                     </BFormSelectOption>

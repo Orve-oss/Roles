@@ -25,6 +25,12 @@ export default [
     component: () => import("../views/tickets/all-ticket")
   },
   {
+    path: "/ticket",
+    name: "ToutTicket",
+    meta: { title: "ToutTicket", authRequired: true },
+    component: () => import("../views/tickets/listticket")
+  },
+  {
     path: "/openticket",
     name: "opentickets",
     meta: { title: "opentickets", authRequired: true },

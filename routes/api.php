@@ -99,4 +99,6 @@ Route::put('/updatehist/{id}', [HistoriqueController::class, 'update']);
 Route::delete('/deletehist/{id}', [HistoriqueController::class, 'destroy']);
 
 Route::get('/agents', [UserController::class, 'getAgents']);
-Route::post('/tickets/{ticket}/assign', [TicketController::class, 'assign']);
+Route::post('/tickets/{id}/assign', [TicketController::class, 'assign']);
+Route::get('/tickets/{agentId}', [TicketController::class, 'getticketsByAgent']);
+Route::get('/tickets/status/{status}', [TicketController::class, 'getTicketByStatus']);

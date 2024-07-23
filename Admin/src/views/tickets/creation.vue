@@ -19,6 +19,7 @@ export default {
                 sujet: '',
                 description: '',
                 image: null,
+                status: 'En attente',
                 type: '',
                 service: '',
                 priorite: ''
@@ -74,6 +75,7 @@ export default {
             const formData = new FormData();
             formData.append('sujet', this.ticket.sujet);
             formData.append('description', this.ticket.description);
+            formData.append('status', this.ticket.status);
             formData.append('service_id', this.ticket.service);
             formData.append('type_ticket_id', this.ticket.type);
             formData.append('priorite_id', this.ticket.priorite);
