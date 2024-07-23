@@ -88,7 +88,7 @@ class UserController extends Controller
             $details = [
                 'name'=>$user->name,
                 'email'=>$user->email,
-                
+
             ];
             return response()->json([
                 'message' => 'Utilisateur crée',
@@ -100,6 +100,13 @@ class UserController extends Controller
                 "Error" => $e->getMessage()
             ]);
         }
+    }
+
+    public function getAgents(){
+        $agents = User::whereHas('roles', function($query) {
+            $query->where('name', 'Agent');
+        })->get();
+        return response()->json($agents);
     }
     public function show()
     {

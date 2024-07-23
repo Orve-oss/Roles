@@ -10,7 +10,9 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TypeTicketController;
 use App\Http\Controllers\UserController;
+use App\Mail\TestEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +28,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/send-test', function (){
+    // $toemail = 'vmagnouwai@gmail.com';
+    $message = 'Test Email';
+
+    Mail::to('vmagnouwai@gmail.com')->send(new TestEmail($message));;
+    return 'Test email sent';
 });
 
 Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
@@ -87,3 +97,6 @@ Route::post('/historiques', [HistoriqueController::class, 'store']);
 Route::get('/hist/{id}', [PrioriteController::class, 'show']);
 Route::put('/updatehist/{id}', [HistoriqueController::class, 'update']);
 Route::delete('/deletehist/{id}', [HistoriqueController::class, 'destroy']);
+
+Route::get('/agents', [UserController::class, 'getAgents']);
+Route::post('/tickets/{ticket}/assign', [TicketController::class, 'assign']);

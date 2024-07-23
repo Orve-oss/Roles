@@ -18,7 +18,7 @@ class Client extends Authenticatable
     ];
 
     protected $table = 'clients';
-    protected $guard_name = 'clients';
+    protected $guard_name = 'web';
 
     public static function getAllclients()
     {

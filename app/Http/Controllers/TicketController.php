@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,22 +42,25 @@ class TicketController extends Controller
             'description' => 'required|string',
             'service_id' => 'required',
             'type_ticket_id' => 'required',
-            'priorite_id' => 'required'
+            'priorite_id' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-        $ticket = Ticket::create([
-            'sujet'=>$request->sujet,
-            'description'=>$request->description,
-            'service_id'=>$request->service_id,
-            'type_ticket_id'=>$request->type_ticket_id,
-            'priorite_id'=>$request->priorite_id,
-        ]);
+        $ticketData = $validator->validated();
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('tickets', 'public');
+            $ticketData['image'] = $imagePath;
+        }
+
+        $ticket = Ticket::create($ticketData);
+
         return response()->json([
-            'message' => 'Ticket Crée',
-            'status'=> 200,
-            'client_id'=> $ticket->id
+            'message' => 'Ticket créé avec succès',
+            'status' => 200,
+            'ticket' => $ticket
         ]);
     }
 
@@ -92,7 +96,15 @@ class TicketController extends Controller
         //
     }
 
-    public function assign(Request $request, $id)
+    public function assign(Request $request, Ticket $ticket)
     {
+        $request->validate([
+            'agent_id' => 'required|exists:users,id'
+        ]);
+
+        $agent = User::findOrFail($request->agent_id);
+        $ticket->agent_id = $agent->agent_id;
+        $ticket->save();
+        return response()->json(['message'=> 'Ticket assigné aves succès']);
     }
 }

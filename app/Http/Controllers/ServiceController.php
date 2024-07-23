@@ -18,11 +18,7 @@ class ServiceController extends Controller
         if ($list->isEmpty()) {
             return response()->json(['message'=>'Aucun Enregistrement']);
         }
-        return response()->json([
-            'message'=>'Liste des services',
-            'services'=>$list,
-            'status'=> 200,
-        ]);
+        return response()->json($list);
     }
 
     /**

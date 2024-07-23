@@ -19,17 +19,16 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'manage-webs', 'guard_name' => 'web'],
             ['name' => 'manage-clients', 'guard_name' => 'web'],
             ['name' => 'manage-users', 'guard_name' => 'web'],
-            ['name' => 'manage-tickets', 'guard_name' => 'web'],
             ['name' => 'manage-services', 'guard_name' => 'web'],
             ['name' => 'manage-priorites', 'guard_name' => 'web'],
             ['name' => 'manage-types', 'guard_name' => 'web'],
-            ['name' => 'manage-tickets', 'guard_name' => 'client']
+            ['name' => 'manage-tickets', 'guard_name' => 'web']
         ];
 
         //Create roles
         $admin = Role::create(['name' => 'Admin', 'guard_name'=>'web']);
-        $client = Role::create(['name' => 'Client', 'guard_name' => 'client']);
-        $agent = Role::create(['name' => 'Agent']);
+        $client = Role::create(['name' => 'Client', 'guard_name' => 'web']);
+        $agent = Role::create(['name' => 'Agent', 'guard_name' => 'web']);
 
         //Create permissions
         foreach ($permissions as $key => $permission) {

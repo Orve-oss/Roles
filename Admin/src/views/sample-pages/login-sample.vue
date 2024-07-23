@@ -85,18 +85,21 @@ export default {
                             // this.$router.push('/activite');
 
                             let redirectRoute = '/listuser';
-                            let redirRoute = '/listticket'
+                            let redirRoute = '/listticket';
+                            // let redRoute = '/createtickets';
 
                             if (user === 'Admin') {
                                 redirectRoute = '/listuser';
-                            } else if (user == 'Client'){
-                                redirectRoute = '/createtickets'
+                            // } else if (user === 'Client'){
+                            //     redRoute = '/createtickets'
+                            // }
                             }
                             else if(user === 'Agent'){
                                 redirRoute = '/listticket'
                             }
                             this.$router.push(redirectRoute);
                             this.$router.push(redirRoute);
+                            // this.$router.push(redRoute);
 
 
                         } else {

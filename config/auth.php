@@ -41,11 +41,6 @@ return [
             'provider' => 'users',
         ],
 
-        'client' =>[
-            'driver'=> 'session',
-            'provider' => 'clients'
-        ],
-
         'api' => [
             'driver' => 'sanctum',
             'provider' => 'users',

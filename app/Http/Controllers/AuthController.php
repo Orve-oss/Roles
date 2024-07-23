@@ -37,26 +37,26 @@ class AuthController extends Controller
                     ]
                 ]);
             }
-            if (Auth::guard('client')->attempt($creds)) {
-                if (!Auth::attempt($creds)) {
-                    return response()->json([
-                        'message' => 'Email ou mot de passe invalide'
-                    ]);
-                }
-                $client = Auth::guard('client')->user();
-                $token = $client->createToken('auth_token', ['*']);
-                return response()->json([
-                    'message' => 'Connexion réussie',
-                    'access_token' => $token, 'token_type' => 'Bearer',
-                    'status' => 'success',
-                    'user' => [
-                        'id' => $client->id,
-                        'name' => $client->nom_clt,
-                        'email' => $client->email,
-                        'role' => $client->roles->pluck('name')
-                    ]
-                ]);
-            }
+            // if (Auth::guard('client')->attempt($creds)) {
+            //     if (!Auth::attempt($creds)) {
+            //         return response()->json([
+            //             'message' => 'Email ou password invalide'
+            //         ]);
+            //     }
+            //     $client = Auth::guard('client')->user();
+            //     $token = $client->createToken('auth_token', ['*']);
+            //     return response()->json([
+            //         'message' => 'Connexion réussie',
+            //         'access_token' => $token, 'token_type' => 'Bearer',
+            //         'status' => 'success',
+            //         'user' => [
+            //             'id' => $client->id,
+            //             'name' => $client->nom_clt,
+            //             'email' => $client->email,
+            //             'role' => $client->roles->pluck('name')
+            //         ]
+            //     ]);
+            // }
             // $user = Auth::attempt($creds);
             // // return response()->json([
             // //     'message' => 'You are logged',

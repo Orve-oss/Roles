@@ -18,11 +18,7 @@ class PrioriteController extends Controller
         if ($list->isEmpty()) {
             return response()->json(['message'=>'Aucun Enregistrement']);
         }
-        return response()->json([
-            'message'=>'Liste des prorites',
-            'priorites'=>$list,
-            'status'=> 200,
-        ]);
+        return response()->json($list);
     }
 
     /**
@@ -51,7 +47,7 @@ class PrioriteController extends Controller
                 "status" => "Error"
             ]);
         }
-        Priorite::addService($request);
+        Priorite::addPriorite($request);
         return response()->json([
             'message'=> 'Priorite crée',
             'status'=>201

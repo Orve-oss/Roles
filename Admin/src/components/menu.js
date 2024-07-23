@@ -91,7 +91,7 @@ export const menuItems = [
                 label: "Creation",
                 link: "/createtickets",
                 parentId: 43,
-                roles: ['Client']
+                roles: ['Client', 'Admin']
             },
             {
                 id: 48,

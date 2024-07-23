@@ -1,4 +1,6 @@
 <script>
+import axios from "axios";
+import Swal from "sweetalert2";
 import Layout from "../../layouts/main";//besoin
 import PageHeader from "@/components/page-header";
 
@@ -11,8 +13,52 @@ export default {
 
     data() {
         return {
+            ticketId: null,
+            agents: [],
+            selectedAgent: null,
 
             showModal: false,
+        };
+    },
+    mounted(){
+        this.fetchAgents();
+    },
+    methods: {
+        fetchAgents() {
+            axios.get(`http://127.0.0.1:8000/api/agents`)
+            .then(response => {
+                this.agents = response.data.map(agent => ({
+                    value: agent.id,
+                    text: agent.name,
+                }));
+            })
+            .catch(error => {
+                console.error('Error fetching agents:', error);
+            });
+
+        },
+        openAssignModal(){
+            this.$refs.assignModal.show();
+        },
+        assignTicket(){
+            axios.post(`http://127.0.0.1:8000/api/tickets/${this.ticketId}/assign`, {
+                agent_id: this.selectedAgent
+            })
+            .then(response => {
+                this.$refs.assignModal.hide();
+                Swal.fire(
+                    'Assigné',
+                    response.data.message,
+                    'success'
+                );
+            }).catch(error => {
+                console.error('Erreur d\'assignation de ticket :', error);
+                Swal.fire(
+                    'Erreur',
+                    'Une erreur est survenue',
+                    'error'
+                );
+            });
         }
     }
 }
@@ -38,9 +84,17 @@ export default {
                             </BCol>
                             <BCol sm="8">
                                 <div class="text-sm-end">
-                                    <BButton variant="success" class="btn-rounded mb-2 me-2"
-                                        @click="showModal = !showModal">
-                                        <i class="mdi mdi-plus me-1"></i>Nouveau ticket
+                                    <BButton variant="secondary" class="btn-rounded mb-2 me-2">
+                                        Tout
+                                    </BButton>
+                                    <BButton variant="primary" class="btn-rounded mb-2 me-2">
+                                        En cours
+                                    </BButton>
+                                    <BButton variant="success" class="btn-rounded mb-2 me-2">
+                                        Terminé
+                                    </BButton>
+                                    <BButton variant="danger" class="btn-rounded mb-2 me-2">
+                                        Fermé
                                     </BButton>
                                 </div>
                             </BCol>
@@ -51,9 +105,9 @@ export default {
                                     <BTr>
                                         <BTh>Id</BTh>
                                         <BTh>Sujet</BTh>
-                                        <BTh>Email du client</BTh>
+
                                         <BTh>Type-Ticket</BTh>
-                                        <BTh>Priorite</BTh>
+                                        <BTh>Status</BTh>
                                         <BTh>Date</BTh>
                                         <BTh>Detail</BTh>
                                         <BTh>Action</BTh>
@@ -65,11 +119,9 @@ export default {
                                             209#
                                         </BTd>
                                         <BTd>Probleme de connexion</BTd>
-                                        <BTd>
-                                            <p class="mb-0">orve@gmail.com</p>
-                                        </BTd>
+
                                         <BTd>Probleme </BTd>
-                                        <BTd>Urgent</BTd>
+                                        <BTd>En cours</BTd>
                                         <BTd>13-06-2024</BTd>
                                         <BTd>
                                             <BButton variant="primary" class="btn-sm btn-rounded"
@@ -93,6 +145,10 @@ export default {
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>
+                                                <BDropdownItem @click="openAssignModal">
+                                                    <i class="fas fa-user-alt text-primary me-1"></i>
+                                                    Assigné à
+                                                </BDropdownItem>
                                             </BDropdown>
                                         </BTd>
                                     </BTr>
@@ -105,6 +161,19 @@ export default {
             </BCol>
         </BRow>
     </Layout>
+    <BModal id="assignModal" ref="assignModal" title="Assigner un ticket à">
+        <BForm @submit.prevent="assignTicket">
+            <BFormGroup label="Choisir un agent"  label-for="agent-select">
+                <BFormSelect v-model="selectedAgent" :options="agents" id="agent-select">
+                    <BFormSelectOption :value="null">Select</BFormSelectOption>
+                    <BFormSelectOption v-for="agent in agents" :key="agent.id" :value="agent.id">
+                        {{ agent.name }}
+                    </BFormSelectOption>
+                </BFormSelect>
+                <BButton variant="primary" type="submit">Assigner</BButton>
+            </BFormGroup>
+        </BForm>
+    </BModal>
     <BModal v-model="showModal" title="Détail du ticket" centered>
 
     <div class="table-responsive">

@@ -1,17 +1,31 @@
 <script>
 import axios from "axios";
 import { required, email, helpers } from "@vuelidate/validators";
-import useVuelidate from "@vuelidate/core";
+import useVuelidate from "@vuelidate/core"
+import { useRoute, useRouter } from 'vue-router';
+
 
 /**
  * Recover password Sample page
  */
 export default {
   setup() {
-    return { v$: useVuelidate() };
+    const route = useRoute();
+    const router = useRouter();
+    const email = route.query.email || '';
+    const token = route.query.token || '';
+    return { v$: useVuelidate(),
+        email,
+        token,
+        password: '',
+        password_confirmation: '',
+        submitted: false,
+        router,
+     };
+
   },
   validations: {
-    email_clt: {
+    email: {
       required: helpers.withMessage("Email is required", required),
       email: helpers.withMessage("Please enter valid email", email),
     },
@@ -22,14 +36,15 @@ export default {
       required: helpers.withMessage("Confirm password is required", required),
     },
   },
-  data() {
-    return {
-      submitted: false,
-      email: "",
-      password: "",
-      password_confirmation: "",
-    };
-  },
+//   data() {
+//     return {
+
+//       submitted: false,
+//       email: "",
+//       password: "",
+//       password_confirmation: "",
+//     };
+//   },
   methods: {
     tryToResetpwd() {
       this.submitted = true;
@@ -41,13 +56,16 @@ export default {
       } else {
         axios
             .post("http://127.0.0.1:8000/api/reset-password", {
-                token: this.$route.query.token,
+                token: this.token,
                 email: this.email,
                 password: this.password,
                 password_confirmation: this.password_confirmation,
             })
-            .then((result) => {
-               return result;
+            .then((res) => {
+               if (res.data.status === 200) {
+                alert('Compte activé avec succès!');
+                this.router.push('/');
+               }
             });
       }
     },
@@ -67,7 +85,7 @@ export default {
                 <BForm class="form-horizontal" @submit.prevent="tryToResetpwd">
                   <BFormGroup>
                     <label for="useremail">Email</label>
-                    <BFormInput class="mb-2" v-model="email_clt" id="useremail" placeholder="Enter email" :class="{ 'is-invalid': submitted && v$.email.$error }" />
+                    <BFormInput class="mb-2" v-model="email" id="useremail" placeholder="Enter email" :class="{ 'is-invalid': submitted && v$.email.$error }" aria-disabled="true"/>
                     <div v-for="(item, index) in v$.email.$errors" :key="index" class="invalid-feedback">
                       <span v-if="item.$message">{{ item.$message }}</span>
                     </div>
@@ -101,7 +119,7 @@ export default {
                   <div class="form-group row mb-0">
                     <BCol cols="12" class="text-end">
                       <BButton variant="primary" class="w-md" type="submit">
-                        Reset
+                        Activez
                       </BButton>
                     </BCol>
                   </div>

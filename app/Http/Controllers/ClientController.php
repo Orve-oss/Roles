@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
+
 class ClientController extends Controller
 {
     /**
@@ -60,7 +61,7 @@ class ClientController extends Controller
         $validator = Validator::make($request->all(), [
             'nom_clt' => 'required|string',
             'email' => 'required|string|email|unique:clients',
-            // 'password'=> 'nullable|min:4'
+            'password'=> 'nullable|min:4'
         ]);
 
         if ($validator->fails()) {
@@ -73,7 +74,9 @@ class ClientController extends Controller
 
         ];
         if($request->has('password') && !empty($request->password)) {
-            $clientdata['password'] = bcrypt($request->password); // Hachage du mot de passe
+            $clientdata['password'] = Hash::make($request->password); // Hachage du mot de passe
+        }else {
+            $clientdata['password'] = Hash::make(Str::random(8));
         }
 
         $client = Client::create($clientdata);
@@ -82,7 +85,7 @@ class ClientController extends Controller
             'name' => $client->nom_clt,
             'email' => $client->email,
             'activation_token'=> $client->activation_token,
-            'reset_link'=> url('http://127.0.0.1:8000'. $client->activation_token),
+            'reset_link'=> url('http://127.0.0.1:8080/auth/register-1'. $client->activation_token),
 
         ];
         Mail::to($client->email)->send(new ClientMail($details));
@@ -110,16 +113,17 @@ class ClientController extends Controller
     public function reset(Request $request){
         $request->validate([
             'token'=>'required|string',
+            'email' => 'required|string|email',
             'password'=>'required|min:4|string|confirmed'
         ]);
-        $user = Client::where('activation_token', $request->token)->first();
-        if (!$user) {
+        $client = Client::where('activation_token', $request->token)->first();
+        if (!$client) {
             return response()->json(['message'=>'Token invalide']);
         }
 
-        $user->password = Hash::make($request->password);
-        $user->activation_token = null; //Invalide le token après la réinitialisation du mot de passe
-        $user->save();
+        $client->password = Hash::make($request->password);
+        $client->activation_token = null; //Invalide le token après la réinitialisation du mot de passe
+        $client->save();
 
         return response()->json(['message'=>'Compte activé avec succès']);
     }
