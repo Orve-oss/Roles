@@ -81,7 +81,7 @@ Route::middleware(['auth:sanctum', 'role:Admin,Client'])->group(function () {
 });
 Route::get('/tickets', [TicketController::class, 'index']);
 Route::post('/tickets', [TicketController::class, 'store']);
-Route::get('/tickets/{id}', [PrioriteController::class, 'show']);
+Route::get('/tickets/{id}', [TicketController::class, 'show']);
 Route::put('/updateticket/{id}', [TicketController::class, 'update']);
 Route::delete('/deleteticket/{id}', [TicketController::class, 'destroy']);
 
@@ -102,3 +102,4 @@ Route::get('/agents', [UserController::class, 'getAgents']);
 Route::post('/tickets/{id}/assign', [TicketController::class, 'assign']);
 Route::get('/tickets/{agentId}', [TicketController::class, 'getticketsByAgent']);
 Route::get('/tickets/status/{status}', [TicketController::class, 'getTicketByStatus']);
+Route::put('/tickets/update-status/{id}', [TicketController::class, 'updateStatus']);

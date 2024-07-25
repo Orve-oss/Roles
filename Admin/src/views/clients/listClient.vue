@@ -138,7 +138,7 @@ export default {
 
 
     },
-    
+
 };
 </script>
 
@@ -194,7 +194,7 @@ export default {
                                                 0
                                             </span>
                                         </BTd> -->
-                                        <BTd>{{ clist.created_at }}</BTd>
+                                        <BTd>{{ new Date(clist.created_at).toLocaleDateString() }}</BTd>
                                         <BTd>
                                             <BButton variant="primary" class="btn-sm btn-rounded"
                                                 @click="showModal = !showModal">

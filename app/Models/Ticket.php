@@ -32,4 +32,12 @@ class Ticket extends Model
     public static function getAllTickets(){
         return Self::with(['type','service', 'priorite'])->get();
     }
+
+    public static function getOneTicket($id){
+        return Self::where('id', $id)
+                ->with('priorite')
+                ->with('type')
+                ->with('service')
+                ->get();
+    }
 }

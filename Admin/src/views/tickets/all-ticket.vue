@@ -26,6 +26,9 @@ export default {
         this.fetchAgents();
     },
     methods: {
+        viewTicket(id){
+            this.$router.push({ name: 'TicketDetail', params: {id}});
+        },
 
         fetchTickets(status) {
             let url = `http://127.0.0.1:8000/api/tickets`;
@@ -140,7 +143,7 @@ export default {
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
                                         <BTd>
                                             <BButton variant="primary" class="btn-sm btn-rounded"
-                                                @click="showModal = !showModal">
+                                                @click="viewTicket(ticket.id)">
                                                 Voir
                                             </BButton>
                                         </BTd>
@@ -190,50 +193,5 @@ export default {
                 <BButton variant="primary" type="submit">Assigner</BButton>
             </BFormGroup>
         </BForm>
-    </BModal>
-    <BModal v-model="showModal" title="Détail du ticket" centered>
-
-        <div class="table-responsive">
-            <BTableSimple class="align-middle table-nowrap">
-                <BTbody>
-
-                    <BTr>
-                        <BTd colspan="2">
-                            <h6 class="m-0 text-right">Id:</h6>
-                        </BTd>
-                        <BTd>
-                            209#
-                        </BTd>
-                    </BTr>
-                    <BTr>
-                        <BTd colspan="2">
-                            <h6 class="m-0 text-right">Sujet:</h6>
-                        </BTd>
-                        <BTd>
-                            Probleme de connexion
-                        </BTd>
-                    </BTr>
-                    <BTr>
-                        <BTd colspan="2">
-                            <h6 class="m-0 text-right">Priorité:</h6>
-                        </BTd>
-                        <BTd>
-                            Urgent
-                        </BTd>
-                    </BTr>
-                    <BTr>
-                        <BTd colspan="2">
-                            <h6 class="m-0 text-right">Statut:</h6>
-                        </BTd>
-                        <BTd>
-                            Ouvert
-                        </BTd>
-                    </BTr>
-                </BTbody>
-            </BTableSimple>
-        </div>
-        <template v-slot:modal-footer>
-            <BButton variant="secondary" @click="showModal = !showModal">Close</BButton>
-        </template>
     </BModal>
 </template>

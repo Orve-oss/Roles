@@ -69,9 +69,25 @@ class TicketController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Ticket $ticket)
+    public function show($id)
     {
-        //
+        if (Ticket::where('id', $id)->exists()) {
+            $ticket = Ticket::getOneTicket($id);
+            return response()->json($ticket);
+        } else {
+            return response()->json([
+                'message'=> 'Le ticket n\'existe pas',
+                'status'=>401
+            ]);
+        }
+
+    }
+
+    public function updateStatus(Request $request, $id){
+        $ticket = Ticket::findOrFail($id);
+        $ticket->status = $request->status;
+        $ticket->update();
+        return response()->json(['message' => 'Statut mis à jour']);
     }
 
     /**

@@ -96,18 +96,18 @@ export default {
                             // const user = res.data.user.role;
                             const userRole = res.data.user.role;
                             console.log(userRole);
-                            let redirectRoute;
+                            let redirectRoute = '/listUser';
 
                             if (userRole === 'Admin') {
                                 redirectRoute = '/listuser';
                             }
-                            else if (userRole === 'Agent') {
+                            /*else if (userRole === 'Agent') {
                                 redirectRoute = '/ticket';
 
                             }
                             else {
                                 redirectRoute = '/listuser';
-                            }
+                            }*/
                             console.log("Redirecting to:", redirectRoute);
                             router.push(redirectRoute);
 

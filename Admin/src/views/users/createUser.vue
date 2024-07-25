@@ -102,7 +102,7 @@ export default {
                             <BFormGroup class="mb-4" label="Role" label-for="horizontal-role-input" label-cols-sm="3">
                                 <BFormSelect v-model="user.role" class="form-select" aria-placeholder="Selectionner">
                                     <BFormSelectOption :value="null">Select</BFormSelectOption>
-                                    <BFormSelectOption v-for="role in roles" :key="role.id" :value="role.id">{{
+                                    <BFormSelectOption v-for="role in roles" :key="role.id" :value="role.name">{{
                                         role.name }}</BFormSelectOption>
                                 </BFormSelect>
 

@@ -24,23 +24,17 @@ export default [
     meta: { title: "allTicket", authRequired: true },
     component: () => import("../views/tickets/all-ticket")
   },
-  {
-    path: "/ticket",
-    name: "ToutTicket",
-    meta: { title: "ToutTicket", authRequired: true },
-    component: () => import("../views/tickets/listticket")
-  },
+//   {
+//     path: "/ticket",
+//     name: "ToutTicket",
+//     meta: { title: "ToutTicket", authRequired: true },
+//     component: () => import("../views/tickets/listticket")
+//   },
   {
     path: "/openticket",
     name: "opentickets",
     meta: { title: "opentickets", authRequired: true },
     component: () => import("../views/tickets/open-ticket")
-  },
-  {
-    path: "/closedticket",
-    name: "closedtickets",
-    meta: { title: "closedtickets", authRequired: true },
-    component: () => import("../views/tickets/closed-ticket")
   },
   {
     path: "/createtickets",
@@ -67,10 +61,22 @@ export default [
     component: () => import("../views/tickets/history")
   },
   {
-    path: "/historiqueticket",
-    name: "Historique",
-    meta: { title: "Historique", authRequired: true },
-    component: () => import("../views/tickets/history")
+    path: "/profileClient",
+    name: "Profil",
+    meta: { title: "Profil", authRequired: true },
+    component: () => import("../views/clients/profilClient")
+  },
+  {
+    path: "/profileUser",
+    name: "ProfilUser",
+    meta: { title: "ProfilUser", authRequired: true },
+    component: () => import("../views/users/profilUser")
+  },
+  {
+    path: "/ticket/detail/:id",
+    name: "TicketDetail",
+    meta: { title: "TicketDetail", authRequired: true },
+    component: () => import("../views/tickets/ticketDetail")
   },
   {
     path: "/login",

@@ -129,14 +129,21 @@ export const menuItems = [
                 parentId: 50,
                 roles: ['Admin']
             },
-            {
-                id: 53,
-                label: "Profil Client",
-                link: "/closedticket",
-                parentId: 50,
-                roles: ['Admin']
-            },
+            // {
+            //     id: 53,
+            //     label: "Profil Client",
+            //     link: "/closedticket",
+            //     parentId: 50,
+            //     roles: ['Admin']
+            // },
         ]
+    },
+    {
+        id: 53,
+        label: "Profil Client",
+        icon: "bxs-user-detail",
+        link: "/profileClient",
+        roles: ['Client']
     },
     // {
     //     id: 55,

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ClientResource;
-use App\Mail\ClientMail;
+// use App\Mail\ClientMail;
 use App\Models\Client;
 use App\Notifications\AccountActivation;
 use Exception;
@@ -81,14 +81,7 @@ class ClientController extends Controller
 
         $client = Client::create($clientdata);
         $client->assignRole('Client');
-        $details = [
-            'name' => $client->nom_clt,
-            'email' => $client->email,
-            'activation_token'=> $client->activation_token,
-            'reset_link'=> url('http://127.0.0.1:8080/auth/register-1'. $client->activation_token),
-
-        ];
-        Mail::to($client->email)->send(new ClientMail($details));
+        $client->notify(new AccountActivation());
 
         return response()->json([
                     'message' => 'Client Crée',
@@ -97,18 +90,18 @@ class ClientController extends Controller
                 ]);
 
     }
-    public function send($id){
-        $client = Client::find($id);
-        if (!$client) {
-            return response()->json([
-                'message' => 'Client non trouve',
-            ]);
-        }
-        $client->notify(new AccountActivation($client->activation_token));
-        return response()->json([
-                    'message' => 'Voulez vous l\'envoyer le mail d\'activation?',
-                ]);
-    }
+    // public function send($id){
+    //     $client = Client::find($id);
+    //     if (!$client) {
+    //         return response()->json([
+    //             'message' => 'Client non trouve',
+    //         ]);
+    //     }
+    //     $client->notify(new AccountActivation($client->activation_token));
+    //     return response()->json([
+    //                 'message' => 'Voulez vous l\'envoyer le mail d\'activation?',
+    //             ]);
+    // }
 
     public function reset(Request $request){
         $request->validate([
