@@ -135,11 +135,7 @@ export default {
             </span>
           </router-link>
 
-          <router-link to="/" class="logo logo-light">
-            <span class="logo-sm">
-              <img src="@/assets/images/logo-light.svg" alt height="22" />
-            </span>
-          </router-link>
+
         </div>
 
         <BButton variant="white" id="vertical-menu-btn" type="button" class="btn btn-sm px-3 font-size-16 header-item" @click="toggleMenu">
@@ -305,7 +301,7 @@ export default {
             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
           </template>
           <BDropdownItem>
-            <router-link to="/contacts/profile" v-slot="{ navigate }">
+            <router-link to="/profileUser" v-slot="{ navigate }">
               <span @click="navigate" @keypress.enter="navigate" class="text-body">
                 <i class="bx bx-user font-size-16 align-middle me-1"></i>
                 {{ $t("navbar.dropdown.henry.list.profile") }}

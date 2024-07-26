@@ -120,9 +120,9 @@ class TicketController extends Controller
             'user_id' => 'required|exists:users,id'
         ]);
 
-        $ticket = User::findOrFail($id);
+        $ticket = Ticket::findOrFail($id);
         $ticket->user_id = $request->user_id;
-        $ticket->save();
+        $ticket->update();
         return response()->json(['message'=> 'Ticket assigné aves succès']);
     }
 

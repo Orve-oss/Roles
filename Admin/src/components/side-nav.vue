@@ -143,7 +143,7 @@ export default {
         </template>
       </ul>
     </div>
-  </template>
+</template>
 
 <!-- <template>
 

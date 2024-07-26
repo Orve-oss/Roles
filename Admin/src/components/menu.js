@@ -74,10 +74,10 @@ export const menuItems = [
             },
             {
                 id: 45,
-                label: "Tickets ouverts",
-                link: "/openticket",
+                label: "Tickets assignes",
+                link: "/agent/tickets",
                 parentId: 43,
-                roles: ['Admin','Client', 'Agent']
+                roles: ['Agent']
             },
             {
                 id: 46,

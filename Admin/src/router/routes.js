@@ -31,10 +31,10 @@ export default [
 //     component: () => import("../views/tickets/listticket")
 //   },
   {
-    path: "/openticket",
+    path: "/agent/tickets",
     name: "opentickets",
     meta: { title: "opentickets", authRequired: true },
-    component: () => import("../views/tickets/open-ticket")
+    component: () => import("../views/tickets/ticketAssign")
   },
   {
     path: "/createtickets",
@@ -167,8 +167,17 @@ export default [
   {
     path: "/",
     name: "Login sample",
-    meta: { title: "Login", authRequired: true },
-    component: () => import("../views/sample-pages/login-sample")
+    component: () => import("../views/sample-pages/login-sample"),
+    meta: { title: "Login",
+        beforeResolve(routeTo, routeFrom, next){
+            const auth = useAuthStore();
+            if (auth.loggedIn) {
+                next({ name: auth.redirectRouteBasedOnRole()});
+            } else {
+                next();
+            }
+        }
+    }
   },
   {
     path: "/auth/login-2",

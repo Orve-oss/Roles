@@ -1,6 +1,6 @@
 <script>
 import axios from "axios";
-import Swal from "sweetalert2";
+
 import Layout from "../../layouts/main";//besoin
 import PageHeader from "@/components/page-header";
 
@@ -14,82 +14,37 @@ export default {
     data() {
         return {
             tickets: [],
-            userId: null,
-            agents: [],
-            showModal: false,
-            currentTicketId: null
+            agentId: null
+
+
         };
     },
     mounted() {
-        this.fetchTickets();
-        this.fetchAgents();
+        this.agentId = this.$route.params.agentId;
+        this.fetchAgentTickets();
     },
     methods: {
         viewTicket(id) {
             this.$router.push({ name: 'TicketDetail', params: { id } });
         },
 
-        fetchTickets(status) {
-            let url = `http://127.0.0.1:8000/api/tickets`;
-            if (status) {
-                url = `http://127.0.0.1:8000/api/tickets/status/${status}`;
+        fetchAgentTickets() {
+
+            if (!this.agentId) {
+                console.error('Agent Id is not defined');
             }
-            axios.get(url)
-                .then(response => {
-                    this.tickets = response.data;
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la récupération des tickets:', error);
-                });
-        },
-        async fetchAgents() {
-            await axios.get('http://127.0.0.1:8000/api/users')
+            axios.get(`http://127.0.0.1:8000/api/tickets/${this.agentId}`)
                 .then(response => {
                     console.log(response.data);
-                    this.agents = response.data.filter(user => user.roles[0].name === 'Agent');
-                    console.log(this.agents);
+                    this.tickets = response.data;
+                    console.log(this.tickets);
                 })
                 .catch(error => {
-                    console.error('Error fetching agents:', error);
+                    console.error('Error fetching tickets:', error);
                 });
 
         },
-        openAssignModal(ticketId) {
-            this.currentTicketId = ticketId;
-            this.showModal = true;
-        },
-        async assignTicket() {
 
-            const ticketId = this.currentTicketId;
-            console.log(ticketId);
-            console.log(this.userId);
-            if (!this.userId) {
-                Swal.fire(
-                    'Erreur',
-                    'Veuillez selectionner un agent',
-                    'error'
-                );
-                return;
-            }
-            await axios.put(`http://127.0.0.1:8000/api/tickets/${ticketId}/assign`, {
-                user_id: this.userId
-            })
-                .then(response => {
-                    this.showModal= false;
-                    Swal.fire(
-                        'Assigné',
-                        response.data.message,
-                        'success'
-                    );
-                }).catch(error => {
-                    console.error('Erreur d\'assignation de ticket :', error);
-                    Swal.fire(
-                        'Erreur',
-                        'Une erreur est survenue',
-                        'error'
-                    );
-                });
-        }
     }
 }
 
@@ -171,20 +126,11 @@ export default {
                                                 <template v-slot:button-content>
                                                     <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                                 </template>
-
-                                                <BDropdownItem>
-                                                    <i class="fas fa-pencil-alt text-success me-1"></i>
-                                                    Edit
-                                                </BDropdownItem>
-
                                                 <BDropdownItem>
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>
-                                                <BDropdownItem @click="openAssignModal(ticket.id)">
-                                                    <i class="fas fa-user-alt text-primary me-1"></i>
-                                                    Assigner à
-                                                </BDropdownItem>
+
                                             </BDropdown>
                                         </BTd>
                                     </BTr>
@@ -197,21 +143,4 @@ export default {
             </BCol>
         </BRow>
     </Layout>
-    <BModal id="assignModal" v-model="showModal" ref="assignModal" title="Assigner un ticket à">
-        <BForm @submit.prevent="assignTicket">
-            <BFormGroup label="Choisir un agent" label-for="agent-select">
-                <BFormSelect v-model="userId" id="agent-select">
-                    <!-- <BFormSelectOption :value="null">Select</BFormSelectOption> -->
-                    <BFormSelectOption v-for="agent in agents" :key="agent.id" :value="agent.id">
-                       Nom : {{ agent.name }} Email: {{ agent.email }}
-                    </BFormSelectOption>
-                </BFormSelect>
-            </BFormGroup>
-            <div style="margin-top: 10px;">
-                <BFormGroup>
-                    <BButton variant="primary" type="submit">Assigner</BButton>
-                </BFormGroup>
-            </div>
-        </BForm>
-    </BModal>
 </template>
