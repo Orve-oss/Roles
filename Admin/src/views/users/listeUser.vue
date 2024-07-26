@@ -39,7 +39,25 @@ export default {
 <template>
     <Layout>
         <PageHeader title="Liste des utilisateurs" pageTitle="utilisateurs" />
-        <BRow>
+        <BRow id="user-list">
+            <BCol xl="3" md="3" v-for="user in users" :key="user.id">
+                <BCard no-body>
+                    <BCardBody>
+
+                        <div class="text-center mb-3">
+                            <!-- <img :src="assets/images/companies/img-1.png" alt="" class="avatar-sm rounded-circle" /> -->
+                            <h6 class="font-size-15 mt-3 mb-1">{{ user.name }}</h6>
+                            <p class="mb-0 text-muted">{{ user.role?.name || 'N/A' }}</p>
+                        </div>
+
+                        <div class="mt-4 pt-1">
+                            <router-link to="/jobs/candidate/overview" class="btn btn-soft-primary d-block">View Profile</router-link>
+                        </div>
+                    </BCardBody>
+                </BCard>
+            </BCol>
+        </BRow>
+        <!-- <BRow>
             <BCol xl="4" sm="4" v-for="(user, index) in users" :key="index">
                 <BCard no-body>
                     <BCardBody>
@@ -69,7 +87,7 @@ export default {
                     </div>
                 </BCard>
             </BCol>
-        </BRow>
+        </BRow> -->
 
     </Layout>
 </template>

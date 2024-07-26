@@ -105,20 +105,20 @@ class ClientController extends Controller
 
     public function reset(Request $request){
         $request->validate([
-            'token'=>'required|string',
+
             'email' => 'required|string|email',
             'password'=>'required|min:4|string|confirmed'
         ]);
-        $client = Client::where('activation_token', $request->token)->first();
+        $client = Client::where('email', $request->email)->first();
         if (!$client) {
-            return response()->json(['message'=>'Token invalide']);
+            return response()->json(['message'=>'Client non trouvé']);
         }
 
         $client->password = Hash::make($request->password);
-        $client->activation_token = null; //Invalide le token après la réinitialisation du mot de passe
+        // $client->activation_token = null; //Invalide le token après la réinitialisation du mot de passe
         $client->save();
 
-        return response()->json(['message'=>'Compte activé avec succès']);
+        return response()->json(['message'=>'Compte activé avec succès', 'status'=>200]);
     }
 
     /**
