@@ -15,13 +15,17 @@ export default {
         return {
             tickets: [],
             agentId: null
-
-
         };
     },
     mounted() {
-        this.agentId = this.$route.params.agentId;
-        this.fetchAgentTickets();
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && user.id) {
+            this.agentId = user.id;
+            this.fetchAgentTickets();
+        } else {
+            console.error('Agent ID is not defined in the URL.');
+
+        }
     },
     methods: {
         viewTicket(id) {

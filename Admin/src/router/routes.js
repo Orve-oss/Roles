@@ -198,7 +198,7 @@ export default [
     component: () => import("../views/sample-pages/register-2")
   },
   {
-    path: "/auth-recoverpwd/:token",
+    path: "/auth-recoverpwd",
     name: "Recover pwd",
     meta: { title: "Recover Password", authRequired: true },
     component: () => import("../views/sample-pages/recoverpw-sample")

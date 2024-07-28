@@ -20,6 +20,7 @@ export const useAuthStore = defineStore("auth", {
                     this.isAuthSucces = true;
                     this.setUser(response.data.user);
                     localStorage.setItem("authToken", response.data.token);
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
                     localStorage.setItem("userRole", response.data.user.role[0]);
                     const redirectRoute = this.redirectRouteBasedOnRole();
                     return redirectRoute;

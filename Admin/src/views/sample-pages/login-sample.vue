@@ -23,13 +23,6 @@ const notificationStore = useNotificationStore();
  */
 export default {
     setup() {
-        // const router = useRouter();
-
-        // const email = ref('');
-        // const password = ref('');
-        // const authSucces = ref('');
-        // const authError = ref('');
-        // const role = ref(null);
 
         return {
 
@@ -78,8 +71,6 @@ export default {
         }
     },
     methods: {
-        // Try to log the user in with the username
-        // and password they provided.
 
         async tryToLogIn() {
             this.submitted = true;
@@ -92,74 +83,13 @@ export default {
                 try {
                     const authStore = useAuthStore();
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
-                    
+
                     this.$router.push({ name: redirectRoute });
                 } catch (error) {
                     console.error("Login error: ", error);
                     this.authError = error.message;
                     this.isAuthError = true;
                 }
-
-                // await axios.post(`http://127.0.0.1:8000/api/login`, {
-                //     email: this.email,
-                //     password: this.password,
-                //     role: this.role
-                // })
-                //     .then((res) => {
-                //         if (res.data.status === "success") {
-                //             console.log("Login successful!");
-                //             this.authSucces = res.data.message;
-                //             this.isAuthSucces = true;
-                //             localStorage.setItem("authToken", res.data.token);//stocker le token de l'utilisateur
-                //             if (Array.isArray(res.data.user.role) && res.data.user.role.length > 0) {
-                //                 localStorage.setItem("userRole", res.data.user.role[0]);
-                //                 console.log('Données de user:', res.data.user.role[0]);
-                //                 console.log('Stored user role:', localStorage.getItem('userRole'));
-                //             }
-
-
-                //             const authStore = useAuthStore();
-                //             authStore.login({
-                //                 ...res.data.user,
-                //                 role: res.data.user.role[0]
-                //             });
-                //             const redirectRoute = authStore.redirectRouteBasedOnRole();
-                //             console.log("Redirecting to:", redirectRoute);
-                //             this.$router.push({ name: redirectRoute });
-                //             // // const user = res.data.user.role;
-                //             // const userRole = res.data.user.role;
-                //             // console.log(userRole);
-                //             // let redirectRoute = '/listUser';
-
-                //             // if (userRole === 'Admin') {
-                //             //     redirectRoute = '/listuser';
-                //             // }
-                //             // /*else if (userRole === 'Agent') {
-                //             //     redirectRoute = '/ticket';
-
-                //             // }
-                //             // else {
-                //             //     redirectRoute = '/listuser';
-                //             // }*/
-                //             // console.log("Redirecting to:", redirectRoute);
-                //             // router.push(redirectRoute);
-
-
-
-
-
-
-
-
-                //         } else {
-                //             this.authError = res.data.message;
-                //             this.isAuthError = true;
-                //         }
-                //     })
-                //     .catch((error) => {
-                //         console.error("Login error: ", error);
-                //     })
-
 
             }
         },

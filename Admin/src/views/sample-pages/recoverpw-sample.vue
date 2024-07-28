@@ -2,7 +2,7 @@
 import axios from "axios";
 import { required, email, helpers, sameAs } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core"
-import { useRouter } from 'vue-router';
+
 
 
 /**
@@ -10,21 +10,24 @@ import { useRouter } from 'vue-router';
  */
 export default {
    setup() {
-      const router = useRouter();
+
 
       return {
          v$: useVuelidate(),
-         state: {
-            email: '',
-            password: '',
-            password_confirmation: '',
-            submitted: false,
-            router,
-         }
-
 
       };
 
+   },
+   data() {
+      return {
+
+         email: '',
+         password: '',
+         password_confirmation: '',
+         submitted: false,
+
+
+      };
    },
    validations: {
       email: {
@@ -38,19 +41,11 @@ export default {
          required: helpers.withMessage("Confirm password is required", required),
          sameAsPassword: helpers.withMessage(
             "Le mot de passe ne correspond pas",
-            sameAs(() => state.password)
+            sameAs(() => this.password)
          ),
       },
    },
-   //   data() {
-   //     return {
 
-   //       submitted: false,
-   //       email: "",
-   //       password: "",
-   //       password_confirmation: "",
-   //     };
-   //   },
    methods: {
       tryToResetpwd() {
          this.submitted = true;
@@ -61,15 +56,15 @@ export default {
             return;
          } else {
             axios
-               .post("http://127.0.0.1:8000/api/reset-password", {
-                  email: this.state.email,
-                  password: this.state.password,
-                  password_confirmation: this.state.password_confirmation,
+               .post(`http://127.0.0.1:8000/api/reset-password`, {
+                  email: this.email,
+                  password: this.password,
+                  password_confirmation: this.password_confirmation,
                })
                .then((res) => {
                   if (res.data.status === 200) {
                      alert('Compte activé avec succès!');
-                     this.router.push('/');
+                     this.$router.push('/');
                   }
                });
          }
@@ -90,7 +85,7 @@ export default {
                         <BForm class="form-horizontal" @submit.prevent="tryToResetpwd">
                            <BFormGroup>
                               <label for="useremail">Email</label>
-                              <BFormInput class="mb-2" v-model="state.email" id="useremail" placeholder="Enter email"
+                              <BFormInput class="mb-2" v-model="email" id="useremail" placeholder="Enter email"
                                  :class="{ 'is-invalid': submitted && v$.email.$error }" aria-disabled="true" />
                               <div v-for="(item, index) in v$.email.$errors" :key="index" class="invalid-feedback">
                                  <span v-if="item.$message">{{ item.$message }}</span>
@@ -99,20 +94,20 @@ export default {
 
                            <BFormGroup>
                               <label for="pwd">Password</label>
-                              <BFormInput class="mb-2" type="password" v-model="state.password" id="pwd"
+                              <BFormInput class="mb-2" type="password" v-model="password" id="pwd"
                                  placeholder="Enter password" :class="{
                                     'is-invalid': submitted && v$.password.$error,
                                  }" />
                               <div v-if="submitted && v$.password.$error" class="invalid-feedback">
                                  <span v-if="v$.password.required.$message">{{
                                     v$.password.required.$message
-                                 }}</span>
+                                    }}</span>
                               </div>
                            </BFormGroup>
 
                            <BFormGroup>
                               <label for="confirm_pwd">Confirm Password</label>
-                              <BFormInput class="mb-2" v-model="state.password_confirmation" type="password" id="confirm_pwd"
+                              <BFormInput class="mb-2" v-model="password_confirmation" type="password" id="confirm_pwd"
                                  placeholder="Enter confirm password" :class="{
                                     'is-invalid':
                                        submitted && v$.password_confirmation.$error,
@@ -120,7 +115,7 @@ export default {
                               <div v-if="submitted && v$.password_confirmation.$error" class="invalid-feedback">
                                  <span v-if="v$.password_confirmation.required.$message">{{
                                     v$.password_confirmation.required.$message
-                                 }}</span>
+                                    }}</span>
                                  <span v-if="v$.password_confirmation.sameAsPassword.$message">
                                     {{ v$.password_confirmation.sameAsPassword.$message }}
                                  </span>
