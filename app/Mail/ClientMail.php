@@ -31,7 +31,7 @@ class ClientMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Account Activation',
+            subject: 'Activation de compte',
         );
     }
 

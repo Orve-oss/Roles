@@ -40,4 +40,10 @@ class Ticket extends Model
                 ->with('service')
                 ->get();
     }
+    public static function deleteTicket($id){
+        if (Ticket::where('id', $id)->exists()) {
+            $ticket = Ticket::find($id);
+            $ticket->delete();
+        }
+    }
 }

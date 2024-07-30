@@ -21,9 +21,9 @@
     </head>
     <body>
         <h1> Hello, {{ $nom_clt }} </h1>
-        <p> Please click the button below to active your account</p>
-        <a href="{{$url}}" class="button"> Active Account</a>
-        <p>Thanks. WEQUIPU-TEAM</p>
+        <p> Veuillez cliquer sur ce bouton pour activer votre compte</p>
+        <a href="{{$url}}" class="button"> Activer le compte</a>
+        <p>Merci. WEQUIPU-TEAM</p>
 
     </body>
 

@@ -1,8 +1,10 @@
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import Layout from "../../layouts/main";//besoin
 import PageHeader from "@/components/page-header";
+
 
 
 /**
@@ -23,6 +25,9 @@ export default {
 
     },
     methods: {
+        viewTicket(id) {
+            this.$router.push({ name: 'ShowTicket', params: { id } });
+        },
 
 
         fetchTickets(status) {
@@ -38,6 +43,53 @@ export default {
                     console.error('Erreur lors de la récupération des tickets:', error);
                 });
         },
+        deleteClient(id) {
+            Swal.fire({
+                title: 'Etes vous sûr de vouloir supprimer ce ticket?',
+                text: 'Cette action est irreversible',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Oui supprimer!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`http://127.0.0.1:8000/api/deleteticket/${id}`)
+                        .then((response) => {
+                            if (response.status === 200) {
+                                this.fetchTickets();
+                                Swal.fire(
+                                    'Supprimé!',
+                                    'Le ticket a été supprimé',
+                                    'success'
+                                );
+                            } else {
+                                Swal.fire(
+                                    'Erreur!',
+                                    response.data.message,
+                                    'error'
+
+                                );
+                            }
+
+                        }).catch((error) => {
+                            if (error.response) {
+                                Swal.fire(
+                                    'Erreur!',
+                                    'Erreur lors de la supression du ticket',
+                                    'error'
+
+                                );
+
+                            }
+
+                        })
+
+                }
+
+            });
+
+        }
 
 
     }
@@ -110,10 +162,10 @@ export default {
                                         <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd>
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
                                         <BTd>
-                                            <!-- <BButton variant="primary" class="btn-sm btn-rounded"
+                                            <BButton variant="primary" class="btn-sm btn-rounded"
                                                 @click="viewTicket(ticket.id)">
                                                 Voir
-                                            </BButton> -->
+                                            </BButton>
                                         </BTd>
                                         <BTd>
                                             <BDropdown class="card-drop" variant="white" right toggle-class="p-0"
@@ -122,12 +174,8 @@ export default {
                                                     <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                                 </template>
 
-                                                <BDropdownItem>
-                                                    <i class="fas fa-pencil-alt text-success me-1"></i>
-                                                    Edit
-                                                </BDropdownItem>
 
-                                                <BDropdownItem>
+                                                <BDropdownItem @click="deleteClient(ticket.id)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>

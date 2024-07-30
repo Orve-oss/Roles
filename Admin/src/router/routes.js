@@ -85,6 +85,12 @@ export default [
     component: () => import("../views/tickets/ticketDetail")
   },
   {
+    path: "/show/ticket/:id",
+    name: "ShowTicket",
+    meta: { title: "ShowTicket", authRequired: true },
+    component: () => import("../views/tickets/showticket")
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("../views/account/login"),

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
@@ -52,7 +53,7 @@ class TicketController extends Controller
             $ticketData['image'] = $imagePath;
         }
 
-        $ticket = Ticket::create([$ticketData, 'status'=>'En attente']);
+        $ticket = Ticket::create([$ticketData, 'status' => 'En attente']);
 
         return response()->json([
             'message' => 'Ticket créé avec succès',
@@ -61,7 +62,8 @@ class TicketController extends Controller
         ]);
     }
 
-    public function getTicketByStatus($status){
+    public function getTicketByStatus($status)
+    {
         $tickets = Ticket::where('status', $status)->get();
         return response()->json($tickets);
     }
@@ -76,14 +78,14 @@ class TicketController extends Controller
             return response()->json($ticket);
         } else {
             return response()->json([
-                'message'=> 'Le ticket n\'existe pas',
-                'status'=>401
+                'message' => 'Le ticket n\'existe pas',
+                'status' => 401
             ]);
         }
-
     }
 
-    public function updateStatus(Request $request, $id){
+    public function updateStatus(Request $request, $id)
+    {
         $ticket = Ticket::findOrFail($id);
         $ticket->status = $request->status;
         $ticket->update();
@@ -101,17 +103,61 @@ class TicketController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Ticket $ticket)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'sujet' => 'required|string|max:100',
+            'description' => 'required|string',
+            'service_id' => 'required',
+            'type_ticket_id' => 'required',
+            'priorite_id' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        $ticket = Ticket::find($id);
+
+        if (!$ticket) {
+            return response()->json(['message' => 'Ticket non trouvé'], 404);
+        }
+        $ticketData = $validator->validated();
+
+        if ($request->hasFile('image')) {
+
+            if ($ticket->image) {
+                Storage::disk('public')->delete($ticket->image);
+            }
+
+            $imagePath = $request->file('image')->store('tickets', 'public');
+            $ticketData['image'] = $imagePath;
+        }
+
+        $ticket->update($ticketData);
+
+        return response()->json([
+            'message' => 'Ticket mis à jour avec succès',
+            'status' => 200,
+            'ticket' => $ticket
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ticket $ticket)
+    public function destroy($id)
     {
-        //
+        if (Ticket::deleteTicket($id)) {
+            return response()->json([
+                'message' => 'Ticket supprimé',
+                'status' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Le Ticket n\'existe pas',
+                'status' => 401
+            ]);
+        }
     }
 
     public function assign(Request $request, $id)
@@ -123,10 +169,11 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($id);
         $ticket->user_id = $request->user_id;
         $ticket->update();
-        return response()->json(['message'=> 'Ticket assigné aves succès']);
+        return response()->json(['message' => 'Ticket assigné aves succès']);
     }
 
-    public function getticketsByAgent($agentId){
+    public function getticketsByAgent($agentId)
+    {
         $tickets = Ticket::where('user_id', $agentId)->get();
         return response()->json($tickets);
     }
