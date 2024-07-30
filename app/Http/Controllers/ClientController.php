@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ClientResource;
-// use App\Mail\ClientMail;
+use App\Mail\ClientMail;
 use App\Models\Client;
 use App\Notifications\AccountActivation;
 use Exception;
@@ -26,23 +26,20 @@ class ClientController extends Controller
             if ($list) {
                 $resp = ClientResource::collection($list);
                 return response()->json($resp);
-            } elseif($list->isEmpty()) {
-                return response()->json(['message'=>'Aucun Enregistrement']);
-            }
-            else{
+            } elseif ($list->isEmpty()) {
+                return response()->json(['message' => 'Aucun Enregistrement']);
+            } else {
                 return response()->json([
                     'message' => 'Aucun client n\'existe',
-                    'Status'=> 'None'
+                    'Status' => 'None'
                 ]);
             }
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
-                'Status'=> 'Fail'
+                'Status' => 'Fail'
             ]);
         }
-
     }
 
     /**
@@ -61,34 +58,33 @@ class ClientController extends Controller
         $validator = Validator::make($request->all(), [
             'nom_clt' => 'required|string',
             'email' => 'required|string|email|unique:clients',
-            'password'=> 'nullable|min:4'
+            'password' => 'nullable|min:4'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
         $clientdata = [
-            'nom_clt'=>$request->nom_clt,
-            'email'=>$request->email,
-            'activation_token'=> Str::random(60),
+            'nom_clt' => $request->nom_clt,
+            'email' => $request->email,
+            'activation_token' => Str::random(60),
 
         ];
-        if($request->has('password') && !empty($request->password)) {
+        if ($request->has('password') && !empty($request->password)) {
             $clientdata['password'] = Hash::make($request->password); // Hachage du mot de passe
-        }else {
+        } else {
             $clientdata['password'] = Hash::make(Str::random(8));
         }
 
         $client = Client::create($clientdata);
         $client->assignRole('Client');
-        $client->notify(new AccountActivation());
+        Mail::to($client->email)->send(new ClientMail($client));
 
         return response()->json([
-                    'message' => 'Client Crée',
-                    'status'=> 200,
-                    'client_id'=> $client->id
-                ]);
-
+            'message' => 'Client Crée',
+            'status' => 200,
+            'client_id' => $client->id
+        ]);
     }
     // public function send($id){
     //     $client = Client::find($id);
@@ -103,22 +99,23 @@ class ClientController extends Controller
     //             ]);
     // }
 
-    public function reset(Request $request){
+    public function reset(Request $request)
+    {
         $request->validate([
 
             'email' => 'required|string|email',
-            'password'=>'required|min:4|string|confirmed'
+            'password' => 'required|min:4|string|confirmed'
         ]);
         $client = Client::where('email', $request->email)->first();
         if (!$client) {
-            return response()->json(['message'=>'Client non trouvé']);
+            return response()->json(['message' => 'Client non trouvé']);
         }
 
         $client->password = Hash::make($request->password);
         // $client->activation_token = null; //Invalide le token après la réinitialisation du mot de passe
         $client->save();
 
-        return response()->json(['message'=>'Compte activé avec succès', 'status'=>200]);
+        return response()->json(['message' => 'Compte activé avec succès', 'status' => 200]);
     }
 
     /**
@@ -129,14 +126,14 @@ class ClientController extends Controller
         if (Client::where('id', $id)->exists()) {
             $client = Client::getOneClient($id);
             return response()->json([
-                'message'=> 'Voici le client',
-                'client'=>$client,
-                'status'=>201
+                'message' => 'Voici le client',
+                'client' => $client,
+                'status' => 201
             ]);
         } else {
             return response()->json([
-                'message'=> 'Le client n\'existe pas',
-                'status'=>401
+                'message' => 'Le client n\'existe pas',
+                'status' => 401
             ]);
         }
     }
@@ -152,21 +149,20 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         try {
             if (Client::where('id', $id)->exists()) {
                 Client::updateClient($request, $id);
                 return response()->json([
-                    'message'=> 'Client modifié'
+                    'message' => 'Client modifié'
                 ]);
             } else {
                 return response()->json([
-                    'message'=> 'Le client n\'existe pas',
-                    'status'=>401
+                    'message' => 'Le client n\'existe pas',
+                    'status' => 401
                 ]);
             }
-
         } catch (Exception $e) {
             return response()->json([
                 "statut" => "fail",
@@ -183,13 +179,13 @@ class ClientController extends Controller
 
         if (Client::deleteClient($id)) {
             return response()->json([
-                'message'=> 'Client supprimé',
-                'status'=>200
+                'message' => 'Client supprimé',
+                'status' => 200
             ]);
         } else {
             return response()->json([
-                'message'=> 'Le Client n\'existe pas',
-                'status'=>401
+                'message' => 'Le Client n\'existe pas',
+                'status' => 401
             ]);
         }
     }

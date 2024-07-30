@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
@@ -36,6 +38,26 @@ class AuthController extends Controller
                         'role' => $user->roles->pluck('name')
                     ]
                 ]);
+            } else if ($client = Client::where('email', $creds['email'])->first()) {
+                if ($client && Hash::check($creds['password'], $client->password)) {
+                    Auth::login($client);
+                    // $token = $client->createToken('auth_token', ['*'])->plainTextToken;
+                    return response()->json([
+                        'message' => 'Client connecté',
+                        // 'access_token' => $token, 'token_type' => 'Bearer',
+                        'status' => 'success',
+                        'user'=>[
+                            'id' => $client->id,
+                            'name' => $client->nom_clt,
+                            'email'=>$client->email,
+                            'role'=>$client->roles->pluck('name')
+                        ]
+                    ]);
+                }
+            }else{
+                return response()->json([
+                    'message'=>'Email ou mot de passe invalide'
+                ], 401);
             }
             // if (Auth::guard('client')->attempt($creds)) {
             //     if (!Auth::attempt($creds)) {

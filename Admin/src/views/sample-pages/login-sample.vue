@@ -83,11 +83,15 @@ export default {
                 try {
                     const authStore = useAuthStore();
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
+                    const userRole = localStorage.getItem('userRole');
+                    console.log('User role from local storage:', userRole);
 
+                    this.authSucces = "Connexion réussie";
+                    this.isAuthSucces = true;
                     this.$router.push({ name: redirectRoute });
                 } catch (error) {
                     console.error("Login error: ", error);
-                    this.authError = error.message;
+                    this.authError = "Email ou mot de passe invalide";
                     this.isAuthError = true;
                 }
 
@@ -131,7 +135,7 @@ export default {
                                 <div v-if="submitted && v$.password.$error" class="invalid-feedback">
                                     <span v-if="v$.password.required.$message">{{
                                         v$.password.required.$message
-                                    }}</span>
+                                        }}</span>
                                 </div>
                             </BFormGroup>
 

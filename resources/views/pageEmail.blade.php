@@ -20,9 +20,9 @@
         </style>
     </head>
     <body>
-        <h1> Hello, {{ $details['email'] }} </h1>
+        <h1> Hello, {{ $nom_clt }} </h1>
         <p> Please click the button below to active your account</p>
-        <a href="{{ $details['reset_link']}}" class="button"> Active Account</a>
+        <a href="{{$url}}" class="button"> Active Account</a>
         <p>Thanks. WEQUIPU-TEAM</p>
 
     </body>

@@ -30,13 +30,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/send-test', function (){
-    // $toemail = 'vmagnouwai@gmail.com';
-    $message = 'Test Email';
+// Route::get('/send-test', function (){
+//     // $toemail = 'vmagnouwai@gmail.com';
+//     $message = 'Test Email';
 
-    Mail::to('vmagnouwai@gmail.com')->send(new TestEmail($message));;
-    return 'Test email sent';
-});
+//     Mail::to('vmagnouwai@gmail.com')->send(new TestEmail($message));;
+//     return 'Test email sent';
+// });
 
 Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
 

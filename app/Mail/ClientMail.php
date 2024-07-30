@@ -13,14 +13,16 @@ class ClientMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $details;
+    public $client;
+    public $url;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($details)
+    public function __construct($client)
     {
-        $this->details = $details;
+        $this->client = $client;
+
     }
 
     /**
@@ -40,8 +42,21 @@ class ClientMail extends Mailable
     {
         return new Content(
             view: 'pageEmail',
+            with: [
+                'nom_clt' => $this->client->nom_clt,
+                'url' => url('/reset-password'),
+            ]
         );
     }
+
+    // public function build()
+    // {
+    //     return $this->view('pageEmail')
+    //         ->with([
+    //             'nom_clt' => $this->client->nom_clt,
+    //             'url' => $this->url,
+    //         ]);
+    // }
 
 
     /**

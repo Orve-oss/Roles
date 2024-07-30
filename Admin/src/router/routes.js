@@ -43,6 +43,12 @@ export default [
     component: () => import("../views/tickets/creation")
   },
   {
+    path: "/listeticketclient",
+    name: "Liste",
+    meta: { title: "Liste", authRequired: true, role: 'Client' },
+    component: () => import("../views/tickets/listticket")
+  },
+  {
     path: "/historiqueticket",
     name: "Historique",
     meta: { title: "Historique", authRequired: true },
