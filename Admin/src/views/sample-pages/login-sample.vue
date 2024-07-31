@@ -4,7 +4,7 @@
 import Layout from "../../layouts/auth";
 
 
-import { required, email, helpers } from "@vuelidate/validators";
+import { required, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 // import { useRouter } from "vue-router";
 import { useAuthStore } from "../../state/pinia/auth";
@@ -52,7 +52,7 @@ export default {
     validations: {
         email: {
             required: helpers.withMessage("Email is required", required),
-            email: helpers.withMessage("Please enter valid email", email),
+            // email: helpers.withMessage("Please enter valid email", email),
         },
         password: {
             required: helpers.withMessage("Password is required", required),
@@ -86,7 +86,7 @@ export default {
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
                     const userRole = localStorage.getItem('userRole');
                     console.log('User role from local storage:', userRole);
-                    
+
 
                     this.authSucces = "Connexion réussie";
                     this.isAuthSucces = true;

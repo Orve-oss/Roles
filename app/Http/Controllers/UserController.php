@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Mail\UserMail;
 use App\Models\User;
 use \Illuminate\Support\Facades\Validator;
 use Exception;
@@ -10,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -83,13 +85,14 @@ class UserController extends Controller
             $role = Role::where('name', $request->role)->get();
             // $role = Role::findByName($validator['role']);
             $user->assignRole($role);
+            Mail::to($user->email)->send(new UserMail($user));
             // $details = [
             //     'name'=>$user->name,
             //     'email'=>$user->email,
 
             // ];
             return response()->json([
-                'message' => 'Utilisateur crée',
+                'message' => 'Utilisateur crée. un mail d\'activation sera envoyé',
                 'status' => 'success'
             ]);
         } catch (Exception $e) {

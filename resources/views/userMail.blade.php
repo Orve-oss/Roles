@@ -20,10 +20,10 @@
         </style>
     </head>
     <body>
-        <h1> Hello, {{ $details['email'] }} </h1>
-        <p> Please click the button below to active your account</p>
-        <a href="{{ $details['reset_link']}}" class="button"> Active Account</a>
-        <p>Thanks. WEQUIPU-TEAM</p>
+        <h1> Hello, {{ $name }} </h1>
+        <p> Veuillez cliquer sur ce bouton pour activer votre compte</p>
+        <a href="http://localhost:8080/auth-recoverpwd" class="button"> Active Account</a>
+        <p>Merci. WEQUIPU-TEAM</p>
 
     </body>
 

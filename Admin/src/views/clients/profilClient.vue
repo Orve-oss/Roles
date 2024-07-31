@@ -88,9 +88,15 @@ export default {
             <BCol lg="12">
                 <BCard no-body class="mx-n0 mt-n4">
                     <div class="text-center mb-4">
-                        <img :src="image || profileImageInitial" alt="" class="avatar-md rounded-circle mx-auto d-block"
-                            @click="handleImage">
-                        <i class="fa fa-camera" aria-hidden="true" @click="handleImage"></i>
+                        <div v-if="image" @click="handleImage">
+                            <img :src="image" alt="" class="avatar-md rounded-circle mx-auto d-block"
+                            >
+                        </div>
+                        <div v-else @click="handleImage">
+                            <span class="profile-initial-wrapper avatar-md rounded-circle mx-auto d-block">{{ profileImageInitial }}</span>
+                        </div>
+
+                        <!-- <i class="fa fa-camera" aria-hidden="true" @click="handleImage"></i> -->
                         <h5 class="mt-3 mb-1">{{ client.nom_clt }}</h5>
                         <p class="text-muted mb-3">{{ client.role }}</p>
                         <input type="file" ref="profileImageInput" style="display: none;" @change="onFileChange">
@@ -198,3 +204,28 @@ export default {
         </BRow>
     </Layout>
 </template>
+<style scoped>
+.profile-image-wrapper img {
+    cursor: pointer;
+}
+
+.profile-initial-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    color: #555;
+    margin-top: 20px;
+    font-size: 36px; /* Augmenter la taille de la lettre */
+    font-weight: bold;
+    cursor: pointer;
+    width: 60px; /* Ajuster selon la taille souhaitée */
+    height: 60px; /* Ajuster selon la taille souhaitée */
+    border-radius: 50%; /* Pour un effet circulaire */
+    text-align: center;
+}
+
+.profile-initial-wrapper span {
+    display: block;
+}
+</style>

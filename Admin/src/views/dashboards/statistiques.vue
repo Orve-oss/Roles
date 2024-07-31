@@ -51,10 +51,22 @@ export default {
             },
             xaxis: {
                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+               labels: {
+                  rotate: -45,
+               },
             },
+            yaxis:{
+               min: 10,
+               max: 70,
+               tickAmount: 6,
+               labels: {
+                  formatter: (value) => `${value}`
+               }
+            },
+
             markers: {
                size: 3,
-               strokeWidth: 3,
+               strokeWidth: 2,
                hover: {
                   size: 4,
                   sizeOffset: 2,
@@ -82,17 +94,17 @@ export default {
             const google = this.processData(googleResponse.data);
             const gescom = this.processData(gescomResponse.data);
             this.chartData.series[0].data = google;
-            this.chartData.series[0].data = gescom;
+            this.chartData.series[1].data = gescom;
 
          } catch (error) {
             console.error('Erreur lors de la récupération des données', error);
          }
       },
-      processData(data){
+      processData(data) {
          const monthlyData = Array(12).fill(0);
          data.forEach(ticket => {
             const month = new Date(ticket.created_at).getMonth();
-            monthlyData[month] +=1;
+            monthlyData[month] += 1;
 
          });
          return monthlyData;
@@ -106,9 +118,9 @@ export default {
    <Layout>
       <PageHeader title="Statistiques" pageTitle="Dashboards" />
       <BCardBody>
-    <div class="d-flex flex-wrap">
-      <BCardTitle class="me-2">Tickets par services</BCardTitle>
-      <!-- <div class="ms-auto">
+         <div class="d-flex flex-wrap">
+            <BCardTitle class="me-2">Tickets par services</BCardTitle>
+            <!-- <div class="ms-auto">
         <div class="toolbar button-items text-end">
           <BButton variant="light" class="ms-2" size="sm" @click="updateData('all')" :class="{ active: selection === 'all' }">
             ALL
@@ -124,12 +136,13 @@ export default {
           </BButton>
         </div>
       </div> -->
-    </div>
-    <hr class="mb-4" />
+         </div>
+         <hr class="mb-4" />
 
-    <apexchart class="apex-charts" dir="ltr" height="350" :series="chartData.series" :options="chartData.chartOptions">
-    </apexchart>
-  </BCardBody>
+         <apexchart class="apex-charts" dir="ltr" height="350" :series="chartData.series"
+            :options="chartData.chartOptions">
+         </apexchart>
+      </BCardBody>
 
    </Layout>
 </template>

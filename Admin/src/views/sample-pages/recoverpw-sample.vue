@@ -1,6 +1,6 @@
 <script>
 import axios from "axios";
-import { required, email, helpers, sameAs } from "@vuelidate/validators";
+import { required, email, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core"
 
 
@@ -39,10 +39,10 @@ export default {
         },
         password_confirmation: {
             required: helpers.withMessage("Confirm password is required", required),
-            sameAsPassword: helpers.withMessage(
-                "Le mot de passe ne correspond pas",
-                sameAs(() => this.password)
-            ),
+            // sameAsPassword: helpers.withMessage(
+            //     "Le mot de passe ne correspond pas",
+            //     sameAs(() => this.password)
+            // ),
         },
     },
 
@@ -120,9 +120,9 @@ export default {
                                             <span v-if="v$.password_confirmation.required.$message">{{
                                                 v$.password_confirmation.required.$message
                                                 }}</span>
-                                            <span v-if="v$.password_confirmation.sameAsPassword.$message">
+                                            <!-- <span v-if="v$.password_confirmation.sameAsPassword.$message">
                                                 {{ v$.password_confirmation.sameAsPassword.$message }}
-                                            </span>
+                                            </span> -->
                                         </div>
                                     </BFormGroup>
 

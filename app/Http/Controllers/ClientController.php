@@ -201,6 +201,7 @@ class ClientController extends Controller
         if (!$client) {
             return response()->json(['message' => 'User not authenticated'], 401);
         }
+        $client->roles->pluck('name');
         return response()->json([
             'client' => $client,
             'image' => $client->image ? url('storage/' . $client->image) : null,

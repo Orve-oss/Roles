@@ -13,14 +13,14 @@ class UserMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $details;
+    public $user;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($details)
+    public function __construct($user)
     {
-        $this->details = $details;
+        $this->user = $user;
     }
 
     /**
@@ -29,7 +29,7 @@ class UserMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Account Activation',
+            subject: 'Activation de compte',
         );
     }
 
@@ -40,6 +40,9 @@ class UserMail extends Mailable
     {
         return new Content(
             view: 'userMail',
+            with: [
+                'name' => $this->user->name,
+            ]
         );
     }
 
