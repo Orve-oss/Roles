@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -175,6 +176,14 @@ class TicketController extends Controller
     public function getticketsByAgent($agentId)
     {
         $tickets = Ticket::where('user_id', $agentId)->get();
+        return response()->json($tickets);
+    }
+    public function getTicketsByservice($servicename){
+        $service = Service::where('nom_service', $servicename)->first();
+        if (!$service) {
+            return response()->json(['error' => 'Service not found'], 400);
+        }
+        $tickets = Ticket::where('service_id', $service->id)->get();
         return response()->json($tickets);
     }
 }

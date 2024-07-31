@@ -14,8 +14,8 @@ export default {
 
     data() {
         return {
-            users: []
 
+            users: [],
         };
 
     },
@@ -39,6 +39,16 @@ export default {
 <template>
     <Layout>
         <PageHeader title="Liste des utilisateurs" pageTitle="utilisateurs" />
+        <BRow class="mb-2">
+            <BCol sm="4">
+                <div class="search-box me-2 mb-2 d-inline-block">
+                    <div class="position-relative">
+                        <input type="text" class="form-control" placeholder="Recherche" />
+                        <i class="bx bx-search-alt search-icon"></i>
+                    </div>
+                </div>
+            </BCol>
+        </BRow>
         <BRow id="user-list">
             <BCol xl="3" md="3" v-for="user in users" :key="user.id">
                 <BCard no-body>
@@ -47,11 +57,12 @@ export default {
                         <div class="text-center mb-3">
                             <!-- <img :src="assets/images/companies/img-1.png" alt="" class="avatar-sm rounded-circle" /> -->
                             <h6 class="font-size-15 mt-3 mb-1">{{ user.name }}</h6>
-                            <p class="mb-0 text-muted">{{ user.role?.name || 'N/A' }}</p>
+                            <p class="mb-0 text-muted">{{ user.roles[0]?.name || 'N/A' }}</p>
                         </div>
 
                         <div class="mt-4 pt-1">
-                            <router-link to="/jobs/candidate/overview" class="btn btn-soft-primary d-block">View Profile</router-link>
+                            <router-link to="/jobs/candidate/overview" class="btn btn-soft-primary d-block">View
+                                Profile</router-link>
                         </div>
                     </BCardBody>
                 </BCard>

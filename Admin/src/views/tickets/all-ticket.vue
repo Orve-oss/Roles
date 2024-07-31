@@ -127,9 +127,9 @@ export default {
                                         class="btn-rounded mb-2 me-2">
                                         En cours
                                     </BButton>
-                                    <BButton @click="fetchTickets('Terminé')" variant="success"
+                                    <BButton @click="fetchTickets('Résolu')" variant="success"
                                         class="btn-rounded mb-2 me-2">
-                                        Terminé
+                                        Résolu
                                     </BButton>
                                     <BButton @click="fetchTickets('Fermé')" variant="danger"
                                         class="btn-rounded mb-2 me-2">

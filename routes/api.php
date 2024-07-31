@@ -46,6 +46,8 @@ Route::get('/clients', [ClientController::class, 'index']);
 Route::post('/clients', [ClientController::class, 'store']);
 Route::put('/updateclt/{id}', [ClientController::class, 'update']);
 Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
+Route::middleware('auth:sanctum')->get('/client-profile', [ClientController::class, 'getProfile']);
+Route::post('/updateclient/profile', [ClientController::class, 'updateProfile']);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/roles', [RoleController::class, 'index']);
@@ -84,6 +86,7 @@ Route::post('/tickets', [TicketController::class, 'store']);
 Route::get('/tickets/{id}', [TicketController::class, 'show']);
 Route::put('/updateticket/{id}', [TicketController::class, 'update']);
 Route::delete('/deleteticket/{id}', [TicketController::class, 'destroy']);
+Route::get('tickets/service/{servicename}', [TicketController::class, 'getTicketsByservice']);
 
 
 Route::get('/commentaires', [CommentaireController::class, 'index']);

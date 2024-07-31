@@ -13,6 +13,10 @@ class Service extends Model
         'nom_service'
     ];
     protected $table = 'services';
+
+    public function tickets(){
+        return $this->hasMany(Ticket::class);
+    }
     public static function getAllservices(){
         return Self::all();
     }

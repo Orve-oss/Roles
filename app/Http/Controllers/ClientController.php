@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Notifications\AccountActivation;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -19,27 +20,32 @@ class ClientController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $list = Client::getAllclients();
-            if ($list) {
-                $resp = ClientResource::collection($list);
-                return response()->json($resp);
-            } elseif ($list->isEmpty()) {
-                return response()->json(['message' => 'Aucun Enregistrement']);
-            } else {
-                return response()->json([
-                    'message' => 'Aucun client n\'existe',
-                    'Status' => 'None'
-                ]);
-            }
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'Status' => 'Fail'
-            ]);
-        }
+        $perPage = $request->get('perPage', 5); // Nombre d'éléments par page
+        $clients = Client::paginate($perPage);
+
+        return response()->json($clients);
+
+        // try {
+        //     $list = Client::getAllclients();
+        //     if ($list) {
+        //         $resp = ClientResource::collection($list);
+        //         return response()->json($resp);
+        //     } elseif ($list->isEmpty()) {
+        //         return response()->json(['message' => 'Aucun Enregistrement']);
+        //     } else {
+        //         return response()->json([
+        //             'message' => 'Aucun client n\'existe',
+        //             'Status' => 'None'
+        //         ]);
+        //     }
+        // } catch (Exception $e) {
+        //     return response()->json([
+        //         'message' => $e->getMessage(),
+        //         'Status' => 'Fail'
+        //     ]);
+        // }
     }
 
     /**
@@ -188,5 +194,32 @@ class ClientController extends Controller
                 'status' => 401
             ]);
         }
+    }
+    public function getProfile()
+    {
+        $client = Auth::user();
+        if (!$client) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+        return response()->json([
+            'client' => $client,
+            'image' => $client->image ? url('storage/' . $client->image) : null,
+        ]);
+    }
+    public function updateProfile(Request $request)
+    {
+        $client = Auth::user();
+        if (!$client instanceof Client) {
+            return response()->json(['error' => 'Invalid client'], 400);
+        }
+        $client->nom_clt = $request->nom_clt;
+        $client->email = $request->email;
+        $client->role = $request->role;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('image', 'pulic');
+            $client->image = $path;
+        }
+        $client->save();
+        return response()->json(['message' => 'Profil modifié avec succès']);
     }
 }

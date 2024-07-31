@@ -44,7 +44,7 @@ class ClientMail extends Mailable
             view: 'pageEmail',
             with: [
                 'nom_clt' => $this->client->nom_clt,
-                'url' => url('/reset-password'),
+                // 'url' => url(`http://127.0.0.1:8080/reset-password`),
             ]
         );
     }

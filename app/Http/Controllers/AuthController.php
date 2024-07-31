@@ -41,10 +41,10 @@ class AuthController extends Controller
             } else if ($client = Client::where('email', $creds['email'])->first()) {
                 if ($client && Hash::check($creds['password'], $client->password)) {
                     Auth::login($client);
-                    // $token = $client->createToken('auth_token', ['*'])->plainTextToken;
+                    $token = $client->createToken('auth_token', ['*'])->plainTextToken;
                     return response()->json([
                         'message' => 'Client connecté',
-                        // 'access_token' => $token, 'token_type' => 'Bearer',
+                        'access_token' => $token, 'token_type' => 'Bearer',
                         'status' => 'success',
                         'user'=>[
                             'id' => $client->id,

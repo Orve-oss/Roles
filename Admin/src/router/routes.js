@@ -198,7 +198,7 @@ export default [
     component: () => import("../views/sample-pages/login-2")
   },
   {
-    path: "/auth/register-1",
+    path: "/auth/register",
     name: "Register sample",
     meta: { title: "Register", authRequired: true },
     component: () => import("../views/sample-pages/register-sample")
