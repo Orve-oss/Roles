@@ -8,8 +8,8 @@ export default [
   },
   {
     path: "/activite/agent",
-    name: "default",
-    meta: { title: "Dashboard", authRequired: true, role: 'Agent' },
+    name: "dashboard",
+    meta: { title: "tableau", authRequired: true, role: 'Agent' },
     component: () => import("../views/dashboards/activiteAgent")
   },
   {

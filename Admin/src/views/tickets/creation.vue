@@ -22,13 +22,15 @@ export default {
                 status: 'En attente',
                 type: '',
                 service: '',
-                priorite: ''
+                priorite: '',
+                client_id: null
             },
             successMessage: null,
             types: [],
             services: [],
             priorites: [],
             submitted: false,
+
         };
 
 
@@ -37,8 +39,17 @@ export default {
         this.fetchTypes();
         this.fetchServices();
         this.fetchPriorites();
+        this.ticket.client_id = this.getclientId();
+        console.log('client id', this.ticket.client_id);
     },
     methods: {
+        getclientId(){
+            const user = JSON.parse(localStorage.getItem('user'));
+            console.log('user from localstorage:',user);
+            console.log('id',user.id);
+            return user ? user.id : null;
+
+        },
         fetchTypes() {
             axios.get('http://127.0.0.1:8000/api/types')
                 .then(response => {
@@ -71,6 +82,7 @@ export default {
         },
         async createTicket() {
 
+
             this.submitted = true;
             const formData = new FormData();
             formData.append('sujet', this.ticket.sujet);
@@ -79,6 +91,7 @@ export default {
             formData.append('service_id', this.ticket.service);
             formData.append('type_ticket_id', this.ticket.type);
             formData.append('priorite_id', this.ticket.priorite);
+            formData.append('client_id', this.ticket.client_id);
             if (this.ticket.image) {
                 formData.append('image', this.ticket.image);
             }
@@ -96,9 +109,11 @@ export default {
                         sujet: '',
                         description: '',
                         image: null,
+                        status: 'En attente',
                         type: '',
                         service: '',
-                        priorite: ''
+                        priorite: '',
+                        client_id: null
                     };
 
                     Swal.fire(

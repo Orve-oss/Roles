@@ -11,6 +11,7 @@ class Ticket extends Model
     protected $fillable = [
         'sujet',
         'description',
+        'client_id',
         'service_id',
         'type_ticket_id',
         'priorite_id'
@@ -21,6 +22,9 @@ class Ticket extends Model
     }
     public function assignedBy(){
         return $this->belongsTo(User::class, 'assigned_by');
+    }
+    public function client(){
+        return $this->belongsTo(Client::class, 'client_id');
     }
     public function type(){
         return $this->belongsTo(TypeTicket::class, 'type_ticket_id');

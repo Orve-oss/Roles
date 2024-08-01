@@ -100,6 +100,15 @@ export default {
 
 
          })
+      },
+      sendResolutionMail(){
+         const id = this.$route.params.id;
+         axios.post(`http://127.0.0.1:8000/api/tickets/send-resolution/${id}`)
+         .then(()=>{
+            alert('Email de résolution envoyé avec succès');
+         }).catch(error => {
+            console.error('Erreur', error);
+         });
       }
    }
 
@@ -166,7 +175,11 @@ export default {
                            Save Changes
                         </BButton>
                         <BButton variant="secondary" class="me-1">Cancel</BButton>
-                        <BButton variant="success" @click="sendEmail"> Envoyer un mail</BButton>
+                        <BButton variant="success" class="me-1" @click="sendEmail"> Envoyer un mail</BButton>
+
+                     </div>
+                     <div class="mt-2" v-if="ticket.status === 'Résolu'">
+                        <BButton variant="light" @click="sendResolutionMail"> Mail</BButton>
                      </div>
                   </BForm>
                </BCard>

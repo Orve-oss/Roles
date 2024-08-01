@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Ticket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,18 +10,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TestEmail extends Mailable
+class ResolutionMail extends Mailable
 {
     use Queueable, SerializesModels;
+    public $ticket;
 
-    public $message;
+
     /**
      * Create a new message instance.
      */
-    public function __construct($message)
+    public function __construct(Ticket $ticket)
     {
-        
-        $this->message = $message;
+        $this->ticket = $ticket;
     }
 
     /**
@@ -36,18 +37,14 @@ class TestEmail extends Mailable
     /**
      * Get the message content definition.
      */
-    // public function content(): Content
-    // {
-    //     return new Content(
-    //         view: 'test',
-    //     );
-    // }
-
-    public function build()
+    public function content(): Content
     {
-        return $this->view('test')
-                    ->with('message', $this->message);
+        return new Content(
+            view: 'resolution',
+        );
     }
+
+
 
     /**
      * Get the attachments for the message.

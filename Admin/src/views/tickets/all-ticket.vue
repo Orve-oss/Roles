@@ -71,7 +71,7 @@ export default {
                 );
                 return;
             }
-            await axios.put(`http://127.0.0.1:8000/api/tickets/${ticketId}/assign`, {
+            await axios.post(`http://127.0.0.1:8000/api/tickets/${ticketId}/assign`, {
                 user_id: this.userId
             })
                 .then(response => {

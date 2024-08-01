@@ -12,13 +12,14 @@ use Illuminate\Queue\SerializesModels;
 class TicketReassign extends Mailable
 {
     use Queueable, SerializesModels;
+    public $ticket;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($ticket)
     {
-        //
+        $this->ticket = $ticket;
     }
 
     /**
@@ -27,7 +28,7 @@ class TicketReassign extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Ticket Reassign',
+            subject: 'Réassignation de ticket',
         );
     }
 
@@ -37,7 +38,12 @@ class TicketReassign extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'ticketReassign',
+            with:[
+                'sujet' => $this->ticket->sujet,
+                'description' => $this->ticket->description,
+                'agent' => auth()->user()->name,
+            ]
         );
     }
 

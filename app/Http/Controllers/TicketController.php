@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ResolutionMail;
 use App\Mail\TicketReassign;
 use App\Models\Service;
 use App\Models\Ticket;
@@ -44,7 +45,7 @@ class TicketController extends Controller
             'service_id' => 'required',
             'type_ticket_id' => 'required',
             'priorite_id' => 'required',
-            'status' => 'required',
+            'client_id'=> 'required|exists:clients,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
         if ($validator->fails()) {
@@ -171,11 +172,11 @@ class TicketController extends Controller
     public function assign(Request $request, $id)
     {
         $request->validate([
-            'agent_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id'
         ]);
 
         $ticket = Ticket::findOrFail($id);
-        $ticket->user_id = $request->agent_id;
+        $ticket->user_id = $request->user_id;
         $ticket->assigned_by = auth()->user()->id;
         $ticket->save();
         return response()->json(['message' => 'Ticket assigné aves succès']);
@@ -200,7 +201,15 @@ class TicketController extends Controller
         if (!$admin) {
             return response()->json(['message'=>'Admin not found']);
         }
-        Mail::to($admin->email)->send(new TicketReassign());
+        Mail::to($admin->email)->send(new TicketReassign($ticket));
         return response()->json(['message'=>'Email envoyé']);
+    }
+    public function sendResolution($id){
+        $ticket = Ticket::findOrFail($id);
+        $client = $ticket->client;
+        if (!$client || !$client->email) {
+            return response()->json(['message' => 'Email du client introuvable'], 404);
+        }
+        Mail::to($client->email)->send(new ResolutionMail($ticket));
     }
 }
