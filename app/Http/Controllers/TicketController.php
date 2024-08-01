@@ -42,6 +42,7 @@ class TicketController extends Controller
             'service_id' => 'required',
             'type_ticket_id' => 'required',
             'priorite_id' => 'required',
+            'status' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
         if ($validator->fails()) {
@@ -53,8 +54,9 @@ class TicketController extends Controller
             $imagePath = $request->file('image')->store('tickets', 'public');
             $ticketData['image'] = $imagePath;
         }
+        $ticketData['status'] = 'En attente';
 
-        $ticket = Ticket::create([$ticketData, 'status' => 'En attente']);
+        $ticket = Ticket::create($ticketData);
 
         return response()->json([
             'message' => 'Ticket créé avec succès',
@@ -87,9 +89,12 @@ class TicketController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        $request->validate([
+            'status'=>'required'
+        ]);
         $ticket = Ticket::findOrFail($id);
         $ticket->status = $request->status;
-        $ticket->update();
+        $ticket->save();
         return response()->json(['message' => 'Statut mis à jour']);
     }
 
@@ -175,7 +180,7 @@ class TicketController extends Controller
 
     public function getticketsByAgent($agentId)
     {
-        $tickets = Ticket::where('user_id', $agentId)->get();
+        $tickets = Ticket::where('user_id', $agentId)->with(['type', 'priorite', 'service'])->get();
         return response()->json($tickets);
     }
     public function getTicketsByservice($servicename){

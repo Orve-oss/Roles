@@ -7,6 +7,12 @@ export default [
     component: () => import("../views/dashboards/activite")
   },
   {
+    path: "/activite/agent",
+    name: "default",
+    meta: { title: "Dashboard", authRequired: true, role: 'Agent' },
+    component: () => import("../views/dashboards/activiteAgent")
+  },
+  {
     path: "/listuser",
     name: "listUser",
     meta: { title: "listUser", authRequired: true, role: 'Admin' },
@@ -24,12 +30,12 @@ export default [
     meta: { title: "allTicket", authRequired: true },
     component: () => import("../views/tickets/all-ticket")
   },
-//   {
-//     path: "/ticket",
-//     name: "ToutTicket",
-//     meta: { title: "ToutTicket", authRequired: true },
-//     component: () => import("../views/tickets/listticket")
-//   },
+  {
+    path: "/listeRapport",
+    name: "ListRapport",
+    meta: { title: "ListRapport", authRequired: true },
+    component: () => import("../views/tickets/listeRapport")
+  },
   {
     path: "/agent/tickets",
     name: "opentickets",

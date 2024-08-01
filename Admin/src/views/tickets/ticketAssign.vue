@@ -21,6 +21,7 @@ export default {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user && user.id) {
             this.agentId = user.id;
+            console.log(this.agentId);
             this.fetchAgentTickets();
         } else {
             console.error('Agent ID is not defined in the URL.');

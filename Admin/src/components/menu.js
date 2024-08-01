@@ -22,9 +22,9 @@ export const menuItems = [
             {
                 id: 4,
                 label: "Statistiques",
-                link: "/statistiques",
+                link: "/activite/agent",
                 parentId: 2,
-                roles: ['Admin', 'Client', 'Agent']
+                roles: ['Agent']
             },
         ]
     },
@@ -109,8 +109,8 @@ export const menuItems = [
             },
             {
                 id: 50,
-                label: "All tickets",
-                link: "/ticket",
+                label: "Liste des rapports",
+                link: "/listeRapport",
                 parentId: 43,
                 roles: ['Agent']
             },

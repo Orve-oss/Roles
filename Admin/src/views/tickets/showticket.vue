@@ -131,7 +131,7 @@ export default {
                      </BRow>
 
                      <div class="mt-2">
-                        <BButton variant="primary" class="me-1">
+                        <BButton variant="primary" type="submit" class="me-1">
                            Save Changes
                         </BButton>
                         <BButton variant="secondary">Cancel</BButton>

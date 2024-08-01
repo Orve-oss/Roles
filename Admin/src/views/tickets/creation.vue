@@ -82,11 +82,13 @@ export default {
             if (this.ticket.image) {
                 formData.append('image', this.ticket.image);
             }
-            console.log(formData);
+
             await axios.post('http://127.0.0.1:8000/api/tickets', formData
 
              )
+
                 .then(response => {
+                    console.log(formData);
                     this.errors = null;
                     console.log(response);
 
