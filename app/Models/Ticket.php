@@ -19,6 +19,9 @@ class Ticket extends Model
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function assignedBy(){
+        return $this->belongsTo(User::class, 'assigned_by');
+    }
     public function type(){
         return $this->belongsTo(TypeTicket::class, 'type_ticket_id');
     }

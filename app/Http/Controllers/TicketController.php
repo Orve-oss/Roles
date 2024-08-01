@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TicketReassign;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -169,12 +171,13 @@ class TicketController extends Controller
     public function assign(Request $request, $id)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id'
+            'agent_id' => 'required|exists:users,id'
         ]);
 
         $ticket = Ticket::findOrFail($id);
-        $ticket->user_id = $request->user_id;
-        $ticket->update();
+        $ticket->user_id = $request->agent_id;
+        $ticket->assigned_by = auth()->user()->id;
+        $ticket->save();
         return response()->json(['message' => 'Ticket assigné aves succès']);
     }
 
@@ -190,5 +193,14 @@ class TicketController extends Controller
         }
         $tickets = Ticket::where('service_id', $service->id)->get();
         return response()->json($tickets);
+    }
+    public function sendEmail($id){
+        $ticket = Ticket::findOrFail($id);
+        $admin = $ticket->assignedBy;
+        if (!$admin) {
+            return response()->json(['message'=>'Admin not found']);
+        }
+        Mail::to($admin->email)->send(new TicketReassign());
+        return response()->json(['message'=>'Email envoyé']);
     }
 }
