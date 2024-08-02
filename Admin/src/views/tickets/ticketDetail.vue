@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 
+
 /**
  * Add-product component
  */
@@ -16,21 +17,33 @@ export default {
    },
    data() {
       return {
+         comment: {
+            contenu: '',
+            ticket_id: null
+         },
          ticket: {
             sujet: '',
             description: '',
             status: '',
+            image:'',
             service: { nom_service: '' },
             priorite: { niveau: '' },
             type: { libelle: '' },
             created_at: '',
          },
+         showImageModal: false,
       };
    },
    mounted() {
       this.fetchTicket();
+      const id = this.$route.params.id;
+      this.comment.ticket_id = id;
+      console.log(this.comment.ticket_id);
    },
    methods: {
+      getImageUrl(imagePath) {
+      return `http://127.0.0.1:8000/storage/${imagePath}`;
+    },
 
       fetchTicket() {
          const id = this.$route.params.id;
@@ -101,12 +114,64 @@ export default {
 
          })
       },
-      sendResolutionMail(){
+      sendResolutionEmail() {
          const id = this.$route.params.id;
-         axios.post(`http://127.0.0.1:8000/api/tickets/send-resolution/${id}`)
-         .then(()=>{
-            alert('Email de résolution envoyé avec succès');
-         }).catch(error => {
+         Swal.fire({
+            title: 'Voulez vous envoyer un mail de résolution de ticket',
+
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonText: 'Annuler',
+            confirmButtonText: 'Oui envoyer!'
+         }).then((result) => {
+            if (result.isConfirmed) {
+               axios.post(`http://127.0.0.1:8000/api/tickets/send-resolution/${id}`)
+                  .then((response) => {
+                     Swal.fire(
+                        'Envoyé',
+                        response.data.message,
+                        'success'
+                     );
+
+
+                  }).catch((error) => {
+                     if (error.response) {
+                        Swal.fire(
+                           'Erreur!',
+                           'Erreur lors de l\'envoi du mail',
+                           'error'
+
+                        );
+
+                     }
+
+                  })
+
+            }
+
+
+
+         })
+      },
+      generateRapport(ticketId){
+         axios.post(`http://127.0.0.1:8000/ticket/${ticketId}/rapport`)
+         .then(response =>{
+            Swal.fire('Succes', response.data.message, 'success');
+         }).catch(error=>{
+            console.log('Erreur', error);
+            Swal.fire('Erreur', 'Erreur de génération', 'error');
+         });
+      },
+      addComment(){
+
+         const formData = new FormData();
+         formData.append('contenu', this.comment.contenu);
+         formData.append('ticket_id', this.comment.ticket_id);
+         axios.post(`http://127.0.0.1:8000/api/comments`, formData)
+         .then(response=>{
+            console.log(response.data);
+         }).catch(error =>{
             console.error('Erreur', error);
          });
       }
@@ -154,7 +219,6 @@ export default {
                            <div class="mb-3">
                               <BFormGroup label="Statut">
                                  <BFormSelect v-model="ticket.status">
-                                    <BFormSelectOption value="En attente"> En attente </BFormSelectOption>
                                     <BFormSelectOption value="En cours">En cours</BFormSelectOption>
                                     <BFormSelectOption value="Résolu">Résolu</BFormSelectOption>
                                     <BFormSelectOption value="Fermé"> Fermé</BFormSelectOption>
@@ -165,6 +229,11 @@ export default {
                               <BFormGroup label="Description">
                                  <BFormTextarea id="productdesc" v-model="ticket.description" class="form-control"
                                     placeholder="Product Description" rows="5" aria-disabled="true"></BFormTextarea>
+                              </BFormGroup>
+                           </div>
+                           <div v-if="ticket.image" class="mb-3">
+                              <BFormGroup label="Image">
+                                 <BCardImg :src="getImageUrl(ticket.image)" @click="showImageModal = true" style="cursor: pointer; max-width: 50%;"></BCardImg>
                               </BFormGroup>
                            </div>
                         </BCol>
@@ -179,13 +248,17 @@ export default {
 
                      </div>
                      <div class="mt-2" v-if="ticket.status === 'Résolu'">
-                        <BButton variant="light" @click="sendResolutionMail"> Mail</BButton>
+                        <BButton variant="light" @click="sendResolutionEmail" class="me-2"> Mail</BButton>
+                        <BButton variant="primary">Rapport</BButton>
                      </div>
                   </BForm>
                </BCard>
             </BCard>
          </BCol>
       </BRow>
+      <BModal v-model="showImageModal" title="image" hide-footer>
+         <img :src="getImageUrl(ticket.image)" class="img-fluid" />
+      </BModal>
       <BRow>
          <BCol lg="12">
             <BCard no-body>
@@ -194,25 +267,25 @@ export default {
                      <BRow class="justify-content-center">
                         <BCol xl="8">
                            <div>
-
-                              <div class="mt-3">
+                              <BForm @submit.prevent="addComment">
+                                 <div class="mt-3">
                                  <div class="mt-5">
                                     <h5 class="font-size-15">
                                        <i class="bx bx-message-dots text-muted align-middle me-1"></i>
                                        Commentaires :
                                     </h5>
 
-                                 </div>
 
+                                 </div>
                                  <div class="mt-4">
-                                    <h5 class="font-size-16 mb-3">Leave a Message</h5>
+                                    <h5 class="font-size-16 mb-3">Mettre une note de travail</h5>
 
                                     <BForm>
 
                                        <div class="mb-3">
                                           <label for="commentmessage-input">Message</label>
-                                          <BFormTextarea class="form-control" id="commentmessage-input"
-                                             placeholder="Your message..." rows="3"></BFormTextarea>
+                                          <BFormTextarea class="form-control" v-model="comment.contenu" id="commentmessage-input"
+                                             placeholder="Mettez une note de travail" rows="3"></BFormTextarea>
                                        </div>
 
                                        <div class="text-end">
@@ -223,6 +296,8 @@ export default {
                                     </BForm>
                                  </div>
                               </div>
+                              </BForm>
+
                            </div>
                         </BCol>
                      </BRow>

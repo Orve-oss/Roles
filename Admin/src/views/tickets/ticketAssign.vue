@@ -79,7 +79,7 @@ export default {
                                     </BButton>
                                     <BButton @click="fetchTickets('En attente')" class="btn-rounded mb-2 me-2"
                                         variant="dark">
-                                        <i class="bx bx-hourglass bx-spin font-size-16 align-middle"></i>
+                                        
                                         En attente
                                     </BButton>
                                     <BButton @click="fetchTickets('En cours')" variant="primary"

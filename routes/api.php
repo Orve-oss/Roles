@@ -107,3 +107,4 @@ Route::get('/tickets/agent/{agentId}', [TicketController::class, 'getticketsByAg
 Route::get('/tickets/status/{status}', [TicketController::class, 'getTicketByStatus']);
 Route::put('/tickets/update-status/{id}', [TicketController::class, 'updateStatus']);
 Route::post('/tickets/send-resolution/{id}', [TicketController::class, 'sendResolution']);
+Route::post('/ticket/{ticketId}/rapport', [TicketController::class, 'generateReport']);

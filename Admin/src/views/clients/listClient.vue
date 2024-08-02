@@ -59,6 +59,11 @@ export default {
          axios.post('http://127.0.0.1:8000/api/clients', this.newClient)
             .then((response) => {
                this.fetchClients();
+               Swal.fire(
+                'Client crée',
+                'Un mail sera envoyé pour l\'activation du compte de ce client',
+                'success'
+               );
                this.showCreateModal = false;
                this.newClient = { name: '', email: '' };
                console.log('Client created successfully:', response.data);

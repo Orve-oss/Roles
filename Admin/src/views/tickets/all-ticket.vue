@@ -33,6 +33,7 @@ export default {
         },
 
         fetchTickets(status) {
+
             let url = `http://127.0.0.1:8000/api/tickets`;
             if (status) {
                 url = `http://127.0.0.1:8000/api/tickets/status/${status}`;
@@ -87,6 +88,7 @@ export default {
                 user_id: this.userId, assigned_by: this.currentUser
             })
                 .then(response => {
+                    this.fetchTickets();
                     this.showModal= false;
                     Swal.fire(
                         'Assigné',
@@ -132,7 +134,7 @@ export default {
                                     </BButton>
                                     <BButton @click="fetchTickets('En attente')" class="btn-rounded mb-2 me-2"
                                         variant="dark">
-                                        <i class="bx bx-hourglass bx-spin font-size-16 align-middle"></i>
+                                        
                                         En attente
                                     </BButton>
                                     <BButton @click="fetchTickets('En cours')" variant="primary"

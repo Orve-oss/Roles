@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ResolutionMail;
 use App\Mail\TicketReassign;
+use App\Models\Historique;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
@@ -57,7 +58,7 @@ class TicketController extends Controller
             $imagePath = $request->file('image')->store('tickets', 'public');
             $ticketData['image'] = $imagePath;
         }
-        $ticketData['status'] = 'En attente';
+
 
         $ticket = Ticket::create($ticketData);
 
@@ -70,7 +71,7 @@ class TicketController extends Controller
 
     public function getTicketByStatus($status)
     {
-        $tickets = Ticket::where('status', $status)->get();
+        $tickets = Ticket::where('status', $status)->with(['type', 'priorite', 'service'])->get();
         return response()->json($tickets);
     }
 
@@ -180,6 +181,7 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($id);
         $ticket->user_id = $request->user_id;
         $ticket->assigned_by = $request->assigned_by;
+        $ticket->status = 'Assigné';
         $ticket->save();
         return response()->json(['message' => 'Ticket assigné aves succès']);
     }
@@ -212,6 +214,19 @@ class TicketController extends Controller
         if (!$client || !$client->email) {
             return response()->json(['message' => 'Email du client introuvable'], 404);
         }
+
         Mail::to($client->email)->send(new ResolutionMail($ticket));
+        return response()->json([
+            'message' => 'Mail envoyé',
+            'status' => 200
+        ]);
+    }
+    public function generateReport($ticketId){
+        $ticket = Ticket::findOrFail($ticketId);
+        $report = Historique::create([
+            'ticket_id'=>$ticket->id,
+            // 'description'=>
+        ]);
+        return response()->json(['message'=>'Rapport crée', 'report'=>$report]);
     }
 }

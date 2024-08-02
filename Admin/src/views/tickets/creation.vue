@@ -96,7 +96,11 @@ export default {
                 formData.append('image', this.ticket.image);
             }
 
-            await axios.post('http://127.0.0.1:8000/api/tickets', formData
+            await axios.post('http://127.0.0.1:8000/api/tickets', formData,{
+                headers:{
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
 
              )
 
@@ -108,7 +112,7 @@ export default {
                     this.ticket = {
                         sujet: '',
                         description: '',
-                        image: null,
+                        image: '',
                         status: 'En attente',
                         type: '',
                         service: '',

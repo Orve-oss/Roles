@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Commentaire;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CommentaireController extends Controller
 {
@@ -28,7 +29,21 @@ class CommentaireController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'contenu' => 'required|string|max:100',
+            'ticket_id' => 'required|string',
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        $commentData = $validator->validated();
+        $comment = Commentaire::create($commentData);
+        return response()->json([
+            'message' => 'Ticket créé avec succès',
+            'status' => 200,
+            'ticket' => $comment
+        ]);
     }
 
     /**
