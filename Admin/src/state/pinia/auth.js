@@ -52,7 +52,7 @@ export const useAuthStore = defineStore("auth", {
                 const role = this.currentUser.role[0]; // Assurez-vous d'accéder directement à la propriété
                 switch (role) {
                     case 'Admin':
-                        return 'listUser';
+                        return 'default';
                     case 'Agent':
                         return 'opentickets';
                     case 'Client':

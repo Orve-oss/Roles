@@ -59,6 +59,8 @@ Route::post('/users', [UserController::class, 'store']);
 Route::get('/users/{id}', [UserController::class, 'show']);
 Route::put('/update/{id}', [UserController::class, 'update']);
 Route::delete('/delete/{id}', [UserController::class, 'destroy']);
+Route::middleware('auth:sanctum')->get('/user-profile', [UserController::class, 'getUserprofile']);
+Route::post('/updateUser/profile',[UserController::class, 'updateProfile']);
 
 Route::get('/services', [ServiceController::class, 'index']);
 Route::post('/services', [ServiceController::class, 'store']);

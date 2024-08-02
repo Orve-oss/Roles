@@ -86,13 +86,13 @@ export const menuItems = [
                 parentId: 43,
                 roles: ['Agent']
             },
-            {
-                id: 47,
-                label: "Tickets fermés",
-                link: "/closedticket",
-                parentId: 43,
-                roles: ['Admin']
-            },
+            // {
+            //     id: 47,
+            //     label: "Tickets fermés",
+            //     link: "/closedticket",
+            //     parentId: 43,
+            //     roles: ['Admin']
+            // },
             {
                 id: 48,
                 label: "Creation",
@@ -112,7 +112,7 @@ export const menuItems = [
                 label: "Liste des rapports",
                 link: "/listeRapport",
                 parentId: 43,
-                roles: ['Agent']
+                roles: ['Agent', 'Admin']
             },
         ]
     },
@@ -129,13 +129,13 @@ export const menuItems = [
                 parentId: 51,
                 roles: ['Admin']
             },
-            {
-                id: 53,
-                label: "Creer un client",
-                link: "/openticket",
-                parentId: 51,
-                roles: ['Admin']
-            },
+            // {
+            //     id: 53,
+            //     label: "Creer un client",
+            //     link: "/openticket",
+            //     parentId: 51,
+            //     roles: ['Admin']
+            // },
             // {
             //     id: 53,
             //     label: "Profil Client",

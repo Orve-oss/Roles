@@ -118,4 +118,32 @@ class UserController extends Controller
     public function destroy()
     {
     }
+    public function getUserprofile()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+        $user->roles->pluck('name');
+        return response()->json([
+            'user' => $user,
+            'image' => $user->image ? url('storage/' . $user->image) : null,
+        ]);
+    }
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user instanceof User) {
+            return response()->json(['error' => 'Invalid user'], 400);
+        }
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role = $request->role;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('image', 'pulic');
+            $user->image = $path;
+        }
+        $user->save();
+        return response()->json(['message' => 'Profil modifié avec succès']);
+    }
 }

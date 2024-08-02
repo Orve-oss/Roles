@@ -37,7 +37,7 @@ export default {
                axios.get(`http://127.0.0.1:8000/api/agents`),
                axios.get(`http://127.0.0.1:8000/api/clients`),
                axios.get(`http://127.0.0.1:8000/api/tickets`),
-               axios.get(`http://127.0.0.1:8000/api/tickets/status/En attente`),
+               axios.get(`http://127.0.0.1:8000/api/tickets/status/Assigné`),
                axios.get(`http://127.0.0.1:8000/api/tickets/status/En cours`),
                axios.get(`http://127.0.0.1:8000/api/tickets/status/Résolu`),
             ]);
@@ -71,7 +71,7 @@ export default {
                            <div class="d-flex flex-wrap">
                               <div class="me-3">
                                  <p class="text-muted mb-2">Agents</p>
-                                 <h5 class="mb-0">{{numAgents || 10}}</h5>
+                                 <h5 class="mb-0">{{ numAgents || 10 }}</h5>
                               </div>
 
                               <div class="avatar-sm ms-auto">
@@ -89,7 +89,7 @@ export default {
                            <div class="d-flex flex-wrap">
                               <div class="me-3">
                                  <p class="text-muted mb-2">Clients</p>
-                                 <h5 class="mb-0">{{numClients || 10}}</h5>
+                                 <h5 class="mb-0">{{ numClients || 10 }}</h5>
                               </div>
 
                               <div class="avatar-sm ms-auto">
@@ -107,7 +107,7 @@ export default {
                            <div class="d-flex flex-wrap">
                               <div class="me-3">
                                  <p class="text-muted mb-2">Tickets </p>
-                                 <h5 class="mb-0">{{numTickets || 10}}</h5>
+                                 <h5 class="mb-0">{{ numTickets || 10 }}</h5>
                               </div>
 
                               <div class="avatar-sm ms-auto">
@@ -128,7 +128,7 @@ export default {
                            <div class="d-flex flex-wrap">
                               <div class="me-3">
                                  <p class="text-muted mb-2">Tickets assignés</p>
-                                 <h5 class="mb-0">{{numTicketsAssigned || 10}}</h5>
+                                 <h5 class="mb-0">{{ numTicketsAssigned || 0 }}</h5>
                               </div>
 
                               <div class="avatar-sm ms-auto">
@@ -146,7 +146,7 @@ export default {
                            <div class="d-flex flex-wrap">
                               <div class="me-3">
                                  <p class="text-muted mb-2">Tickets en cours</p>
-                                 <h5 class="mb-0">{{numTicketsInProgress || 10}}</h5>
+                                 <h5 class="mb-0">{{ numTicketsInProgress || 0 }}</h5>
                               </div>
 
                               <div class="avatar-sm ms-auto">
@@ -164,7 +164,7 @@ export default {
                            <div class="d-flex flex-wrap">
                               <div class="me-3">
                                  <p class="text-muted mb-2">Tickets Résolus</p>
-                                 <h5 class="mb-0">{{numTicketsResolved || 10}}</h5>
+                                 <h5 class="mb-0">{{ numTicketsResolved || 0 }}</h5>
                               </div>
 
                               <div class="avatar-sm ms-auto">
