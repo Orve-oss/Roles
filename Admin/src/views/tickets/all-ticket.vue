@@ -17,12 +17,15 @@ export default {
             userId: null,
             agents: [],
             showModal: false,
-            currentTicketId: null
+            currentTicketId: null,
+            currentUser: null
         };
     },
     mounted() {
         this.fetchTickets();
         this.fetchAgents();
+        this.currentUser = this.getUserId();
+        console.log(this.currentUser);
     },
     methods: {
         viewTicket(id) {
@@ -58,11 +61,20 @@ export default {
             this.currentTicketId = ticketId;
             this.showModal = true;
         },
+        getUserId(){
+            const user = JSON.parse(localStorage.getItem('user'));
+            console.log('user from localstorage:',user);
+            console.log('id',user.id);
+            return user ? user.id : null;
+
+        },
         async assignTicket() {
 
             const ticketId = this.currentTicketId;
             console.log(ticketId);
             console.log(this.userId);
+
+
             if (!this.userId) {
                 Swal.fire(
                     'Erreur',
@@ -72,7 +84,7 @@ export default {
                 return;
             }
             await axios.post(`http://127.0.0.1:8000/api/tickets/${ticketId}/assign`, {
-                user_id: this.userId
+                user_id: this.userId, assigned_by: this.currentUser
             })
                 .then(response => {
                     this.showModal= false;

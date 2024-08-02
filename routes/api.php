@@ -102,8 +102,8 @@ Route::put('/updatehist/{id}', [HistoriqueController::class, 'update']);
 Route::delete('/deletehist/{id}', [HistoriqueController::class, 'destroy']);
 
 Route::get('/agents', [UserController::class, 'getAgents']);
-Route::middleware('auth:sanctum')->post('/tickets/{id}/assign', [TicketController::class, 'assign']);
-Route::get('/tickets/{agentId}', [TicketController::class, 'getticketsByAgent']);
+Route::post('/tickets/{id}/assign', [TicketController::class, 'assign']);
+Route::get('/tickets/agent/{agentId}', [TicketController::class, 'getticketsByAgent']);
 Route::get('/tickets/status/{status}', [TicketController::class, 'getTicketByStatus']);
 Route::put('/tickets/update-status/{id}', [TicketController::class, 'updateStatus']);
 Route::post('/tickets/send-resolution/{id}', [TicketController::class, 'sendResolution']);

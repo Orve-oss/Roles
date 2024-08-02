@@ -172,12 +172,14 @@ class TicketController extends Controller
     public function assign(Request $request, $id)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
+            'assigned_by'=> 'required|exists:users,id'
+
         ]);
 
         $ticket = Ticket::findOrFail($id);
         $ticket->user_id = $request->user_id;
-        $ticket->assigned_by = auth()->user()->id;
+        $ticket->assigned_by = $request->assigned_by;
         $ticket->save();
         return response()->json(['message' => 'Ticket assigné aves succès']);
     }

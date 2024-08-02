@@ -18,27 +18,26 @@ export default {
         };
     },
     mounted() {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user && user.id) {
-            this.agentId = user.id;
-            console.log(this.agentId);
-            this.fetchAgentTickets();
-        } else {
-            console.error('Agent ID is not defined in the URL.');
-
-        }
+        this.agentId = this.getAgentId();
+        console.log(this.agentId);
+        this.fetchAgentTickets();
     },
     methods: {
         viewTicket(id) {
             this.$router.push({ name: 'TicketDetail', params: { id } });
         },
+        getAgentId(){
+            const user = JSON.parse(localStorage.getItem('user'));
+            return user ? user.id : null;
+        },
 
         fetchAgentTickets() {
+            this.agentId = this.getAgentId();
 
             if (!this.agentId) {
                 console.error('Agent Id is not defined');
             }
-            axios.get(`http://127.0.0.1:8000/api/tickets/${this.agentId}`)
+            axios.get(`http://127.0.0.1:8000/api/tickets/agent/${this.agentId}`)
                 .then(response => {
                     console.log(response.data);
                     this.tickets = response.data;
