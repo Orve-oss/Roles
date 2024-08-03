@@ -19,6 +19,12 @@ export default [
     component: () => import("../views/users/listeUser")
   },
   {
+    path: "/accueil",
+    name: "AccueilClient",
+    meta: { title: "AccueilClient", authRequired: true, role: 'Client' },
+    component: () => import("../views/clients/accueil")
+  },
+  {
     path: "/createUser",
     name: "createUsers",
     meta: { title: "createUsers", authRequired: true },
