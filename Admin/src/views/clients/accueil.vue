@@ -119,7 +119,7 @@ export default {
                <div class="col-lg-12">
                   <h1 class="display-4">Comment pouvons nous vous aider?</h1>
                   <p>
-                     <a class="btn btn-secondary btn-lg" role="button">Plus d'infos</a>
+                     <a class="btn btn-secondary btn-lg me-1" role="button">Plus d'infos</a>
                      <a class="btn btn-primary btn-lg" role="button">Espace Client</a>
                   </p>
                </div>

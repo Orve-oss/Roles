@@ -47,7 +47,7 @@ class TicketController extends Controller
             'type_ticket_id' => 'required',
             'priorite_id' => 'required',
             'client_id'=> 'required|exists:clients,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,pdf|max:2048000'
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
@@ -207,6 +207,24 @@ class TicketController extends Controller
         }
         Mail::to($admin->email)->send(new TicketReassign($ticket));
         return response()->json(['message'=>'Email envoyé']);
+    }
+
+    public function email(Request $request){
+        $validator = Validator::make($request->all(), [
+            'ticket_id' => 'required|exists:tickets, id',
+            'work_description' => 'required|string'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        $ticket = Ticket::find($request->ticket_id);
+        $client = $ticket->client;
+        $workDescription = $request->work_description;
+        try {
+            Mail::to($client->email);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
     public function sendResolution($id){
         $ticket = Ticket::findOrFail($id);

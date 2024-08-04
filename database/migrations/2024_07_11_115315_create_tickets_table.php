@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('service_id')->constrained('services', 'id');
             $table->foreignId('type_ticket_id')->constrained('type_tickets', 'id');
             $table->foreignId('priorite_id')->constrained('priorites', 'id');
+            $table->string('work_description')->nullable();
             $table->timestamps();
         });
     }

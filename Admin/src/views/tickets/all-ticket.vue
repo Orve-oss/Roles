@@ -29,7 +29,7 @@ export default {
     },
     methods: {
         viewTicket(id) {
-            this.$router.push({ name: 'TicketDetail', params: { id } });
+            this.$router.push({ name: 'ShowTicket', params: { id } });
         },
 
         fetchTickets(status) {
@@ -134,7 +134,7 @@ export default {
                                     </BButton>
                                     <BButton @click="fetchTickets('En attente')" class="btn-rounded mb-2 me-2"
                                         variant="dark">
-                                        
+
                                         En attente
                                     </BButton>
                                     <BButton @click="fetchTickets('En cours')" variant="primary"

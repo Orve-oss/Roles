@@ -25,6 +25,21 @@ export default [
     component: () => import("../views/clients/accueil")
   },
   {
+    path: "/",
+    name: "AccueilUser",
+    meta: { title: "Accueil Utilisateur",
+        beforeResolve(routeTo, routeFrom, next){
+            const auth = useAuthStore();
+            if (auth.loggedIn) {
+                next({ name: auth.redirectRouteBasedOnRole()});
+            } else {
+                next();
+            }
+        }
+    },
+    component: () => import("../views/users/accueilUser")
+  },
+  {
     path: "/createUser",
     name: "createUsers",
     meta: { title: "createUsers", authRequired: true },
@@ -188,21 +203,21 @@ export default [
       }
     }
   },
-  {
-    path: "/",
-    name: "Login sample",
-    component: () => import("../views/sample-pages/login-sample"),
-    meta: { title: "Login",
-        beforeResolve(routeTo, routeFrom, next){
-            const auth = useAuthStore();
-            if (auth.loggedIn) {
-                next({ name: auth.redirectRouteBasedOnRole()});
-            } else {
-                next();
-            }
-        }
-    }
-  },
+//   {
+//     path: "/",
+//     name: "Login sample",
+//     component: () => import("../views/sample-pages/login-sample"),
+//     meta: { title: "Login",
+//         beforeResolve(routeTo, routeFrom, next){
+//             const auth = useAuthStore();
+//             if (auth.loggedIn) {
+//                 next({ name: auth.redirectRouteBasedOnRole()});
+//             } else {
+//                 next();
+//             }
+//         }
+//     }
+//   },
   {
     path: "/auth/login-2",
     name: "Login-2-sample",

@@ -89,6 +89,7 @@ Route::get('/tickets/{id}', [TicketController::class, 'show']);
 Route::put('/updateticket/{id}', [TicketController::class, 'update']);
 Route::delete('/deleteticket/{id}', [TicketController::class, 'destroy']);
 Route::get('tickets/service/{servicename}', [TicketController::class, 'getTicketsByservice']);
+Route::post('/tickets/send-email', [TicketController::class, 'email']);
 
 
 Route::get('/commentaires', [CommentaireController::class, 'index']);

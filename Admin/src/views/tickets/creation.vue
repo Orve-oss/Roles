@@ -78,7 +78,21 @@ export default {
                 });
         },
         handleImageUpload(event) {
-            this.ticket.image = event.target.files[0];
+            const file = event.target.files[0];
+            const fileType = file.type;
+            const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            const validFileTypes = ['application/pdf'];
+            const maxFileSize = 2* 1024 * 1024 * 1024;
+            if (validImageTypes.includes(fileType) || validFileTypes.includes(fileType)) {
+                if (file.size <= maxFileSize) {
+                    this.ticket.image = file;
+                }
+                else {
+                Swal.fire('Erreur', 'Le fichier dépasse la taille maximale d 2Go.', 'error');
+            }
+            } else {
+                Swal.fire('Erreur', 'Seuls les fichiers au format JPEG, PNG, JPG, GIF et PDF sont autorisés', 'error');
+            }
         },
         async createTicket() {
 
@@ -160,7 +174,6 @@ export default {
                                             <label for="sujet" class="col-form-label col-lg-2">Type</label>
                                             <BCol lg="10">
                                                 <BFormSelect v-model="ticket.type" class="form-select">
-                                                    <BFormSelectOption :value="null">Select</BFormSelectOption>
                                                     <BFormSelectOption v-for="type in types" :key="type.id"
                                                         :value="type.id">{{
                                                             type.libelle }}</BFormSelectOption>
@@ -173,7 +186,6 @@ export default {
                                             <label for="sujet" class="col-form-label col-lg-2">Service</label>
                                             <BCol lg="10">
                                                 <BFormSelect v-model="ticket.service" class="form-select">
-                                                    <BFormSelectOption :value="null">Select</BFormSelectOption>
                                                     <BFormSelectOption v-for="service in services" :key="service.id"
                                                         :value="service.id">{{
                                                             service.nom_service }}</BFormSelectOption>
