@@ -1,5 +1,6 @@
 <script>
 import Acuueil from "@/assets/images/Acuueil.jpg"
+import logo from "@/assets/images/logo.jpg"
 
 // import { Autoplay } from "swiper";
 import "swiper/css";
@@ -20,6 +21,7 @@ export default {
       return {
          showModal: true,
          Acuueil,
+         logo,
          email: '',
          password: '',
          password_confirmation: '',
@@ -74,7 +76,7 @@ export default {
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
          <div class="container">
             <a class="navbar-brand" href="#">
-               <img src="assets/images/clients/1.png" alt="Logo" height="40">
+               <img :src="logo" alt="Logo" height="40">
             </a>
             <BButton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,9 +117,9 @@ export default {
          <div class="container">
             <div class="row">
                <div class="col-lg-12">
-                  <h1 class="display-4">Comment pouvons vous aider?</h1>
+                  <h1 class="display-4">Comment pouvons nous vous aider?</h1>
                   <p>
-                     <a class="btn btn-secondary btn-lg" role="button">MORE INFO</a>
+                     <a class="btn btn-secondary btn-lg" role="button">Plus d'infos</a>
                      <a class="btn btn-primary btn-lg" role="button">Espace Client</a>
                   </p>
                </div>
@@ -134,8 +136,8 @@ export default {
                <BRow>
                   <BCol xl="8">
                      <BRow>
-                        <BCol sm="4">
-                           <BCard no-body>
+                        <BCol sm="4" >
+                           <BCard no-body :style="{height: '400px'}">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
                                     <div class="avatar-xs me-3">
@@ -162,14 +164,8 @@ export default {
                               </BCardBody>
                            </BCard>
                         </BCol>
-                     </BRow>
-                  </BCol>
-               </BRow>
-               <BRow>
-                  <BCol xl="8">
-                     <BRow>
-                        <BCol sm="4">
-                           <BCard no-body>
+                        <BCol sm="4" >
+                           <BCard no-body :style="{height: '400px'}">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
                                     <div class="avatar-xs me-3">
@@ -196,14 +192,8 @@ export default {
                               </BCardBody>
                            </BCard>
                         </BCol>
-                     </BRow>
-                  </BCol>
-               </BRow>
-               <BRow>
-                  <BCol xl="8">
-                     <BRow>
                         <BCol sm="4">
-                           <BCard no-body>
+                           <BCard no-body :style="{height: '400px'}">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
                                     <div class="avatar-xs me-3">
@@ -230,8 +220,11 @@ export default {
                               </BCardBody>
                            </BCard>
                         </BCol>
+
                      </BRow>
+
                   </BCol>
+
                </BRow>
             </Layout>
             <!-- <div class="row">
@@ -255,7 +248,7 @@ export default {
                     </div>
                 </div> -->
          </div>
-         <BModal v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true">
+         <BModal v-model="showModal" hide-footer  :no-close-on-backdrop="true">
 
 
             <div class="p-2">
@@ -323,7 +316,7 @@ export default {
       </section>
 
       <!-- Footer -->
-      <footer class="footer-expand-lg bg-light text-center py-4">
+      <footer class="footer-expand-lg bg-dark text-center py-4">
          <div class="container">
             <p>Contact us: <a href="mailto:info@example.com">info@example.com</a></p>
 

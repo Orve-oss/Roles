@@ -106,51 +106,66 @@ export default {
 <template>
     <Layout>
         <BRow class="justify-content-center">
-            <BCol md="8" lg="6" xl="5">
+            <BCol md="10" lg="8" xl="8">
                 <BCard no-body class="overflow-hidden">
-                    <BCardBody class="pt-0">
-                        <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{ authError }}</BAlert>
-                        <div v-if="notification.message" :class="'alert ' + notification.type">
-                            {{ notification.message }}
-                        </div>
-                        <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{ authSucces }}
-                        </BAlert>
-                        <div v-if="notification.message" :class="'alert ' + notification.type">
-                            {{ notification.message }}
-                        </div>
-
-                        <BForm class="p-5" @submit.prevent="tryToLogIn">
-                            <BFormGroup class="mb-3" id="input-group-1" label="Email" label-for="input-1">
-                                <BFormInput id="input-1" v-model="email" type="text" placeholder="Enter email" :class="{
-                                    'is-invalid': submitted && v$.email.$error,
-                                }"></BFormInput>
-                                <div v-for="(item, index) in v$.email.$errors" :key="index" class="invalid-feedback">
-                                    <span v-if="item.$message">{{ item.$message }}</span>
-                                </div>
-                            </BFormGroup>
-
-                            <BFormGroup class="mb-3" id="input-group-2" label="Password" label-for="input-2">
-                                <BFormInput id="input-2" v-model="password" type="password" placeholder="Enter password"
-                                    :class="{
-                                        'is-invalid': submitted && v$.password.$error,
-                                    }"></BFormInput>
-                                <div v-if="submitted && v$.password.$error" class="invalid-feedback">
-                                    <span v-if="v$.password.required.$message">{{
-                                        v$.password.required.$message
-                                        }}</span>
-                                </div>
-                            </BFormGroup>
-
-                            <div class="mt-3 d-grid">
-                                <BButton type="submit" variant="primary" class="btn-block">Log In</BButton>
+                    <BRow>
+                        <BCol md="5" class="bg-light p-4 d-flex flex-column justify-content-center">
+                            <div class="text-center">
+                                <h4> Bienvenue sur votre portail</h4>
+                                <p class="mb-0"> Merci de vous connecter</p>
                             </div>
-                            <div class="mt-4 text-center">
-                                <router-link to="/forgot-password" class="text-muted">
-                                    <i class="mdi mdi-lock me-1"></i> Forgot your password?
-                                </router-link>
-                            </div>
-                        </BForm>
-                    </BCardBody>
+                        </BCol>
+                        <BCol md="7">
+                            <BCardBody class="pt-0">
+                                <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{ authError }}
+                                </BAlert>
+                                <div v-if="notification.message" :class="'alert ' + notification.type">
+                                    {{ notification.message }}
+                                </div>
+                                <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{ authSucces
+                                    }}
+                                </BAlert>
+                                <div v-if="notification.message" :class="'alert ' + notification.type">
+                                    {{ notification.message }}
+                                </div>
+
+                                <BForm class="p-5 " @submit.prevent="tryToLogIn">
+                                    <BFormGroup class="mb-3" id="input-group-1" label="Email" label-for="input-1">
+                                        <BFormInput id="input-1" v-model="email" class="w-100 mb-2" type="text" placeholder="Enter email"
+                                            :class="{
+                                                'is-invalid': submitted && v$.email.$error,
+                                            }"></BFormInput>
+                                        <div v-for="(item, index) in v$.email.$errors" :key="index"
+                                            class="invalid-feedback">
+                                            <span v-if="item.$message">{{ item.$message }}</span>
+                                        </div>
+                                    </BFormGroup>
+
+                                    <BFormGroup class="mb-3" id="input-group-2" label="Password" label-for="input-2">
+                                        <BFormInput id="input-2" v-model="password" type="password"
+                                            placeholder="Enter password" :class="{
+                                                'is-invalid': submitted && v$.password.$error,
+                                            }"></BFormInput>
+                                        <div v-if="submitted && v$.password.$error" class="invalid-feedback">
+                                            <span v-if="v$.password.required.$message">{{
+                                                v$.password.required.$message
+                                                }}</span>
+                                        </div>
+                                    </BFormGroup>
+
+                                    <div class="mt-3 d-grid">
+                                        <BButton type="submit" variant="primary" class="btn-block">Log In</BButton>
+                                    </div>
+                                    <div class="mt-4 text-center">
+                                        <router-link to="/forgot-password" class="text-muted">
+                                            <i class="mdi mdi-lock me-1"></i> Forgot your password?
+                                        </router-link>
+                                    </div>
+                                </BForm>
+                            </BCardBody>
+                        </BCol>
+                    </BRow>
+
                 </BCard>
             </BCol>
         </BRow>
