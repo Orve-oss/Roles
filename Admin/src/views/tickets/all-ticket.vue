@@ -18,7 +18,10 @@ export default {
             agents: [],
             showModal: false,
             currentTicketId: null,
-            currentUser: null
+            currentUser: null,
+            chooseAgent: null
+
+
         };
     },
     mounted() {
@@ -62,10 +65,10 @@ export default {
             this.currentTicketId = ticketId;
             this.showModal = true;
         },
-        getUserId(){
+        getUserId() {
             const user = JSON.parse(localStorage.getItem('user'));
-            console.log('user from localstorage:',user);
-            console.log('id',user.id);
+            console.log('user from localstorage:', user);
+            console.log('id', user.id);
             return user ? user.id : null;
 
         },
@@ -89,7 +92,7 @@ export default {
             })
                 .then(response => {
                     this.fetchTickets();
-                    this.showModal= false;
+                    this.showModal = false;
                     Swal.fire(
                         'Assigné',
                         response.data.message,
@@ -103,7 +106,11 @@ export default {
                         'error'
                     );
                 });
-        }
+        },
+        selectAgent(agentId) {
+
+            this.chooseAgent = agentId;
+        },
     }
 }
 
@@ -213,13 +220,37 @@ export default {
     </Layout>
     <BModal id="assignModal" v-model="showModal" ref="assignModal" title="Assigner un ticket à">
         <BForm @submit.prevent="assignTicket">
-            <BFormGroup label="Choisir un agent" label-for="agent-select">
-                <BFormSelect v-model="userId" id="agent-select">
-                    <!-- <BFormSelectOption :value="null">Select</BFormSelectOption> -->
-                    <BFormSelectOption v-for="agent in agents" :key="agent.id" :value="agent.id">
-                       Nom : {{ agent.name }} Email: {{ agent.email }}
-                    </BFormSelectOption>
-                </BFormSelect>
+            <table class="table agent-table" @click="selectAgent">
+
+                <tbody>
+                    <tr v-for="(agent, index) in agents" :key="agent.id"
+                        :class="{ 'table-white': index % 2 === 0, 'table-light': index % 2 !== 0, 'selected': selectedAgent === agent.id }"
+                        @click="selectAgent(agent.id)">
+                        <td></td>
+                        <td>
+                            <div class="agent-info">
+                                <span class="agent-name">{{ agent.name }}</span>
+                                <span class="agent-email">{{ agent.email }}</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-3">
+                <BFormGroup>
+                    <BButton variant="primary" type="submit" :disabled="!chooseAgent">Assigner</BButton>
+                </BFormGroup>
+            </div>
+        </BForm>
+    </BModal>
+    <!-- <BModal id="assignModal" v-model="showModal" ref="assignModal" title="Assigner un ticket à">
+        <BForm @submit.prevent="assignTicket">
+            <BFormGroup label="Choisir un agent" label-for="agents">
+                <BFormCheckboxGroup v-model="selectedAgents" id="agents">
+                    <BFormCheckbox v-for="agent in agents" :key="agent.id" :value="agent.id">
+                        {{ agent.name }} - {{ agent.email }}
+                    </BFormCheckbox>
+                </BFormCheckboxGroup>
             </BFormGroup>
             <div style="margin-top: 10px;">
                 <BFormGroup>
@@ -227,5 +258,48 @@ export default {
                 </BFormGroup>
             </div>
         </BForm>
-    </BModal>
+    </BModal> -->
 </template>
+<style>
+.agent-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.agent-table thead th {
+  text-align: left;
+}
+
+.agent-table tbody tr {
+  cursor: pointer;
+}
+
+.agent-table tbody tr.selected {
+  background-color: #E9ECEF;
+  color: white;
+}
+
+.agent-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.agent-name {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.agent-email {
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 5px;
+}
+
+.table-secondary {
+  background-color: #f2f2f2;
+}
+
+.table-light {
+  background-color: #fff;
+}
+</style>

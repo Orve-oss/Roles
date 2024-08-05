@@ -26,6 +26,13 @@ export const menuItems = [
                 parentId: 2,
                 roles: ['Agent']
             },
+            {
+                id: 5,
+                label: "Dashboard",
+                link: "/activite/client",
+                parentId: 2,
+                roles: ['Client']
+            },
         ]
     },
     {

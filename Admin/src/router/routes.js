@@ -8,9 +8,15 @@ export default [
   },
   {
     path: "/activite/agent",
-    name: "dashboard",
+    name: "statistiques",
     meta: { title: "tableau", authRequired: true, role: 'Agent' },
     component: () => import("../views/dashboards/activiteAgent")
+  },
+  {
+    path: "/activite/client",
+    name: "dashboard",
+    meta: { title: "dashboard", authRequired: true, role: 'Client' },
+    component: () => import("../views/dashboards/activiteClient")
   },
   {
     path: "/listuser",

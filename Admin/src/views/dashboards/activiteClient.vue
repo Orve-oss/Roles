@@ -70,7 +70,7 @@ export default {
                               <i class="mdi mdi-chevron-up ms-1 text-success"></i>
                            </h4>
                            <div class="d-flex">
-                              <span :class="`badge badge-green font-size-12`">12%</span>
+                              <span :class="`badge badge-soft-success font-size-12`">12%</span>
 
                            </div>
                         </div>
@@ -100,8 +100,8 @@ export default {
                               <i class="mdi mdi-chevron-up ms-1 text-success"></i>
                            </h4>
                            <div class="d-flex">
-                              <span :class="`badge badge-green font-size-12`">30%</span>
-                              
+                              <span :class="`badge badge-soft-success font-size-12`">30%</span>
+
                            </div>
                         </div>
                      </BCardBody>
