@@ -20,8 +20,17 @@ export default [
   },
   {
     path: "/accueil",
-    name: "AccueilClient",
-    meta: { title: "AccueilClient", authRequired: true, role: 'Client' },
+    name: "Accueil Client",
+    meta: { title: "Accueil Client",
+        beforeResolve(routeTo, routeFrom, next){
+            const auth = useAuthStore();
+            if (auth.loggedIn) {
+                next({ name: auth.redirectRouteBasedOnRole()});
+            } else {
+                next();
+            }
+        }
+    },
     component: () => import("../views/clients/accueil")
   },
   {

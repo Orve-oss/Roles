@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ResolutionMail;
+use App\Mail\TicketMailDescription;
 use App\Mail\TicketReassign;
 use App\Models\Historique;
 use App\Models\Service;
@@ -211,7 +212,7 @@ class TicketController extends Controller
 
     public function email(Request $request){
         $validator = Validator::make($request->all(), [
-            'ticket_id' => 'required|exists:tickets, id',
+            'ticket_id' => 'required|exists:tickets,id',
             'work_description' => 'required|string'
         ]);
         if ($validator->fails()) {
@@ -221,7 +222,7 @@ class TicketController extends Controller
         $client = $ticket->client;
         $workDescription = $request->work_description;
         try {
-            Mail::to($client->email);
+            Mail::to($client->email)->send(new TicketMailDescription($ticket,$workDescription));
         } catch (\Throwable $th) {
             //throw $th;
         }

@@ -56,7 +56,7 @@ export const useAuthStore = defineStore("auth", {
                     case 'Agent':
                         return 'opentickets';
                     case 'Client':
-                        return 'Profil';
+                        return 'Accueil Client';
                     default:
                         return 'default';
                 }

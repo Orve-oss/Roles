@@ -41,7 +41,7 @@ class TicketMailDescription extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'email',
             with:[
                 'ticket'=>$this->ticket,
                 'workDescription'=> $this->workDescription,

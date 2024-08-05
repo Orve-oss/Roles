@@ -321,8 +321,8 @@ export default {
                 </BCard>
             </BCol>
         </BRow>
-        <BModal v-model="showWorkModal" hide-footer hide-header :no-close-on-backdrop="true">
-            <BAlert :model-value="true" variant="success" class="text-center mb-4" @ok="updateTicketStatus">
+        <BModal v-model="showWorkModal" hide-header :no-close-on-backdrop="true" @ok="updateTicketStatus">
+            <BAlert :model-value="true" variant="success" class="text-center mb-4" >
                 Ajouter une description du travail en cours
             </BAlert>
             <BFormTextarea v-model="workDescription" placeholder="Entrez la description du travail en cours" rows="5"></BFormTextarea>

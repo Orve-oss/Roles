@@ -5,9 +5,13 @@ import logo from "@/assets/images/logo.jpg"
 // import { Autoplay } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
-import axios from "axios";
-import { required, email, helpers } from "@vuelidate/validators";
+// import axios from "axios";
+import { useAuthStore } from "../../state/pinia/auth";
+
+import { useNotificationStore } from '@/state/pinia'
+import { required, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core"
+const notificationStore = useNotificationStore();
 
 export default {
    name: "HomePage",
@@ -22,49 +26,71 @@ export default {
          showModal: true,
          Acuueil,
          logo,
-         email: '',
-         password: '',
-         password_confirmation: '',
+         email: "",
+         password: "",
          submitted: false,
+         authSucces: false,
+         isAuthSucces: false,
+         authError: null,
+         tryingToLogIn: false,
+         isAuthError: false,
+         role: null
       };
    },
    validations: {
       email: {
          required: helpers.withMessage("Email is required", required),
-         email: helpers.withMessage("Please enter valid email", email),
+         // email: helpers.withMessage("Please enter valid email", email),
       },
       password: {
          required: helpers.withMessage("Password is required", required),
       },
-      password_confirmation: {
-         required: helpers.withMessage("Confirm password is required", required),
-
+   },
+   computed: {
+      notification() {
+         return notificationStore || {};
       },
+   },
+   created() {
+      const userRole = localStorage.getItem('userRole');
+      console.log('User role from local storage:', userRole);
+      if (userRole) {
+         this.userRole = userRole;
+      }
    },
    methods: {
       changePassword() { },
-      tryToResetpwd() {
+      async tryToLogIn() {
          this.submitted = true;
-
+         // stop here if form is invalid
          this.v$.$touch();
 
          if (this.v$.$invalid) {
             return;
          } else {
-            axios
-               .post(`http://127.0.0.1:8000/api/reset-password`, {
-                  email: this.email,
-                  password: this.password,
-                  password_confirmation: this.password_confirmation,
-               })
-               .then((res) => {
-                  if (res.data.status === 200) {
-                     alert('Compte activé avec succès!');
-                     this.$router.push('/');
-                  }
-               });
+            try {
+
+               const authStore = useAuthStore();
+               const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
+               const userRole = localStorage.getItem('userRole');
+               console.log('User role from local storage:', userRole);
+
+
+               this.authSucces = "Connexion réussie";
+               this.isAuthSucces = true;
+               this.$router.push({ name: redirectRoute });
+               this.showModal = false;
+            } catch (error) {
+               console.error("Login error: ", error);
+               this.authError = "Email ou mot de passe invalide";
+               this.isAuthError = true;
+            }
+
          }
       },
+      gotoclients(){
+         this.$router.push('/listticket');
+      }
    }
 
 };
@@ -90,16 +116,6 @@ export default {
                   <li class="nav-item">
                      <a class="nav-link" href="#">About</a>
                   </li>
-                  <li class="nav-item dropdown">
-                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        More Pages
-                     </a>
-                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Left Sidebar</a>
-                        <a class="dropdown-item" href="#">Right Sidebar</a>
-                     </div>
-                  </li>
                   <li class="nav-item">
                      <a class="nav-link" href="#">Contact</a>
                   </li>
@@ -120,7 +136,7 @@ export default {
                   <h1 class="display-4">Comment pouvons nous vous aider?</h1>
                   <p>
                      <a class="btn btn-secondary btn-lg me-1" role="button">Plus d'infos</a>
-                     <a class="btn btn-primary btn-lg" role="button">Espace Client</a>
+                     <a class="btn btn-primary btn-lg" @click="gotoclients" role="button">Espace Client</a>
                   </p>
                </div>
             </div>
@@ -136,36 +152,8 @@ export default {
                <BRow>
                   <BCol xl="8">
                      <BRow>
-                        <BCol sm="4" >
-                           <BCard no-body :style="{height: '400px'}">
-                              <BCardBody>
-                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="avatar-xs me-3">
-                                       <span class="
-                        avatar-title
-                        rounded-circle
-                        bg-primary-subtle
-                        text-primary
-                        font-size-18
-                      ">
-                                          <i :class="`bx bx-receipt`"></i>
-                                       </span>
-                                    </div>
-                                    <h5 class="font-size-14 mb-0">Google workspace</h5>
-                                 </div>
-                                 <div class="text-muted mt-4">
-
-                                    <div class="d-flex">
-
-                                       <span class="ms-2 text-truncate">Découvrez les produits et
-                                          service</span>
-                                    </div>
-                                 </div>
-                              </BCardBody>
-                           </BCard>
-                        </BCol>
-                        <BCol sm="4" >
-                           <BCard no-body :style="{height: '400px'}">
+                        <BCol sm="4">
+                           <BCard no-body :style="{ height: '400px' }">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
                                     <div class="avatar-xs me-3">
@@ -193,7 +181,35 @@ export default {
                            </BCard>
                         </BCol>
                         <BCol sm="4">
-                           <BCard no-body :style="{height: '400px'}">
+                           <BCard no-body :style="{ height: '400px' }">
+                              <BCardBody>
+                                 <div class="d-flex align-items-center mb-3">
+                                    <div class="avatar-xs me-3">
+                                       <span class="
+                        avatar-title
+                        rounded-circle
+                        bg-primary-subtle
+                        text-primary
+                        font-size-18
+                      ">
+                                          <i :class="`bx bx-receipt`"></i>
+                                       </span>
+                                    </div>
+                                    <h5 class="font-size-14 mb-0">Google workspace</h5>
+                                 </div>
+                                 <div class="text-muted mt-4">
+
+                                    <div class="d-flex">
+
+                                       <span class="ms-2 text-truncate">Découvrez les produits et
+                                          service</span>
+                                    </div>
+                                 </div>
+                              </BCardBody>
+                           </BCard>
+                        </BCol>
+                        <BCol sm="4">
+                           <BCard no-body :style="{ height: '400px' }">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
                                     <div class="avatar-xs me-3">
@@ -248,62 +264,62 @@ export default {
                     </div>
                 </div> -->
          </div>
-         <BModal v-model="showModal" hide-footer  :no-close-on-backdrop="true">
+         <BModal md="12" v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true">
 
 
             <div class="p-2">
-               <BAlert :model-value="true" variant="success" class="text-center mb-4">
-                  Veuillez changer de mot de passe
-                </BAlert>
-               <BForm class="form-horizontal" @submit.prevent="tryToResetpwd">
-                  <BFormGroup>
-                     <label for="useremail">Email</label>
-                     <BFormInput class="mb-2" v-model="email" id="useremail" placeholder="Enter email"
-                        :class="{ 'is-invalid': submitted && v$.email.$error }" aria-disabled="true" />
-                     <div v-for="(item, index) in v$.email.$errors" :key="index" class="invalid-feedback">
-                        <span v-if="item.$message">{{ item.$message }}</span>
-                     </div>
-                  </BFormGroup>
+               <BRow>
 
-                  <BFormGroup>
-                     <label for="pwd">Password</label>
-                     <BFormInput class="mb-2" type="password" v-model="password" id="pwd" placeholder="Enter password"
-                        :class="{
-                           'is-invalid': submitted && v$.password.$error,
-                        }" />
-                     <div v-if="submitted && v$.password.$error" class="invalid-feedback">
-                        <span v-if="v$.password.required.$message">{{
-                           v$.password.required.$message
-                        }}</span>
-                     </div>
-                  </BFormGroup>
+                  <BCol >
+                     <BCardBody class="pt-0">
+                        <h4>Se connecter</h4>
+                        <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{ authError }}
+                        </BAlert>
+                        <div v-if="notification.message" :class="'alert ' + notification.type">
+                           {{ notification.message }}
+                        </div>
+                        <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{ authSucces
+                           }}
+                        </BAlert>
+                        <div v-if="notification.message" :class="'alert ' + notification.type">
+                           {{ notification.message }}
+                        </div>
 
-                  <BFormGroup>
-                     <label for="confirm_pwd">Confirm Password</label>
-                     <BFormInput class="mb-2" v-model="password_confirmation" type="password" id="confirm_pwd"
-                        placeholder="Enter confirm password" :class="{
-                           'is-invalid':
-                              submitted && v$.password_confirmation.$error,
-                        }" />
-                     <div v-if="submitted && v$.password_confirmation.$error" class="invalid-feedback">
-                        <span v-if="v$.password_confirmation.required.$message">{{
-                           v$.password_confirmation.required.$message
-                        }}</span>
-                        <!-- <span v-if="v$.password_confirmation.sameAsPassword.$message">
-                                                {{ v$.password_confirmation.sameAsPassword.$message }}
-                                            </span> -->
-                     </div>
-                  </BFormGroup>
+                        <BForm class="p-5 " @submit.prevent="tryToLogIn">
+                           <BFormGroup class="mb-3" id="input-group-1" label="Email" label-for="input-1">
+                              <BFormInput id="input-1" v-model="email" class="w-100 mb-2" type="text"
+                                 placeholder="Enter email" :class="{
+                                    'is-invalid': submitted && v$.email.$error,
+                                 }"></BFormInput>
+                              <div v-for="(item, index) in v$.email.$errors" :key="index" class="invalid-feedback">
+                                 <span v-if="item.$message">{{ item.$message }}</span>
+                              </div>
+                           </BFormGroup>
 
-                  <div class="form-group row mb-0">
-                     <BCol cols="12" class="text-end">
-                        <BButton variant="primary" class="w-md" type="submit">
-                           Activez
-                        </BButton>
-                     </BCol>
-                  </div>
+                           <BFormGroup class="mb-3" id="input-group-2" label="Password" label-for="input-2">
+                              <BFormInput id="input-2" v-model="password" type="password" placeholder="Enter password"
+                                 :class="{
+                                    'is-invalid': submitted && v$.password.$error,
+                                 }"></BFormInput>
+                              <div v-if="submitted && v$.password.$error" class="invalid-feedback">
+                                 <span v-if="v$.password.required.$message">{{
+                                    v$.password.required.$message
+                                 }}</span>
+                              </div>
+                           </BFormGroup>
 
-               </BForm>
+                           <div class="mt-3 d-grid">
+                              <BButton type="submit" variant="primary" class="btn-block">Log In</BButton>
+                           </div>
+                           <div class="mt-4 text-center">
+                              <router-link to="/forgot-password" class="text-muted">
+                                 <i class="mdi mdi-lock me-1"></i> Forgot your password?
+                              </router-link>
+                           </div>
+                        </BForm>
+                     </BCardBody>
+                  </BCol>
+               </BRow>
             </div>
 
 
