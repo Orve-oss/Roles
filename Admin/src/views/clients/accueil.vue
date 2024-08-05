@@ -1,5 +1,5 @@
 <script>
-import Acuueil from "@/assets/images/Acuueil.jpg"
+import accueil from "@/assets/images/accueil.jpg"
 import logo from "@/assets/images/logo.jpg"
 
 // import { Autoplay } from "swiper";
@@ -24,7 +24,7 @@ export default {
    data() {
       return {
          showModal: true,
-         Acuueil,
+         accueil,
          logo,
          email: "",
          password: "",
@@ -79,7 +79,7 @@ export default {
                this.authSucces = "Connexion réussie";
                this.isAuthSucces = true;
                this.$router.push({ name: redirectRoute });
-               this.showModal = false;
+               this.showModal = false
             } catch (error) {
                console.error("Login error: ", error);
                this.authError = "Email ou mot de passe invalide";
@@ -88,9 +88,22 @@ export default {
 
          }
       },
-      gotoclients(){
+      gotoclients() {
          this.$router.push('/listticket');
-      }
+      },
+      windowScroll() {
+         const navbar = document.getElementById("navbar");
+         if (navbar) {
+            if (
+               document.body.scrollTop >= 50 ||
+               document.documentElement.scrollTop >= 50
+            ) {
+               navbar.classList.add("nav-sticky");
+            } else {
+               navbar.classList.remove("nav-sticky");
+            }
+         }
+      },
    }
 
 };
@@ -99,7 +112,7 @@ export default {
 <template>
    <div>
       <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <nav class="navbar navbar-expand-lg navbar-light bg-white sticky" id="navbar">
          <div class="container">
             <a class="navbar-brand" href="#">
                <img :src="logo" alt="Logo" height="40">
@@ -128,7 +141,7 @@ export default {
       </nav>
 
       <!-- Header -->
-      <header id="head" class="text-center" :style="{ backgroundImage: `url(${Acuueil})` }">
+      <header id="head" class="text-center image" :style="{ backgroundImage: `url(${accueil})` }">
          <!-- <img :src="Acuueil" alt="Background Image" class="img-fluid" /> -->
          <div class="container">
             <div class="row">
@@ -153,7 +166,7 @@ export default {
                   <BCol xl="8">
                      <BRow>
                         <BCol sm="4">
-                           <BCard no-body :style="{ height: '400px' }">
+                           <BCard no-body :style="{ height: '400px' }" class="card-hover">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
                                     <div class="avatar-xs me-3">
@@ -181,7 +194,7 @@ export default {
                            </BCard>
                         </BCol>
                         <BCol sm="4">
-                           <BCard no-body :style="{ height: '400px' }">
+                           <BCard no-body :style="{ height: '400px' }" class="card-hover">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
                                     <div class="avatar-xs me-3">
@@ -209,7 +222,7 @@ export default {
                            </BCard>
                         </BCol>
                         <BCol sm="4">
-                           <BCard no-body :style="{ height: '400px' }">
+                           <BCard no-body :style="{ height: '400px' }" class="card-hover">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
                                     <div class="avatar-xs me-3">
@@ -264,13 +277,13 @@ export default {
                     </div>
                 </div> -->
          </div>
-         <BModal md="12" v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true">
+         <BModal md="12" v-model="showModal" hide-footer :no-close-on-backdrop="true">
 
 
             <div class="p-2">
                <BRow>
 
-                  <BCol >
+                  <BCol>
                      <BCardBody class="pt-0">
                         <h4>Se connecter</h4>
                         <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{ authError }}
@@ -304,7 +317,7 @@ export default {
                               <div v-if="submitted && v$.password.$error" class="invalid-feedback">
                                  <span v-if="v$.password.required.$message">{{
                                     v$.password.required.$message
-                                 }}</span>
+                                    }}</span>
                               </div>
                            </BFormGroup>
 
@@ -334,7 +347,7 @@ export default {
       <!-- Footer -->
       <footer class="footer-expand-lg bg-dark text-center py-4">
          <div class="container">
-            <p>Contact us: <a href="mailto:info@example.com">info@example.com</a></p>
+            <p class="text-white">Pour plus d'informations, contactez le mail suivant <a href="mailto:info@example.com">info@example.com</a></p>
 
          </div>
       </footer>
@@ -344,6 +357,7 @@ export default {
 
 
 <style scoped>
+
 /* Add your custom styles here */
 .header-background {
    position: relative;
@@ -382,5 +396,16 @@ export default {
 .footer {
    background-color: #f8f9fa;
    color: #6c757d;
+}
+.card-hover:hover {
+  transform: translateX(10px);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.image{
+
+  background-size: cover;
+  width: 100%;
+  height: 600px;
 }
 </style>

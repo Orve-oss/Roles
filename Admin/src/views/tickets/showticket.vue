@@ -74,6 +74,9 @@ export default {
                     );
 
                 })
+        },
+        back(){
+            this.$router.push('/listTicketClient');
         }
 
     },
@@ -90,6 +93,7 @@ export default {
                     <BCard no-body>
                         <BCardTitle>Informations du tickets</BCardTitle>
                         <p class="card-title-desc">Soumis le {{ new Date(ticket.created_at).toLocaleDateString() }}</p>
+
 
                         <BForm @submit.prevent="updateTicket">
                             <BRow>
@@ -135,7 +139,10 @@ export default {
                                 <BButton variant="primary" type="submit" class="me-1">
                                     Save Changes
                                 </BButton>
-                                <BButton variant="secondary">Cancel</BButton>
+                                <BButton variant="danger"
+                                        @click="back">
+                                        Retour
+                                    </BButton>
                             </div>
                         </BForm>
                     </BCard>

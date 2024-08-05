@@ -248,4 +248,9 @@ class TicketController extends Controller
         ]);
         return response()->json(['message'=>'Rapport crée', 'report'=>$report]);
     }
+    public function getTicketByClient($clientId){
+
+        $ticket = Ticket::where('client_id', $clientId)->with(['type', 'priorite', 'service'])->get();
+        return response()->json($ticket);
+    }
 }

@@ -1,6 +1,6 @@
 <script>
 import { timelineData } from "./data"
-import ticketing from "@/assets/images/ticketing.png"
+import accueil from "@/assets/images/accueil.jpg"
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -13,7 +13,7 @@ import { useAuthStore } from "../../state/pinia/auth";
 
 import { useNotificationStore } from '@/state/pinia'
 
-import logoDark from "@/assets/images/logo-dark.png"
+import logo from "@/assets/images/logo.jpg"
 const notificationStore = useNotificationStore();
 
 
@@ -29,8 +29,8 @@ export default {
     },
     data() {
         return {
-            ticketing,
-            logoDark, Navigation, Pagination,
+            accueil,
+            logo, Navigation, Pagination,
             email: "",
             password: "",
             submitted: false,
@@ -133,7 +133,7 @@ export default {
         <nav class="navbar navbar-expand-lg navigation fixed-top sticky" id="navbar">
             <BContainer>
                 <router-link class="navbar-logo" to="/">
-                    <img :src=logoDark alt height="19" class="logo logo-dark" />
+                    <img :src=logo alt height="19" class="logo logo-dark" />
                 </router-link>
 
                 <BButton variant="white" class="btn btn-sm px-3 font-size-16 d-lg-none header-item"
@@ -155,21 +155,22 @@ export default {
             </BContainer>
         </nav>
         <div v-scroll-spy>
-            <section class="section hero-section" :style="{ backgroundImage: `url(${ticketing})` }" id="home">
-                <div class="bg-overlay bg-light"></div>
+            <section class="section hero-section image" :style="{ backgroundImage: `url(${accueil})` }" id="home">
+                <div class="bg-overlay "></div>
                 <BContainer>
                     <BRow class="align-items-center">
                         <BCol lg="5">
                             <div class="text-dark-50">
                                 <h1 class="text-dark fw-semibold mb-3 hero-title">Bienvenue sur votre portail</h1>
-                                <p class="font-size-14">Veuillez vous connecter pour avoir accès à votre espace d'administateur</p>
+                                <p class="font-size-14">Veuillez vous connecter pour avoir accès à votre espace
+                                    d'administateur</p>
                             </div>
                         </BCol>
                         <BCol lg="5" md="8" sm="10" class="ms-lg-auto">
                             <BCard no-body class="overflow-hidden mb-0 mt-5 mt-lg-0">
                                 <BRow>
 
-                                    <BCol >
+                                    <BCol>
                                         <BCardBody class="pt-0">
                                             <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{
                                                 authError }}
@@ -179,7 +180,7 @@ export default {
                                             </div>
                                             <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{
                                                 authSucces
-                                                }}
+                                            }}
                                             </BAlert>
                                             <div v-if="notification.message" :class="'alert ' + notification.type">
                                                 {{ notification.message }}
@@ -208,7 +209,7 @@ export default {
                                                         class="invalid-feedback">
                                                         <span v-if="v$.password.required.$message">{{
                                                             v$.password.required.$message
-                                                            }}</span>
+                                                        }}</span>
                                                     </div>
                                                 </BFormGroup>
 
@@ -291,5 +292,12 @@ export default {
 .teambg {
     display: block;
     width: 100%;
+}
+
+.image {
+
+    background-size: cover;
+    width: 100%;
+    height: 600px;
 }
 </style>
