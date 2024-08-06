@@ -112,3 +112,4 @@ Route::put('/tickets/update-status/{id}', [TicketController::class, 'updateStatu
 Route::post('/tickets/send-resolution/{id}', [TicketController::class, 'sendResolution']);
 Route::post('/ticket/{ticketId}/rapport', [TicketController::class, 'generateReport']);
 Route::get('/tickets/client/{clientId}', [TicketController::class, 'getTicketByClient']);
+Route::get('/ticket/{ticketId}/comments', [TicketController::class, 'getComments']);

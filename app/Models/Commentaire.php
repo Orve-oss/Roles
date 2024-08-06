@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Commentaire extends Model
 {
     use HasFactory;
+    protected $fillable =['contenu', 'ticket_id'];
     public function ticket(){
-        return $this->belongsTo(Ticket::class);
+        return $this->belongsTo(Ticket::class, 'ticket_id');
     }
 }

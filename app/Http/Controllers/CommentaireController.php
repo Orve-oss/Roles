@@ -40,7 +40,7 @@ class CommentaireController extends Controller
         $commentData = $validator->validated();
         $comment = Commentaire::create($commentData);
         return response()->json([
-            'message' => 'Ticket créé avec succès',
+            'message' => 'Commentaire crée avec succes',
             'status' => 200,
             'ticket' => $comment
         ]);

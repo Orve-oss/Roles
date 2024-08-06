@@ -265,4 +265,9 @@ class TicketController extends Controller
         $ticket = Ticket::where('client_id', $clientId)->with(['type', 'priorite', 'service'])->get();
         return response()->json($ticket);
     }
+    public function getComments($ticketId){
+        $ticket = Ticket::findOrFail($ticketId);
+        $comments = $ticket->comments;
+        return response()->json($comments);
+    }
 }

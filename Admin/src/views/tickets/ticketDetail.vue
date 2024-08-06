@@ -15,8 +15,10 @@ export default {
       Layout,
       PageHeader
    },
+
    data() {
       return {
+         comments: [],
          comment: {
             contenu: '',
             ticket_id: null
@@ -35,13 +37,19 @@ export default {
          showComment: false,
          workDescription: '',
          showWorkModal: false,
+         showbutton: false,
+         ticketId: null
+
       };
    },
+
    mounted() {
       this.fetchTicket();
       const id = this.$route.params.id;
       this.comment.ticket_id = id;
       console.log(this.comment.ticket_id);
+      this.ticketId = id;
+      console.log(this.ticketId);
    },
    methods: {
       getImageUrl(imagePath) {
@@ -166,7 +174,7 @@ export default {
             }
          })
       },
-      generateRapport(ticketId) {
+      generateRapport() {
          Swal.fire({
             title: 'Voulez vous générer un rapport de résolution?',
             icon: 'question',
@@ -176,14 +184,14 @@ export default {
             confirmButtonText: 'Générer'
          }).then((result) => {
             if (result.isConfirmed) {
-               axios.post(`http://127.0.0.1:8000/ticket/${ticketId}/rapport`)
+               axios.post(`http://127.0.0.1:8000/api/ticket/${this.ticketId}/rapport`)
                   .then(response => {
                      Swal.fire('Succes', response.data.message, 'success');
                   })
             } else {
                Swal.fire(
                   'Erreur!',
-                  response.data.message,
+                  'Erreur de génération de rapport',
                   'error'
                );
             }
@@ -198,14 +206,29 @@ export default {
          })
       },
       addComment() {
+         const id = this.$route.params.id;
+         this.comment.ticket_id = id;
+         console.log(this.comment.ticket_id);
 
          const formData = new FormData();
          formData.append('contenu', this.comment.contenu);
          formData.append('ticket_id', this.comment.ticket_id);
-         axios.post(`http://127.0.0.1:8000/api/comments`, formData)
+         axios.post(`http://127.0.0.1:8000/api/commentaires`, formData)
             .then(response => {
+               this.fetchcomments();
+               this.showbutton = true;
                console.log(response.data);
             }).catch(error => {
+               console.error('Erreur', error);
+            });
+      },
+      fetchcomments() {
+
+         axios.get(`http://127.0.0.1:8000/api/ticket/${this.ticketId}/comments`)
+            .then(response => {
+               this.comments = response.data;
+            })
+            .catch(error => {
                console.error('Erreur', error);
             });
       }
@@ -213,7 +236,6 @@ export default {
    },
 
 };
-
 
 </script>
 
@@ -282,7 +304,8 @@ export default {
                            Save Changes
                         </BButton>
                         <BButton variant="secondary" class="me-1">Cancel</BButton>
-                        <!-- <BButton variant="success" class="me-1" v-if="addComment" @click="generateRapport"> Rapport</BButton> -->
+                        <BButton variant="success" class="me-1" v-if="showbutton" @click="generateRapport"> Rapport
+                        </BButton>
 
                      </div>
                      <!-- <div class="mt-2" v-if="ticket.status === 'Résolu'">
@@ -305,8 +328,23 @@ export default {
                      <BRow class="justify-content-center">
                         <BCol xl="8">
                            <div>
-                              <BForm @submit.prevent="addComment">
+
+                              <BForm>
                                  <div class="mt-3">
+                                    <div class="d-flex py-3" v-for="comment in comments" :key="comment.id">
+
+                                       <div class="flex-grow-1">
+                                          <h5 class="font-size-14 mb-1">
+                                             Agent
+                                             <small class="text-muted float-end">{{ new
+                                                Date(comment.created_at).toLocaleTimeString() }}</small>
+                                          </h5>
+                                          <p class="text-muted">
+                                             {{ comment.contenu }}
+                                          </p>
+
+                                       </div>
+                                    </div>
                                     <div class="mt-5">
                                        <h5 class="font-size-15">
                                           <i class="bx bx-message-dots text-muted align-middle me-1"></i>
@@ -316,7 +354,7 @@ export default {
                                     <div class="mt-4">
                                        <h5 class="font-size-16 mb-3">Mettre une note de travail</h5>
 
-                                       <BForm>
+                                       <BForm @submit.prevent="addComment">
 
                                           <div class="mb-3">
                                              <label for="commentmessage-input">Message</label>

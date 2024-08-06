@@ -29,7 +29,7 @@ export default {
                     this.users = response.data;
                 })
                 .catch(error => {
-                    console.error('Erreur lors de la récupération des tickets:', error);
+                    console.error('Erreur lors de la récupération des utilisateurs:', error);
                 });
         }
     }

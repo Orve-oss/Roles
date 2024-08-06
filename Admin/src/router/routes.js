@@ -73,6 +73,12 @@ export default [
     component: () => import("../views/tickets/allTicketClient")
   },
   {
+    path: "/rapport",
+    name: "Rapport",
+    meta: { title: "Rapport", authRequired: true },
+    component: () => import("../views/tickets/Rapport")
+  },
+  {
     path: "/listeRapport",
     name: "ListRapport",
     meta: { title: "ListRapport", authRequired: true },

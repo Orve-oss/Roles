@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Historique extends Model
 {
     use HasFactory;
+    protected $fillable = ['description', 'ticket_id'];
+
+    public function ticket(){
+        return $this->belongsTo(Ticket::class, 'ticket_id');
+    }
+    public static function getAllHistory(){
+        return Self::all();
+    }
+
 }

@@ -12,7 +12,11 @@ class HistoriqueController extends Controller
      */
     public function index()
     {
-        //
+        $list = Historique::getAllHistory();
+        if ($list->isEmpty()) {
+            return response()->json(['message' => 'Aucun Enregistrement']);
+        }
+        return response()->json($list);
     }
 
     /**
