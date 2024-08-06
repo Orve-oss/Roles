@@ -139,6 +139,12 @@ export default [
     component: () => import("../views/tickets/showticket")
   },
   {
+    path: "/voir/ticket/:id",
+    name: "voirTicket",
+    meta: { title: "voirTicket", authRequired: true, role: 'Admin' },
+    component: () => import("../views/tickets/voirTicket")
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("../views/account/login"),

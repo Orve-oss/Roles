@@ -121,12 +121,12 @@ export default {
                                                     <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                                 </template>
 
-                                                <BDropdownItem>
+                                                <BDropdownItem v-if="!['En cours', 'Résolu', 'Fermé'].includes(ticket.status)">
                                                     <i class="fas fa-pencil-alt text-success me-1"></i>
                                                     Edit
                                                 </BDropdownItem>
 
-                                                <BDropdownItem>
+                                                <BDropdownItem v-if="!['En cours', 'Résolu', 'Fermé'].includes(ticket.status)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>

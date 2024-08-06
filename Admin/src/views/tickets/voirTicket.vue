@@ -76,7 +76,7 @@ export default {
                 })
         },
         back(){
-            this.$router.push('/listTicketClient');
+            this.$router.push('/listticket');
         }
 
     },
@@ -110,12 +110,12 @@ export default {
                                     </div>
                                     <div class="mb-3">
                                         <BFormGroup label="Sujet">
-                                            <BFormInput v-model="ticket.sujet" disabled/>
+                                            <BFormInput v-model="ticket.sujet" disabled />
                                         </BFormGroup>
                                     </div>
                                     <div class="mb-3">
                                         <BFormGroup label="Priorite">
-                                            <BFormInput :value="ticket.priorite?.niveau || 'N/A'" disabled />
+                                            <BFormInput :value="ticket.priorite?.niveau || 'N/A'"  disabled/>
                                         </BFormGroup>
                                     </div>
                                 </BCol>

@@ -240,14 +240,26 @@ class TicketController extends Controller
             'status' => 200
         ]);
     }
-    public function generateReport($ticketId){
-        $ticket = Ticket::findOrFail($ticketId);
-        $report = Historique::create([
-            'ticket_id'=>$ticket->id,
-            // 'description'=>
-        ]);
-        return response()->json(['message'=>'Rapport crée', 'report'=>$report]);
+    public function generateReport($ticketId) {
+        try {
+            $ticket = Ticket::findOrFail($ticketId);
+            $report = Historique::create([
+                'ticket_id' => $ticket->id,
+                'description' => 'Rapport généré pour le ticket ID ' . $ticket->id,
+            ]);
+            return response()->json([
+                'message' => 'Rapport créé',
+                'report' => $report
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erreur lors de la création du rapport',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
     public function getTicketByClient($clientId){
 
         $ticket = Ticket::where('client_id', $clientId)->with(['type', 'priorite', 'service'])->get();

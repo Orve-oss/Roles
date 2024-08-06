@@ -18,6 +18,9 @@ class Ticket extends Model
         'type_ticket_id',
         'priorite_id'
     ];
+    public function comments(){
+        return $this->hasMany(Commentaire::class);
+    }
 
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
