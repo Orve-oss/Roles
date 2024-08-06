@@ -113,3 +113,4 @@ Route::post('/tickets/send-resolution/{id}', [TicketController::class, 'sendReso
 Route::post('/ticket/{ticketId}/rapport', [TicketController::class, 'generateReport']);
 Route::get('/tickets/client/{clientId}', [TicketController::class, 'getTicketByClient']);
 Route::get('/ticket/{ticketId}/comments', [TicketController::class, 'getComments']);
+Route::get('/ticket/{ticketId}/rapport', [TicketController::class, 'getTicketRapport']);

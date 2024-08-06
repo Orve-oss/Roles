@@ -31,9 +31,22 @@ class TicketController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function getTicketRapport($ticketId)
     {
-        //
+        $ticket = Ticket::with('user', 'client', 'type', 'priorite', 'service')->findOrFail($ticketId);
+        return response()->json([
+            'ticket_id'=>$ticket->id,
+            'statut' => $ticket->status,
+            'description'=> $ticket->description,
+            'priorite'=>$ticket->priorite->niveau,
+            'service'=>$ticket->service->nom_service,
+            'type'=>$ticket->type->libelle,
+            'agent'=>$ticket->user->email,
+            'client'=>$ticket->client->email,
+            'created_at'=>$ticket->created_at,
+            'updated_at'=>$ticket->updated_at,
+            'commentaire'=>$ticket->comments
+        ]);
     }
 
     /**

@@ -2,14 +2,14 @@
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import axios from "axios";
-import Rapport from "./Rapport.vue";
+
 
 /** * Invoice-list component */
 export default {
     components: { Layout, PageHeader, },
     data() {
         return {
-            Rapport,
+
             historiques:[]
 
         };
@@ -43,7 +43,7 @@ export default {
 
                             <BCol lg="8" v-for="histor in historiques" :key="histor.id">
                                 <div>
-                                    <router-link :to="Rapport" class="d-block text-primary text-decoration-underline mb-2">Ticket N°{{histor.ticket_id}}</router-link>
+                                    <router-link :to="{name: 'Rapport', params:{ticketId: histor.ticket_id}}" class="d-block text-primary text-decoration-underline mb-2">Ticket N°{{histor.ticket_id}}</router-link>
                                     <h5 class="text-truncate mb-4 mb-lg-5" title="Rapport généré">{{ histor.description }}</h5>
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item me-3">
