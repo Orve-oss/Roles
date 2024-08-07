@@ -119,9 +119,34 @@ class TicketController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Ticket $ticket)
+    public function getdashboard($agentId)
     {
-        //
+        $services = Service::all();
+        $dashboardData = [];
+        foreach ($services as $key => $service) {
+            $tickets = Ticket::where('user_id', $agentId)
+            ->where('service_id', $service->id)
+            ->with(['type', 'priorite', 'service'])->get();
+            $totalAssigned = $tickets->count();
+            $pending = $tickets->where('status', 'En attente')->count();
+            $progress = $tickets->where('status', 'En cours')->count();
+            $resolved = $tickets->where('status', 'Résolu')->count();
+
+            $dashboardData[]=[
+                'service'=>$service->nom_service,
+                'totalAssigned'=>$totalAssigned,
+                'chartSeries'=>[
+                    $totalAssigned > 0 ? 100 : 0,
+                    $totalAssigned > 0 ? ($pending / $totalAssigned) * 100: 0,
+                    $totalAssigned > 0 ? ($progress / $totalAssigned) * 100: 0,
+                    $totalAssigned > 0 ? ($resolved / $totalAssigned) * 100: 0,
+
+                ]
+            ];
+
+
+        }
+        return response()->json(['serviceData' => $dashboardData]);
     }
 
     /**

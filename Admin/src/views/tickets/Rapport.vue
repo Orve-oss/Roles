@@ -107,7 +107,7 @@ export default {
                                     </BTr>
                                     <BTr>
                                         <BTd>Fermé le :</BTd>
-                                        <BTd style="padding-left: 300px;">{{ new Date(rapport.updated_at).toLocaleDateString() }}</BTd>
+                                        <BTd style="padding-left: 300px;" >{{ new Date(rapport.updated_at).toLocaleDateString() }}</BTd>
                                     </BTr>
                                     <!-- <BTr>
                                             <BTd>Commentaire de travail:</BTd>

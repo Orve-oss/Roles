@@ -89,7 +89,7 @@ export default {
          }
       },
       gotoclients() {
-         this.$router.push('/listticket');
+         this.$router.push('/listTicketClient');
       },
       windowScroll() {
          const navbar = document.getElementById("navbar");

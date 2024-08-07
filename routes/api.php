@@ -114,3 +114,4 @@ Route::post('/ticket/{ticketId}/rapport', [TicketController::class, 'generateRep
 Route::get('/tickets/client/{clientId}', [TicketController::class, 'getTicketByClient']);
 Route::get('/ticket/{ticketId}/comments', [TicketController::class, 'getComments']);
 Route::get('/ticket/{ticketId}/rapport', [TicketController::class, 'getTicketRapport']);
+Route::get('/ticket/{agentId}/dashboard', [TicketController::class, 'getdashboard']);
