@@ -24,7 +24,11 @@ export default {
     },
     methods: {
         fetchUsers() {
-            axios.get(`http://127.0.0.1:8000/api/users`)
+            axios.get(`http://127.0.0.1:8000/api/users`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            })
                 .then(response => {
                     this.users = response.data;
                 })

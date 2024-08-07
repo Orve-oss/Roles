@@ -79,16 +79,16 @@ export default {
                                     </BButton>
                                     <BButton @click="fetchTickets('En attente')" class="btn-rounded mb-2 me-2"
                                         variant="dark">
-                                        
+
                                         En attente
                                     </BButton>
                                     <BButton @click="fetchTickets('En cours')" variant="primary"
                                         class="btn-rounded mb-2 me-2">
                                         En cours
                                     </BButton>
-                                    <BButton @click="fetchTickets('Terminé')" variant="success"
+                                    <BButton @click="fetchTickets('Résolu')" variant="success"
                                         class="btn-rounded mb-2 me-2">
-                                        Terminé
+                                        Résolu
                                     </BButton>
                                     <BButton @click="fetchTickets('Fermé')" variant="danger"
                                         class="btn-rounded mb-2 me-2">

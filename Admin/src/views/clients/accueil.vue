@@ -1,6 +1,9 @@
 <script>
 import accueil from "@/assets/images/accueil.jpg"
 import logo from "@/assets/images/logo.jpg"
+import googleCloud from "@/assets/images/googleCloud.jpg"
+import googleWorkspace from "@/assets/images/googleWorkspace.jpg"
+import application from "@/assets/images/application.jpeg"
 
 // import { Autoplay } from "swiper";
 import "swiper/css";
@@ -26,6 +29,9 @@ export default {
          showModal: true,
          accueil,
          logo,
+         googleCloud,
+         googleWorkspace,
+         application,
          email: "",
          password: "",
          submitted: false,
@@ -115,7 +121,7 @@ export default {
       <nav class="navbar navbar-expand-lg navbar-light bg-white sticky" id="navbar">
          <div class="container">
             <a class="navbar-brand" href="#">
-               <img :src="logo" alt="Logo" height="40">
+               <img :src="logo" alt="Logo" height="50">
             </a>
             <BButton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -169,18 +175,8 @@ export default {
                            <BCard no-body :style="{ height: '400px' }" class="card-hover">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
-                                    <div class="avatar-xs me-3">
-                                       <span class="
-                        avatar-title
-                        rounded-circle
-                        bg-primary-subtle
-                        text-primary
-                        font-size-18
-                      ">
-                                          <i :class="`bx bx-receipt`"></i>
-                                       </span>
-                                    </div>
-                                    <h5 class="font-size-14 mb-0">Google workspace</h5>
+
+                                    <h2 class="font-size-14 mb-0"><strong> Google Workspace Expertise</strong> </h2>
                                  </div>
                                  <div class="text-muted mt-4">
 
@@ -189,6 +185,7 @@ export default {
                                        <span class="ms-2 text-truncate">Découvrez les produits et
                                           service</span>
                                     </div>
+                                    <img :src="googleWorkspace" alt="" height="100">
                                  </div>
                               </BCardBody>
                            </BCard>
@@ -218,6 +215,7 @@ export default {
                                           service</span>
                                     </div>
                                  </div>
+                                 <img :src="googleCloud" alt="" height="100"/>
                               </BCardBody>
                            </BCard>
                         </BCol>
@@ -225,18 +223,8 @@ export default {
                            <BCard no-body :style="{ height: '400px' }" class="card-hover">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
-                                    <div class="avatar-xs me-3">
-                                       <span class="
-                        avatar-title
-                        rounded-circle
-                        bg-primary-subtle
-                        text-primary
-                        font-size-18
-                      ">
-                                          <i :class="`bx bx-receipt`"></i>
-                                       </span>
-                                    </div>
-                                    <h5 class="font-size-14 mb-0">Google workspace</h5>
+
+                                    <h2 class="font-size-14 mb-0"><strong>  Application Development</strong></h2>
                                  </div>
                                  <div class="text-muted mt-4">
 
@@ -245,6 +233,7 @@ export default {
                                        <span class="ms-2 text-truncate">Découvrez les produits et
                                           service</span>
                                     </div>
+                                    <img :src="application" alt="" height="100"/>
                                  </div>
                               </BCardBody>
                            </BCard>

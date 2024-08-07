@@ -19,7 +19,7 @@ export const useAuthStore = defineStore("auth", {
                     this.authSucces = response.data.message;
                     this.isAuthSucces = true;
                     this.setUser(response.data.user);
-                    localStorage.setItem("authToken", response.data.access_token);
+                    localStorage.setItem('authToken', response.data.access_token);
                     axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
                     localStorage.setItem('user', JSON.stringify(response.data.user));
                     localStorage.setItem("userRole", response.data.user.role[0]);

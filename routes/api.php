@@ -39,9 +39,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // });
 
 Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
-
-
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/update/{id}', [UserController::class, 'update']);
+    Route::delete('/delete/{id}', [UserController::class, 'destroy']);
 });
+
 Route::get('/clients', [ClientController::class, 'index']);
 Route::post('/clients', [ClientController::class, 'store']);
 Route::put('/updateclt/{id}', [ClientController::class, 'update']);
@@ -54,13 +58,9 @@ Route::get('/roles', [RoleController::class, 'index']);
 Route::post('/reset-password', [ClientController::class, 'reset']);
 Route::post('/send-activation/{id}', [ClientController::class, 'send']);
 
-Route::get('/users', [UserController::class, 'index']);
-Route::post('/users', [UserController::class, 'store']);
-Route::get('/users/{id}', [UserController::class, 'show']);
-Route::put('/update/{id}', [UserController::class, 'update']);
-Route::delete('/delete/{id}', [UserController::class, 'destroy']);
+
 Route::middleware('auth:sanctum')->get('/user-profile', [UserController::class, 'getUserprofile']);
-Route::post('/updateUser/profile',[UserController::class, 'updateProfile']);
+Route::post('/updateUser/profile', [UserController::class, 'updateProfile']);
 
 Route::get('/services', [ServiceController::class, 'index']);
 Route::post('/services', [ServiceController::class, 'store']);
@@ -81,7 +81,6 @@ Route::put('/updatepriorite/{id}', [PrioriteController::class, 'update']);
 Route::delete('/deletepriorite/{id}', [PrioriteController::class, 'destroy']);
 
 Route::middleware(['auth:sanctum', 'role:Admin,Client'])->group(function () {
-
 });
 Route::get('/tickets', [TicketController::class, 'index']);
 Route::post('/tickets', [TicketController::class, 'store']);
