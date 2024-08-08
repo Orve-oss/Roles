@@ -17,6 +17,8 @@ export default {
         return {
 
             users: [],
+            searchQuery: '',
+            filteredUsers: []
         };
 
     },
@@ -31,11 +33,20 @@ export default {
                 }
             })
                 .then(response => {
-                    this.users = response.data;
+                    this.users = response.data.filter(user=> user.roles[0]?.name !=='Admin');
+                    this.filteredUsers = this.users;
                 })
                 .catch(error => {
                     console.error('Erreur lors de la récupération des utilisateurs:', error);
                 });
+        },
+        filterUsers() {
+            const query = this.searchQuery.toLowerCase();
+            this.filteredUsers = this.users.filter(user => {
+                const userName = user.name ? user.name.toLowerCase() : '';
+                const userRole = user.roles[0]?.name ? user.roles[0]?.name.toLowerCase() : '';
+                return userName.includes(query) || userRole.includes(query);
+            });
         },
         deleteUser(id) {
             Swal.fire({
@@ -98,19 +109,20 @@ export default {
             <BCol sm="4">
                 <div class="search-box me-2 mb-2 d-inline-block">
                     <div class="position-relative">
-                        <input type="text" class="form-control" placeholder="Recherche" />
+                        <input type="text" class="form-control" placeholder="Recherche" v-model="searchQuery"
+                            @input="filterUsers" />
                         <i class="bx bx-search-alt search-icon"></i>
                     </div>
                 </div>
             </BCol>
         </BRow>
         <BRow id="user-list">
-            <BCol xl="3" md="3" v-for="user in users" :key="user.id">
+            <BCol xl="3" md="3" v-for="user in filteredUsers" :key="user.id">
                 <BCard no-body>
                     <BCardBody>
                         <span class="text-danger text-end p-1 mb-1" @click="deleteUser(user.id)">
-                                        <i class="bx bxs-trash"></i>
-                                    </span>
+                            <i class="bx bxs-trash"></i>
+                        </span>
 
                         <div class="text-center mb-3">
                             <!-- <img :src="assets/images/companies/img-1.png" alt="" class="avatar-sm rounded-circle" /> -->

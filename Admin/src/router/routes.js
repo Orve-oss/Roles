@@ -33,7 +33,7 @@ export default [
   {
     path: "/accueil",
     name: "Accueil Client",
-    meta: { title: "Accueil Client",
+    meta: { title: "Accueil Client", role: 'Client',
         beforeResolve(routeTo, routeFrom, next){
             const auth = useAuthStore();
             if (auth.loggedIn) {
@@ -48,7 +48,7 @@ export default [
   {
     path: "/",
     name: "AccueilUser",
-    meta: { title: "Accueil Utilisateur",
+    meta: { title: "Accueil Utilisateur", role: ['Admin', 'Agent'],
         beforeResolve(routeTo, routeFrom, next){
             const auth = useAuthStore();
             if (auth.loggedIn) {
@@ -63,19 +63,19 @@ export default [
   {
     path: "/createUser",
     name: "createUsers",
-    meta: { title: "createUsers", authRequired: true },
+    meta: { title: "createUsers", authRequired: true, role:'Admin' },
     component: () => import("../views/users/createUser")
   },
   {
     path: "/listticket",
     name: "allTicket",
-    meta: { title: "allTicket", authRequired: true },
+    meta: { title: "allTicket", authRequired: true, role:'Admin' },
     component: () => import("../views/tickets/all-ticket")
   },
   {
     path: "/listTicketClient",
     name: "allTicketClient",
-    meta: { title: "allTicketClient", authRequired: true },
+    meta: { title: "allTicketClient", authRequired: true, role:'Client' },
     component: () => import("../views/tickets/allTicketClient")
   },
   {
@@ -111,13 +111,13 @@ export default [
   {
     path: "/historiqueticket",
     name: "Historique",
-    meta: { title: "Historique", authRequired: true },
+    meta: { title: "Historique", authRequired: true, role: 'Client' },
     component: () => import("../views/tickets/history")
   },
   {
     path: "/listeClients",
     name: "ClientList",
-    meta: { title: "ClientList", authRequired: true },
+    meta: { title: "ClientList", authRequired: true, role: 'Admin' },
     component: () => import("../views/clients/listClient")
   },
   {
@@ -129,25 +129,25 @@ export default [
   {
     path: "/profileClient",
     name: "Profil",
-    meta: { title: "Profil", authRequired: true },
+    meta: { title: "Profil", authRequired: true, role: 'Client' },
     component: () => import("../views/clients/profilClient")
   },
   {
     path: "/profileUser",
     name: "ProfilUser",
-    meta: { title: "ProfilUser", authRequired: true },
+    meta: { title: "ProfilUser", authRequired: true,role: 'Admin' },
     component: () => import("../views/users/profilUser")
   },
   {
     path: "/ticket/detail/:id",
     name: "TicketDetail",
-    meta: { title: "TicketDetail", authRequired: true },
+    meta: { title: "TicketDetail", authRequired: true, role: 'Agent' },
     component: () => import("../views/tickets/ticketDetail")
   },
   {
     path: "/show/ticket/:id",
     name: "ShowTicket",
-    meta: { title: "ShowTicket", authRequired: true },
+    meta: { title: "ShowTicket", authRequired: true, role: 'Client' },
     component: () => import("../views/tickets/showticket")
   },
   {
@@ -155,6 +155,13 @@ export default [
     name: "voirTicket",
     meta: { title: "voirTicket", authRequired: true, role: 'Admin' },
     component: () => import("../views/tickets/voirTicket")
+  },
+  {
+    path: "/reset/:token",
+    name: "ResetPassword",
+    meta: { title: "ResetPassword", authRequired: true },
+    component: () => import("../views/sample-pages/reset"),
+    // props: (route) => ({ token: route.query.token})
   },
   {
     path: "/login",

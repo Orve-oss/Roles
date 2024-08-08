@@ -24,6 +24,8 @@ export default {
     data() {
         return {
             clients: [],
+            searchClient: '',
+            filteredClient: [],
             currentPage: 1,
             perPage: 5,
             totalPages: 1,
@@ -68,6 +70,14 @@ export default {
         this.fetchClients();
     },
     methods: {
+        filterClient() {
+            const query = this.searchClient.toLowerCase();
+            this.filteredClient = this.clients.filter(client => {
+                const clientName = client.nom_clt ? client.nom_clt.toLowerCase() : '';
+                const clientEmail = client.email ? client.email.toLowerCase() : '';
+                return clientName.includes(query) || clientEmail.includes(query);
+            });
+        },
         async fetchClients(page = 1) {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/clients?page=${page}&perPage=${this.perPage}`, {
@@ -76,6 +86,7 @@ export default {
                     }
                 });
                 this.clients = response.data.data;
+                this.filteredClient = this.clients;
                 this.totalPages = response.data.last_page;
                 this.totalClients = response.data.total;
             } catch (error) {
@@ -221,7 +232,8 @@ export default {
                             <BCol sm="4">
                                 <div class="search-box me-2 mb-2 d-inline-block">
                                     <div class="position-relative">
-                                        <input type="text" class="form-control" placeholder="Recherche" />
+                                        <input type="text" class="form-control" placeholder="Recherche"
+                                        v-model="searchClient" @input="filterClient"/>
                                         <i class="bx bx-search-alt search-icon"></i>
                                     </div>
                                 </div>

@@ -65,6 +65,7 @@ Route::post('/updateclient/profile', [ClientController::class, 'updateProfile'])
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/roles', [RoleController::class, 'index']);
 Route::post('/reset-password', [ClientController::class, 'reset']);
+Route::put('/reset-mot', [UserController::class, 'resetPassword']);
 Route::post('/send-activation/{id}', [ClientController::class, 'send']);
 
 

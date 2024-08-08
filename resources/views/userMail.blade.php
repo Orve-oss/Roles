@@ -20,9 +20,9 @@
         </style>
     </head>
     <body>
-        <h1> Hello, {{ $name }} </h1>
+        <h1> Hello, {{ $user->name }} </h1>
         <p> Veuillez cliquer sur ce bouton pour activer votre compte</p>
-        <a href="http://localhost:8080/auth-recoverpwd" class="button"> Active Account</a>
+        <a href="http://localhost:8080/reset/{{$user->reset_token}}" class="button"> Active Account</a>
         <p>Merci. WEQUIPU-TEAM</p>
 
     </body>

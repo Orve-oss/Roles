@@ -7,6 +7,7 @@ use App\Mail\UserMail;
 use App\Models\User;
 use \Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,10 +78,12 @@ class UserController extends Controller
                     "status" => "Error"
                 ]);
             }
+            $token = Str::random(60);
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'reset_token' => $token
             ]);
             $role = Role::where('name', $request->role)->get();
             // $role = Role::findByName($validator['role']);
@@ -141,27 +144,35 @@ class UserController extends Controller
             ]);
         }
     }
-    public function show() {}
-    public function update() {}
-    public function destroy($id) { //archive l'utilisateur
+    public function show()
+    {
+    }
+    public function update()
+    {
+    }
+    public function destroy($id)
+    { //archive l'utilisateur
         $user = User::findOrFail($id);
         $user->delete();
-        return response()->json(['message'=>'Utilisateur archivé']);
+        return response()->json(['message' => 'Utilisateur archivé']);
     }
-    public function restore($id){//restore l'utilisateur
+    public function restore($id)
+    {//restore l'utilisateur
         $user = User::withTrashed()->findOrFail($id);
         $user->restore();
-        return response()->json(['message'=>'Utilisateur restoré']);
+        return response()->json(['message' => 'Utilisateur restoré']);
 
     }
-    public function getArchived(){
+    public function getArchived()
+    {
         $archivedUsers = User::onlyTrashed()->with('roles')->get();
         return response()->json($archivedUsers);
     }
-    public function forceDelete($id){
+    public function forceDelete($id)
+    {
         $user = User::withTrashed()->findOrFail($id);
         $user->forceDelete();
-        return response()->json(['message'=>'Utilisateur supprimé définitivement']);
+        return response()->json(['message' => 'Utilisateur supprimé définitivement']);
     }
     public function getUserprofile()
     {
@@ -191,4 +202,31 @@ class UserController extends Controller
         $user->save();
         return response()->json(['message' => 'Profil modifié avec succès']);
     }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'password' => 'required|string|confirmed',
+        ]);
+
+        $user = User::where('reset_token', $request->token)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Token invalide',
+                'status' => 'error'
+            ], 400);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->reset_token = null; // Invalider le token après utilisation
+        $user->save();
+
+        return response()->json([
+            'message' => 'Mot de passe changé avec succès',
+            'status' => 'success'
+        ]);
+    }
+
 }
