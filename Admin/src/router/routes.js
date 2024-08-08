@@ -7,6 +7,12 @@ export default [
     component: () => import("../views/dashboards/activite")
   },
   {
+    path: "/archive",
+    name: "archive",
+    meta: { title: "Archive", authRequired: true, role: 'Admin' },
+    component: () => import("../views/users/archive")
+  },
+  {
     path: "/activite/agent",
     name: "statistiques",
     meta: { title: "tableau", authRequired: true, role: 'Agent' },

@@ -40,16 +40,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
     Route::get('/users', [UserController::class, 'index']);
+    Route::get('/search', [UserController::class, 'searchUsers']);
     Route::post('/users', [UserController::class, 'store']);
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::put('/update/{id}', [UserController::class, 'update']);
-    Route::delete('/delete/{id}', [UserController::class, 'destroy']);
+    Route::delete('/delete/user/{id}', [UserController::class, 'destroy']);
+    Route::delete('/restore/{id}', [UserController::class, 'restore']);
+    Route::delete('/forcedelete/{id}', [UserController::class, 'forceDelete']);
+    Route::get('/archive', [UserController::class, 'getArchived']);
+
 });
 
-Route::get('/clients', [ClientController::class, 'index']);
-Route::post('/clients', [ClientController::class, 'store']);
-Route::put('/updateclt/{id}', [ClientController::class, 'update']);
-Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
+Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
+    Route::get('/clients', [ClientController::class, 'index']);
+    Route::post('/clients', [ClientController::class, 'store']);
+    Route::put('/updateclt/{id}', [ClientController::class, 'update']);
+    Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
+});
+
+
 Route::middleware('auth:sanctum')->get('/client-profile', [ClientController::class, 'getProfile']);
 Route::post('/updateclient/profile', [ClientController::class, 'updateProfile']);
 
@@ -80,9 +89,15 @@ Route::get('/priorites/{id}', [PrioriteController::class, 'show']);
 Route::put('/updatepriorite/{id}', [PrioriteController::class, 'update']);
 Route::delete('/deletepriorite/{id}', [PrioriteController::class, 'destroy']);
 
-Route::middleware(['auth:sanctum', 'role:Admin,Client'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
+    Route::get('/tickets', [TicketController::class, 'index']);
+    Route::get('/tickets/search', [TicketController::class, 'search']);
 });
-Route::get('/tickets', [TicketController::class, 'index']);
+
+Route::middleware(['auth:sanctum', 'role:Client'])->group(function () {
+    Route::post('/tickets', [TicketController::class, 'store']);
+});
+
 Route::post('/tickets', [TicketController::class, 'store']);
 Route::get('/tickets/{id}', [TicketController::class, 'show']);
 Route::put('/updateticket/{id}', [TicketController::class, 'update']);

@@ -86,7 +86,11 @@ export default {
          if (status) {
             url = `http://127.0.0.1:8000/api/tickets/status/${status}`;
          }
-         axios.get(url)
+         axios.get(url, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            })
             .then(response => {
                this.tickets = response.data;
             })

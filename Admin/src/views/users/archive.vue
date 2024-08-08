@@ -16,30 +16,30 @@ export default {
     data() {
         return {
 
-            users: [],
+            archivedUsers: [],
         };
 
     },
     mounted() {
-        this.fetchUsers();
+        this.fetchArchivedUsers();
     },
     methods: {
-        fetchUsers() {
-            axios.get(`http://127.0.0.1:8000/api/users`, {
+        fetchArchivedUsers() {
+            axios.get(`http://127.0.0.1:8000/api/archive`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                 }
             })
                 .then(response => {
-                    this.users = response.data;
+                    this.archivedUsers = response.data;
                 })
                 .catch(error => {
                     console.error('Erreur lors de la récupération des utilisateurs:', error);
                 });
         },
-        deleteUser(id) {
+        deleteArchivedUser(id) {
             Swal.fire({
-                title: 'Etes vous sûr de vouloir supprimer ce utilisateur?',
+                title: 'Etes vous sûr de vouloir supprimer ce utilisateur définitivement?',
                 text: 'Cette action est irreversible',
                 icon: 'warning',
                 showCancelButton: true,
@@ -48,7 +48,7 @@ export default {
                 confirmButtonText: 'Yes delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`http://127.0.0.1:8000/api/delete/user/${id}`, {
+                    axios.delete(`http://127.0.0.1:8000/api/forcedelete/${id}`, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                         }
@@ -88,7 +88,7 @@ export default {
 
         }
     }
-}
+};
 </script>
 
 <template>
@@ -104,11 +104,11 @@ export default {
                 </div>
             </BCol>
         </BRow>
-        <BRow id="user-list">
-            <BCol xl="3" md="3" v-for="user in users" :key="user.id">
+        <BRow id="user-list" v-if="archivedUsers.length">
+            <BCol xl="3" md="3" v-for="user in archivedUsers" :key="user.id">
                 <BCard no-body>
                     <BCardBody>
-                        <span class="text-danger text-end p-1 mb-1" @click="deleteUser(user.id)">
+                        <span class="text-danger text-end p-1 mb-1" @click="deleteArchivedUser(user.id)">
                                         <i class="bx bxs-trash"></i>
                                     </span>
 
@@ -128,6 +128,9 @@ export default {
                     </BCardBody>
                 </BCard>
             </BCol>
+        </BRow>
+        <BRow v-else>
+            <p> Aucun utilisateur archivé</p>
         </BRow>
         <!-- <BRow>
             <BCol xl="4" sm="4" v-for="(user, index) in users" :key="index">

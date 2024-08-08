@@ -80,7 +80,11 @@ export default {
             if (this.v$.$invalid) {
                 return;
             } else {
-                await axios.post('http://127.0.0.1:8000/api/users', this.user)
+                await axios.post('http://127.0.0.1:8000/api/users', this.user,{
+                    headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }}
+                )
                     .then(response => {
                         this.successMessage = response.data.message;
                         this.user = {
@@ -134,7 +138,8 @@ export default {
                                         'is-invalid': submitted && v$.user.name.$error,
                                     }">
                                 </BFormInput>
-                                <div v-for="(item, index) in v$.user.name.$errors" :key="index" class="invalid-feedback">
+                                <div v-for="(item, index) in v$.user.name.$errors" :key="index"
+                                    class="invalid-feedback">
                                     <span v-if="item.$message">{{ item.$message }}</span>
                                 </div>
 
@@ -146,7 +151,8 @@ export default {
                                         'is-invalid': submitted && v$.user.email.$error,
                                     }">
                                 </BFormInput>
-                                <div v-for="(item, index) in v$.user.email.$errors" :key="index" class="invalid-feedback">
+                                <div v-for="(item, index) in v$.user.email.$errors" :key="index"
+                                    class="invalid-feedback">
                                     <span v-if="item.$message">{{ item.$message }}</span>
                                 </div>
                             </BFormGroup>
@@ -157,7 +163,8 @@ export default {
                                     placeholder="Enter the password" :class="{
                                         'is-invalid': submitted && v$.user.password.$error,
                                     }"></BFormInput>
-                                <div v-for="(item, index) in v$.user.password.$errors" :key="index" class="invalid-feedback">
+                                <div v-for="(item, index) in v$.user.password.$errors" :key="index"
+                                    class="invalid-feedback">
                                     <span v-if="item.$message">{{ item.$message }}</span>
                                 </div>
                             </BFormGroup>
@@ -169,7 +176,8 @@ export default {
                                     <BFormSelectOption v-for="role in roles" :key="role.id" :value="role.name">{{
                                         role.name }}</BFormSelectOption>
                                 </BFormSelect>
-                                <div v-for="(item, index) in v$.user.role.$errors" :key="index" class="invalid-feedback">
+                                <div v-for="(item, index) in v$.user.role.$errors" :key="index"
+                                    class="invalid-feedback">
                                     <span v-if="item.$message">{{ item.$message }}</span>
                                 </div>
 

@@ -155,7 +155,8 @@ export default {
 
             await axios.post('http://127.0.0.1:8000/api/tickets', formData, {
                headers: {
-                  'Content-Type': 'multipart/form-data'
+                  'Content-Type': 'multipart/form-data',
+                  'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                }
             })
                .then(response => {

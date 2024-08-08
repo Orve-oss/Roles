@@ -166,6 +166,13 @@ export const menuItems = [
         link: "/profileUser",
         roles: ['Admin', 'Agent']
     },
+    {
+        id: 56,
+        label: "Archives",
+        icon: "bxs-archive",
+        link: "/archive",
+        roles: ['Admin']
+    },
     // {
     //     id: 55,
     //     label: "menuitems.authentication.text",

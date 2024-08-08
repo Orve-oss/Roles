@@ -182,8 +182,7 @@ export default {
 
                                     <div class="d-flex">
 
-                                       <span class="ms-2 text-truncate">Découvrez les produits et
-                                          service</span>
+                                       <span class="ms-2 text-truncate">Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation. Lorem ipsum is derived from the Latin “dolorem ipsum” roughly translated as “pain itself.”</span>
                                     </div>
                                     <img :src="googleWorkspace" alt="" height="100">
                                  </div>
@@ -211,8 +210,8 @@ export default {
 
                                     <div class="d-flex">
 
-                                       <span class="ms-2 text-truncate">Découvrez les produits et
-                                          service</span>
+                                       <span class="ms-2 text-truncate">Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation.
+                                        Lorem ipsum is derived from the Latin “dolorem ipsum” roughly translated as “pain itself.”</span>
                                     </div>
                                  </div>
                                  <img :src="googleCloud" alt="" height="100"/>
@@ -230,8 +229,7 @@ export default {
 
                                     <div class="d-flex">
 
-                                       <span class="ms-2 text-truncate">Découvrez les produits et
-                                          service</span>
+                                       <span class="ms-2 text-truncate">Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation. Lorem ipsum is derived from the Latin “dolorem ipsum” roughly translated as “pain itself.”</span>
                                     </div>
                                     <img :src="application" alt="" height="100"/>
                                  </div>
@@ -266,7 +264,7 @@ export default {
                     </div>
                 </div> -->
          </div>
-         <BModal md="12" v-model="showModal" hide-footer :no-close-on-backdrop="true">
+         <BModal md="12" v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true">
 
 
             <div class="p-2">

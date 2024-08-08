@@ -103,20 +103,65 @@ class UserController extends Controller
         }
     }
 
-    public function getAgents(){
-        $agents = User::whereHas('roles', function($query) {
+    public function getAgents()
+    {
+        $agents = User::whereHas('roles', function ($query) {
             $query->where('name', 'Agent');
         })->get();
         return response()->json($agents);
     }
-    public function show()
+
+    public function searchUsers(Request $request)
     {
+        try {
+            $search = $request->all();
+            $searchResult = User::query();
+
+            if (isset($search['name'])) {
+                $searchResult->where('name', 'like', "%{$search['name']}%");
+            }
+
+            if (isset($search['role'])) {
+                $searchResult->whereHas('role', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search['role']}%");
+                });
+            }
+
+            $searchResult = $searchResult->get();
+
+            return response()->json([
+                'message' => 'Résultats de la recherche',
+                'users' => $searchResult,
+                'status' => 'success'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => $e->getMessage()
+            ]);
+        }
     }
-    public function update()
-    {
+    public function show() {}
+    public function update() {}
+    public function destroy($id) { //archive l'utilisateur
+        $user = User::findOrFail($id);
+        $user->delete();
+        return response()->json(['message'=>'Utilisateur archivé']);
     }
-    public function destroy()
-    {
+    public function restore($id){//restore l'utilisateur
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+        return response()->json(['message'=>'Utilisateur restoré']);
+
+    }
+    public function getArchived(){
+        $archivedUsers = User::onlyTrashed()->with('roles')->get();
+        return response()->json($archivedUsers);
+    }
+    public function forceDelete($id){
+        $user = User::withTrashed()->findOrFail($id);
+        $user->forceDelete();
+        return response()->json(['message'=>'Utilisateur supprimé définitivement']);
     }
     public function getUserprofile()
     {

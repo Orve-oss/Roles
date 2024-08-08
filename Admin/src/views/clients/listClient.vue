@@ -70,7 +70,11 @@ export default {
     methods: {
         async fetchClients(page = 1) {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/clients?page=${page}&perPage=${this.perPage}`);
+                const response = await axios.get(`http://127.0.0.1:8000/api/clients?page=${page}&perPage=${this.perPage}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
                 this.clients = response.data.data;
                 this.totalPages = response.data.last_page;
                 this.totalClients = response.data.total;
@@ -88,7 +92,11 @@ export default {
                 return;
             } else {
                 this.errors = {};
-                axios.post('http://127.0.0.1:8000/api/clients', this.newClient)
+                axios.post('http://127.0.0.1:8000/api/clients', this.newClient, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                })
                     .then((response) => {
                         this.fetchClients();
                         Swal.fire(
@@ -116,7 +124,11 @@ export default {
             this.showEditModal = true;
         },
         updateClient() {
-            axios.put(`http://127.0.0.1:8000/api/updateclt/${this.editClient.id}`, this.editClient)
+            axios.put(`http://127.0.0.1:8000/api/updateclt/${this.editClient.id}`, this.editClient, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            })
                 .then(response => {
                     console.log(response);
                     this.fetchClients();
@@ -151,7 +163,11 @@ export default {
                 confirmButtonText: 'Yes delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`http://127.0.0.1:8000/api/deleteclt/${id}`)
+                    axios.delete(`http://127.0.0.1:8000/api/deleteclt/${id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        }
+                    })
                         .then((response) => {
                             if (response.status === 200) {
                                 this.fetchClients();
@@ -297,7 +313,8 @@ export default {
                             placeholder="Insert username" :class="{
                                 'is-invalid': submitted && v$.newClient.nom_clt.$error,
                             }" />
-                        <div v-for="(item, index) in v$.newClient.nom_clt.$errors" :key="index" class="invalid-feedback">
+                        <div v-for="(item, index) in v$.newClient.nom_clt.$errors" :key="index"
+                            class="invalid-feedback">
                             <span v-if="item.$message">{{ item.$message }}</span>
                         </div>
                     </div>
@@ -308,8 +325,8 @@ export default {
                         <BFormInput id="email" v-model="newClient.email" type="email" class="form-control"
                             placeholder="Insert email" :class="{
                                 'is-invalid': submitted && v$.newClient.email.$error,
-                            }"/>
-                            <div v-for="(item, index) in v$.newClient.email.$errors" :key="index" class="invalid-feedback">
+                            }" />
+                        <div v-for="(item, index) in v$.newClient.email.$errors" :key="index" class="invalid-feedback">
                             <span v-if="item.$message">{{ item.$message }}</span>
                         </div>
                     </div>
