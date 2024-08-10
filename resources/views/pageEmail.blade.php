@@ -37,9 +37,9 @@
 </head>
 
 <body>
-    <h1> Hello, {{ $nom_clt }} </h1>
+    <h1> Hello, {{ $client->nom_clt }} </h1>
     <p> Veuillez cliquer sur ce bouton pour activer votre compte</p>
-    <a href="http://localhost:8080/auth-recoverpwd" class="button"> Activer le compte</a>
+    <a href="http://localhost:8080/recover/{{$client->activation_token}}" class="button"> Activer le compte</a>
     <p>Merci. WEQUIPU-TEAM</p>
 
 </body>

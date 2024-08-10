@@ -20,32 +20,30 @@ class ClientController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $perPage = $request->get('perPage', 5); // Nombre d'éléments par page
-        $clients = Client::paginate($perPage);
+        // Nombre d'éléments par page
 
-        return response()->json($clients);
 
-        // try {
-        //     $list = Client::getAllclients();
-        //     if ($list) {
-        //         $resp = ClientResource::collection($list);
-        //         return response()->json($resp);
-        //     } elseif ($list->isEmpty()) {
-        //         return response()->json(['message' => 'Aucun Enregistrement']);
-        //     } else {
-        //         return response()->json([
-        //             'message' => 'Aucun client n\'existe',
-        //             'Status' => 'None'
-        //         ]);
-        //     }
-        // } catch (Exception $e) {
-        //     return response()->json([
-        //         'message' => $e->getMessage(),
-        //         'Status' => 'Fail'
-        //     ]);
-        // }
+        try {
+            $list = Client::getAllclients();
+            if ($list) {
+                $resp = ClientResource::collection($list);
+                return response()->json($resp);
+            } elseif ($list->isEmpty()) {
+                return response()->json(['message' => 'Aucun Enregistrement']);
+            } else {
+                return response()->json([
+                    'message' => 'Aucun client n\'existe',
+                    'Status' => 'None'
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'Status' => 'Fail'
+            ]);
+        }
     }
 
     /**
@@ -222,5 +220,46 @@ class ClientController extends Controller
         }
         $client->save();
         return response()->json(['message' => 'Profil modifié avec succès']);
+    }
+
+    public function getEmailFromToken($token)
+    {
+
+        $client = Client::where('activation_token', $token)->first();
+
+        if ($client) {
+            return response()->json([
+                'email' => $client->email
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Token invalide ou expiré'
+            ], 404);
+        }
+    }
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'password' => 'required|string|confirmed',
+        ]);
+
+        $client =Client::where('activation_token', $request->token)->first();
+
+        if (!$client) {
+            return response()->json([
+                'message' => 'Token invalide',
+                'status' => 'error'
+            ], 400);
+        }
+
+        $client->password = Hash::make($request->password);
+        $client->activation_token= null;
+        $client->save();
+
+        return response()->json([
+            'message' => 'Mot de passe changé avec succès',
+            'status' => 'success'
+        ]);
     }
 }

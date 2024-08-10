@@ -26,18 +26,22 @@ export default {
         viewTicket(id) {
             this.$router.push({ name: 'TicketDetail', params: { id } });
         },
-        getAgentId(){
+        getAgentId() {
             const user = JSON.parse(localStorage.getItem('user'));
             return user ? user.id : null;
         },
 
-        fetchAgentTickets() {
+        fetchAgentTickets(status) {
             this.agentId = this.getAgentId();
 
             if (!this.agentId) {
                 console.error('Agent Id is not defined');
             }
-            axios.get(`http://127.0.0.1:8000/api/tickets/agent/${this.agentId}`)
+            let url= `http://127.0.0.1:8000/api/tickets/agent/${this.agentId}`;
+            if (status) {
+                url= `http://127.0.0.1:8000/api/tickets/agent/${this.agentId}/status/${status}`;
+            }
+            axios.get(url)
                 .then(response => {
                     console.log(response.data);
                     this.tickets = response.data;
@@ -73,27 +77,18 @@ export default {
                             </BCol>
                             <BCol sm="8">
                                 <div class="text-sm-end">
-                                    <BButton @click="fetchTickets('')" variant="secondary"
-                                        class="btn-rounded mb-2 me-2">
-                                        Tout
-                                    </BButton>
-                                    <BButton @click="fetchTickets('En attente')" class="btn-rounded mb-2 me-2"
-                                        variant="dark">
+                                    <BDropdown>
 
-                                        En attente
-                                    </BButton>
-                                    <BButton @click="fetchTickets('En cours')" variant="primary"
-                                        class="btn-rounded mb-2 me-2">
-                                        En cours
-                                    </BButton>
-                                    <BButton @click="fetchTickets('Résolu')" variant="success"
-                                        class="btn-rounded mb-2 me-2">
-                                        Résolu
-                                    </BButton>
-                                    <BButton @click="fetchTickets('Fermé')" variant="danger"
-                                        class="btn-rounded mb-2 me-2">
-                                        Fermé
-                                    </BButton>
+                                        <template v-slot:button-content>
+
+                                           Filtrer les tickets
+
+                                            <i class="mdi mdi-chevron-down"></i>
+                                        </template>
+                                        <BDropdownItem @click="fetchAgentTickets('')">Tout</BDropdownItem>
+                                        <BDropdownItem @click="fetchAgentTickets('En cours')">En cours</BDropdownItem>
+                                        <BDropdownItem @click="fetchAgentTickets('Résolu')">Résolu</BDropdownItem>
+                                    </BDropdown>
                                 </div>
                             </BCol>
                         </BRow>

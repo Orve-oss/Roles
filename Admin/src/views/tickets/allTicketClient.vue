@@ -87,7 +87,7 @@ export default {
                                 </div>
                             </BCol>
                         </BRow>
-                        <div class="table-responsive">
+                        <div class="table-responsive" v-if="tickets.length">
                             <BTableSimple class="table-centered table-nowrap align-middle">
                                 <BThead>
                                     <BTr>
@@ -137,6 +137,7 @@ export default {
                                 </BTbody>
                             </BTableSimple>
                         </div>
+                        <div colspan="6" v-else align="center"> Aucun ticket soumis</div>
                         <pagination />
                     </BCardBody>
                 </BCard>

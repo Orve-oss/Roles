@@ -3,7 +3,7 @@ import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import BPagination from 'bootstrap-vue-next';
+// import BPagination from 'bootstrap-vue-next';
 import { required, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import { useNotificationStore } from '@/state/pinia';
@@ -14,7 +14,7 @@ const notificationStore = useNotificationStore();
  * Customers component
  */
 export default {
-    components: { Layout, PageHeader, BPagination },
+    components: { Layout, PageHeader },
     setup() {
         return {
             v$: useVuelidate(),
@@ -26,10 +26,7 @@ export default {
             clients: [],
             searchClient: '',
             filteredClient: [],
-            currentPage: 1,
-            perPage: 5,
-            totalPages: 1,
-            totalClients: 0,
+
             showModal: false,
             newClient: {
                 nom_clt: '',
@@ -78,17 +75,16 @@ export default {
                 return clientName.includes(query) || clientEmail.includes(query);
             });
         },
-        async fetchClients(page = 1) {
+        async fetchClients() {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/clients?page=${page}&perPage=${this.perPage}`, {
+                const response = await axios.get(`http://127.0.0.1:8000/api/clients`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     }
                 });
-                this.clients = response.data.data;
-                this.filteredClient = this.clients;
-                this.totalPages = response.data.last_page;
-                this.totalClients = response.data.total;
+                this.clients = response.data;
+
+
             } catch (error) {
                 console.error('Erreur lors de la récupération des clients:', error);
             }
@@ -262,7 +258,7 @@ export default {
                                 </BThead>
                                 <BTbody>
                                     <BTr v-for="(clist, index) in clients" :key="index">
-                                        <BTd>{{ (currentPage - 1) * perPage + index + 1 }}</BTd>
+                                        <BTd>{{ index + 1 }}</BTd>
                                         <BTd>{{ clist.nom_clt }}</BTd>
                                         <BTd>
                                             <p class="mb-0">{{ clist.email }}</p>
@@ -303,12 +299,12 @@ export default {
                                 </BTbody>
                             </BTableSimple>
                         </div>
-                        <div class="mt-3">
+                        <!-- <div class="mt-3">
                             <BPagination v-model="currentPage" :total-rows="totalClients" :per-page="perPage"
                                 align="end" @change="handlePageChange" />
 
 
-                        </div>
+                        </div> -->
                     </BCardBody>
                 </BCard>
             </BCol>

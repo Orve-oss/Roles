@@ -1,6 +1,6 @@
 <script>
 import axios from "axios";
-import { required, email, helpers } from "@vuelidate/validators";
+import { required, email, helpers, } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core"
 
 
@@ -14,12 +14,16 @@ export default {
             v$: useVuelidate(),
         };
     },
+
+
     data() {
         return {
 
             email: '',
             password: '',
             password_confirmation: '',
+            token: '',
+            errorMessage: '',
             submitted: false,
 
 
@@ -36,10 +40,27 @@ export default {
         password_confirmation: {
             required: helpers.withMessage("Confirm password is required", required),
 
+
         },
     },
+    mounted(){
+        this.fetchEmailFromToken();
+    },
+
 
     methods: {
+        fetchEmailFromToken() {
+            this.token = this.$route.params.token;
+            console.log(this.token);
+            axios.get(`http://127.0.0.1:8000/api/get-email/${this.token}`)
+                .then((response) => {
+                    this.email = response.data.email;
+                    console.log(this.email);
+                })
+                .catch((error) => {
+                    console.error("Erreur lors de la récupération de l'email:", error);
+                });
+        },
         tryToResetpwd() {
             this.submitted = true;
             // stop here if form is invalid
@@ -53,11 +74,14 @@ export default {
                         email: this.email,
                         password: this.password,
                         password_confirmation: this.password_confirmation,
+                        token: this.token,
                     })
                     .then((res) => {
-                        if (res.data.status === 200) {
+                        if (res.data.message) {
                             alert('Compte activé avec succès!');
                             this.$router.push('/accueil');
+                        } else {
+                            this.errorMessage = 'Erreur';
                         }
                     });
             }
@@ -78,7 +102,7 @@ export default {
                             <BCol md="4" class="bg-light p-4 d-flex flex-column justify-content-center">
                                 <div class="text-center">
                                     <h4> Bienvenue sur votre portail</h4>
-                                    <p class="mb-0"> Merci de vous connecter</p>
+                                    <p class="mb-0"> Merci de changer de mot de passe</p>
                                 </div>
                             </BCol>
                             <BCol md="8">
@@ -88,11 +112,14 @@ export default {
                                         <BAlert :model-value="true" variant="success" class="text-center mb-4">
                                             Veuillez changer de mot de passe
                                         </BAlert>
+                                        <BAlert v-if="errorMessage" variant="danger" class="text-center mb-4">
+                                            {{ errorMessage }}
+                                        </BAlert>
                                         <BForm class="form-horizontal" @submit.prevent="tryToResetpwd">
                                             <BFormGroup>
                                                 <label for="useremail">Email</label>
                                                 <BFormInput class="mb-2" v-model="email" id="useremail"
-                                                    placeholder="Enter email"
+                                                    placeholder="Enter email" disabled
                                                     :class="{ 'is-invalid': submitted && v$.email.$error }" />
                                                 <div v-for="(item, index) in v$.email.$errors" :key="index"
                                                     class="invalid-feedback">
@@ -109,7 +136,7 @@ export default {
                                                 <div v-if="submitted && v$.password.$error" class="invalid-feedback">
                                                     <span v-if="v$.password.required.$message">{{
                                                         v$.password.required.$message
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                             </BFormGroup>
 
@@ -124,7 +151,7 @@ export default {
                                                     class="invalid-feedback">
                                                     <span v-if="v$.password_confirmation.required.$message">{{
                                                         v$.password_confirmation.required.$message
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                             </BFormGroup>
 

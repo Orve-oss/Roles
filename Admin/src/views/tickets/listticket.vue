@@ -116,26 +116,18 @@ export default {
                             </BCol>
                             <BCol sm="8">
                                 <div class="text-sm-end">
-                                    <BButton @click="fetchTickets('')" variant="secondary"
-                                        class="btn-rounded mb-2 me-2">
-                                        Tout
-                                    </BButton>
-                                    <BButton @click="fetchTickets('En attente')" class="btn-rounded mb-2 me-2"
-                                        variant="dark">
-                                        En attente
-                                    </BButton>
-                                    <BButton @click="fetchTickets('En cours')" variant="primary"
-                                        class="btn-rounded mb-2 me-2">
-                                        En cours
-                                    </BButton>
-                                    <BButton @click="fetchTickets('Terminé')" variant="success"
-                                        class="btn-rounded mb-2 me-2">
-                                        Terminé
-                                    </BButton>
-                                    <BButton @click="fetchTickets('Fermé')" variant="danger"
-                                        class="btn-rounded mb-2 me-2">
-                                        Fermé
-                                    </BButton>
+                                    <BDropdown>
+
+                                        <template v-slot:button-content>
+
+                                            Dropdown button
+
+                                            <i class="mdi mdi-chevron-down"></i>
+                                        </template>
+                                        <BDropdownItem>Tout</BDropdownItem>
+                                        <BDropdownItem>En cours</BDropdownItem>
+                                        <BDropdownItem>Résolu</BDropdownItem>
+                                    </BDropdown>
                                 </div>
                             </BCol>
                         </BRow>

@@ -5,6 +5,7 @@ import googleCloud from "@/assets/images/googleCloud.jpg"
 import googleWorkspace from "@/assets/images/googleWorkspace.jpg"
 import application from "@/assets/images/application.jpeg"
 
+
 // import { Autoplay } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
@@ -29,6 +30,7 @@ export default {
          showModal: true,
          accueil,
          logo,
+
          googleCloud,
          googleWorkspace,
          application,
@@ -133,14 +135,14 @@ export default {
                      <a class="nav-link" href="#">Accueil</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="#">About</a>
+                     <a class="nav-link" href="#">Services</a>
                   </li>
                   <li class="nav-item">
                      <a class="nav-link" href="#">Contact</a>
                   </li>
-                  <li class="nav-item">
+                  <!-- <li class="nav-item">
                      <a class="btn btn-primary" href="#">SIGN IN / SIGN UP</a>
-                  </li>
+                  </li> -->
                </ul>
             </div>
          </div>
@@ -180,9 +182,10 @@ export default {
                                  </div>
                                  <div class="text-muted mt-4">
 
-                                    <div class="d-flex">
+                                    <div class="d-flex" :style="{ height: '400px' }">
 
-                                       <span class="ms-2 text-truncate">Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation. Lorem ipsum is derived from the Latin “dolorem ipsum” roughly translated as “pain itself.”</span>
+                                       <span class="ms-2 text-truncate"
+                                       >Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation. Lorem ipsum is derived from the Latin “dolorem ipsum” roughly translated as “pain itself.”</span>
                                     </div>
                                     <img :src="googleWorkspace" alt="" height="100">
                                  </div>
@@ -264,14 +267,14 @@ export default {
                     </div>
                 </div> -->
          </div>
-         <BModal md="12" v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true">
+         <BModal md="12" v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true" >
 
 
             <div class="p-2">
                <BRow>
 
                   <BCol>
-                     <BCardBody class="pt-0">
+                     <BCardBody class="pt-0" >
                         <h4>Se connecter</h4>
                         <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{ authError }}
                         </BAlert>

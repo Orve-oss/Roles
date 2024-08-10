@@ -151,13 +151,13 @@ class UserController extends Controller
     {
     }
     public function destroy($id)
-    { //archive l'utilisateur
+    {
         $user = User::findOrFail($id);
         $user->delete();
         return response()->json(['message' => 'Utilisateur archivé']);
     }
     public function restore($id)
-    {//restore l'utilisateur
+    {
         $user = User::withTrashed()->findOrFail($id);
         $user->restore();
         return response()->json(['message' => 'Utilisateur restoré']);
@@ -220,13 +220,28 @@ class UserController extends Controller
         }
 
         $user->password = Hash::make($request->password);
-        $user->reset_token = null; // Invalider le token après utilisation
+        $user->reset_token = null; 
         $user->save();
 
         return response()->json([
             'message' => 'Mot de passe changé avec succès',
             'status' => 'success'
         ]);
+    }
+    public function getEmailFromToken($token)
+    {
+
+        $user = User::where('reset_token', $token)->first();
+
+        if ($user) {
+            return response()->json([
+                'email' => $user->email
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Token invalide ou expiré'
+            ], 404);
+        }
     }
 
 }

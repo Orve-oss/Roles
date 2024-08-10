@@ -53,10 +53,13 @@ Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
     Route::get('/clients', [ClientController::class, 'index']);
-    Route::post('/clients', [ClientController::class, 'store']);
-    Route::put('/updateclt/{id}', [ClientController::class, 'update']);
-    Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
+Route::post('/clients', [ClientController::class, 'store']);
+Route::put('/updateclt/{id}', [ClientController::class, 'update']);
+Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
+
 });
+
+
 
 
 Route::middleware('auth:sanctum')->get('/client-profile', [ClientController::class, 'getProfile']);
@@ -64,9 +67,10 @@ Route::post('/updateclient/profile', [ClientController::class, 'updateProfile'])
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/roles', [RoleController::class, 'index']);
-Route::post('/reset-password', [ClientController::class, 'reset']);
-Route::put('/reset-mot', [UserController::class, 'resetPassword']);
-Route::post('/send-activation/{id}', [ClientController::class, 'send']);
+Route::post('/reset-password', [ClientController::class, 'resetPassword']);
+Route::post('/reset-mot', [UserController::class, 'resetPassword']);
+Route::get('/get-email-from-token/{token}', [UserController::class, 'getEmailFromToken']);
+Route::get('/get-email/{token}', [ClientController::class, 'getEmailFromToken']);
 
 
 Route::middleware('auth:sanctum')->get('/user-profile', [UserController::class, 'getUserprofile']);
@@ -91,9 +95,10 @@ Route::put('/updatepriorite/{id}', [PrioriteController::class, 'update']);
 Route::delete('/deletepriorite/{id}', [PrioriteController::class, 'destroy']);
 
 Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
-    Route::get('/tickets', [TicketController::class, 'index']);
+
     Route::get('/tickets/search', [TicketController::class, 'search']);
 });
+Route::get('/tickets', [TicketController::class, 'index']);
 
 Route::middleware(['auth:sanctum', 'role:Client'])->group(function () {
     Route::post('/tickets', [TicketController::class, 'store']);
@@ -130,3 +135,6 @@ Route::get('/tickets/client/{clientId}', [TicketController::class, 'getTicketByC
 Route::get('/ticket/{ticketId}/comments', [TicketController::class, 'getComments']);
 Route::get('/ticket/{ticketId}/rapport', [TicketController::class, 'getTicketRapport']);
 Route::get('/ticket/{agentId}/dashboard', [TicketController::class, 'getdashboard']);
+
+Route::get('/tickets/agent/{agentId}/status/{status}', [TicketController::class, 'getStatusByAgent']);
+

@@ -40,6 +40,11 @@ export default {
 
         };
     },
+    computed:{
+        totalPages(){
+            return Math.ceil(this.totalTickets/this.perPage);
+        }
+    },
     mounted() {
         this.fetchTickets();
         this.fetchTypes();

@@ -196,17 +196,10 @@ class TicketController extends Controller
      */
     public function destroy($id)
     {
-        if (Ticket::deleteTicket($id)) {
-            return response()->json([
-                'message' => 'Ticket supprimé',
-                'status' => 200
-            ]);
-        } else {
-            return response()->json([
-                'message' => 'Le Ticket n\'existe pas',
-                'status' => 401
-            ]);
-        }
+        $ticket = Ticket::findOrFail($id);
+        $ticket->delete();
+        $ticket->comments()->delete();
+        return response()->json(['message' => 'Ticket archivé']);
     }
 
     public function assign(Request $request, $id)
@@ -228,6 +221,13 @@ class TicketController extends Controller
     public function getticketsByAgent($agentId)
     {
         $tickets = Ticket::where('user_id', $agentId)->with(['type', 'priorite', 'service'])->get();
+        return response()->json($tickets);
+    }
+    public function getStatusByAgent($agentId, $status)
+    {
+        $tickets = Ticket::where('user_id', $agentId)->with(['type', 'priorite', 'service'])
+        ->where('status', $status)->with(['type', 'priorite', 'service'])
+        ->get();
         return response()->json($tickets);
     }
     public function getTicketsByservice($servicename){
@@ -283,7 +283,7 @@ class TicketController extends Controller
             $ticket = Ticket::findOrFail($ticketId);
             $report = Historique::create([
                 'ticket_id' => $ticket->id,
-                'description' => 'Rapport généré pour le ticket ID ' . $ticket->id,
+                'description' => 'Rapport du ticket ID ' . $ticket->id,
             ]);
             return response()->json([
                 'message' => 'Rapport créé',

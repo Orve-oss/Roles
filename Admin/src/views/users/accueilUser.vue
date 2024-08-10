@@ -1,6 +1,8 @@
 <script>
 import { timelineData } from "./data"
-import accueil from "@/assets/images/accueil.jpg"
+import logo1 from "@/assets/images/logo1.png"
+import support1 from "@/assets/images/support1.jpg"
+// import accueil from "@/assets/images/accueil.jpg"
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -29,7 +31,15 @@ export default {
     },
     data() {
         return {
-            accueil,
+            tickets: [
+                { title: 'Incident', incident: 'Serveur en panne', description: 'Le serveur principal est hors ligne depuis 3 heures.' },
+                { title: 'Problème', incident: 'Connexion lente', description: 'Les utilisateurs rapportent une lenteur dans la connexion.' },
+                { title: 'Incident', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
+                { title: 'Demande', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
+                { title: 'Problème', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
+
+            ],
+            support1, logo1,
             logo, Navigation, Pagination,
             email: "",
             password: "",
@@ -71,6 +81,7 @@ export default {
 
     // },
     methods: {
+
         async tryToLogIn() {
             this.submitted = true;
             // stop here if form is invalid
@@ -133,7 +144,7 @@ export default {
         <nav class="navbar navbar-expand-lg navigation fixed-top sticky" id="navbar">
             <BContainer>
                 <router-link class="navbar-logo" to="/">
-                    <img :src=logo alt height="19" class="logo logo-dark" />
+                    <img :src=logo alt height="50" class="logo logo-dark" />
                 </router-link>
 
                 <BButton variant="white" class="btn btn-sm px-3 font-size-16 d-lg-none header-item"
@@ -144,7 +155,7 @@ export default {
                 <div class="collapse navbar-collapse" id="topnav-menu-content">
                     <ul class="navbar-nav ms-auto" id="topnav-menu" v-scroll-spy-active="{ selector: 'a.nav-link' }">
                         <li class="nav-item">
-                            <BLink class="nav-link" v-scroll-to="'#home'" href="#home">Home</BLink>
+                            <BLink class="nav-link" v-scroll-to="'#home'" href="#home">Accueil</BLink>
                         </li>
                     </ul>
 
@@ -155,7 +166,7 @@ export default {
             </BContainer>
         </nav>
         <div v-scroll-spy>
-            <section class="section hero-section image" :style="{ backgroundImage: `url(${accueil})` }" id="home">
+            <section class="section hero-section image" :style="{ backgroundImage: `url(${support1})` }" id="home">
                 <div class="bg-overlay "></div>
                 <BContainer>
                     <BRow class="align-items-center">
@@ -180,13 +191,13 @@ export default {
                                             </div>
                                             <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{
                                                 authSucces
-                                            }}
+                                                }}
                                             </BAlert>
                                             <div v-if="notification.message" :class="'alert ' + notification.type">
                                                 {{ notification.message }}
                                             </div>
 
-                                            <BForm class="p-5 " @submit.prevent="tryToLogIn">
+                                            <BForm class="p-5" @submit.prevent="tryToLogIn">
                                                 <BFormGroup class="mb-3" id="input-group-1" label="Email"
                                                     label-for="input-1">
                                                     <BFormInput id="input-1" v-model="email" class="w-100 mb-2"
@@ -209,7 +220,7 @@ export default {
                                                         class="invalid-feedback">
                                                         <span v-if="v$.password.required.$message">{{
                                                             v$.password.required.$message
-                                                        }}</span>
+                                                            }}</span>
                                                     </div>
                                                 </BFormGroup>
 
@@ -237,13 +248,48 @@ export default {
                     <BRow>
                         <BCol lg="12">
                             <div class="text-center mb-5">
-                                <div class="small-title">Timeline</div>
-                                <h4>Our Roadmap</h4>
+                                <div class="small-title">Tickets</div>
+                                <h4>Exemples</h4>
+                            </div>
+                        </BCol>
+                    </BRow>
+                    <BRow class="mt-4">
+                        <BCol lg="12">
+                            <div class="hori-timeline">
+                                <swiper class="swiper-wrapper" :loop="true"
+                                    :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="3"
+                                    :space-between="20" :breakpoints="breakpoints"
+                                    :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                                    :navigation="{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }"
+                                    :pagination="{ clickable: true, el: '.swiper-pagination' }">
+
+                                    <!-- Example Ticket Cards -->
+                                    <swiper-slide v-for="(ticket, index) in tickets" :key="index">
+                                        <BCard class="text-center h-100">
+                                            <BCardHeader class="bg-primary text-white">
+                                                <h5>{{ ticket.title }}</h5>
+                                            </BCardHeader>
+                                            <BCardBody>
+                                                <BCardTitle>{{ ticket.incident }}</BCardTitle>
+                                                <BCardText>
+                                                    {{ ticket.description }}
+                                                </BCardText>
+                                            </BCardBody>
+                                        </BCard>
+                                    </swiper-slide>
+
+                                    <!-- Navigation buttons -->
+                                    <div class="owl-nav">
+                                        <BButton role="presentation" class="owl-prev swiper-button-prev"></BButton>
+                                        <BButton role="presentation" class="owl-next swiper-button-next"></BButton>
+                                    </div>
+                                </swiper>
                             </div>
                         </BCol>
                     </BRow>
 
-                    <BRow class="mt-4">
+
+                    <!-- <BRow class="mt-4">
                         <BCol lg="12">
                             <div class="hori-timeline">
                                 <swiper class="swiper-wrapper" :loop="true"
@@ -277,11 +323,20 @@ export default {
                                 </swiper>
                             </div>
                         </BCol>
-                    </BRow>
+                    </BRow> -->
                 </BContainer>
             </section>
 
-            <footer class="landing-footer">
+            <footer class="bg-dark text-center">
+                <BRow>
+                    <BCol lg="6">
+                        <div class="mb-4">
+                            <img :src=logo1 alt height="50" />
+                        </div>
+
+                        <p class="text-white">Pour plus d'informations contactez le mail suivant </p>
+                    </BCol>
+                </BRow>
 
             </footer>
         </div>
@@ -293,6 +348,18 @@ export default {
     display: block;
     width: 100%;
 }
+
+.form-slide-in {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.5s ease-in-out;
+}
+
+.form-slide-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 
 .image {
 

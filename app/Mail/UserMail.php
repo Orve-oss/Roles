@@ -45,7 +45,8 @@ class UserMail extends Mailable
             view: 'userMail',
             with: [
                 'name' => $this->user->name,
-                // 'resetUrl' => url(`http://localhost:8080/reset?token={$this->token}`)
+                'reset_token'=>$this->user->reset_token
+
             ]
         );
     }

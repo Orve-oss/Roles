@@ -36,21 +36,18 @@ export default {
         <PageHeader title="Liste des rapports" pageTitle="Tickets" />
 
         <BRow>
-            <BCol xl="4" sm="6">
-                <BCard no-body>
+            <BCol xl="4" sm="6" v-for="histor in historiques" :key="histor.id">
+                <BCard no-body >
                     <BCardBody>
                         <BRow>
 
-                            <BCol lg="8" v-for="histor in historiques" :key="histor.id">
+                            <BCol lg="8" >
                                 <div>
                                     <router-link :to="{name: 'Rapport', params:{ticketId: histor.ticket_id}}" class="d-block text-primary text-decoration-underline mb-2">Ticket N°{{histor.ticket_id}}</router-link>
                                     <h5 class="text-truncate mb-4 mb-lg-5" title="Rapport généré">{{ histor.description }}</h5>
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item me-3">
-                                            <h5 class="font-size-14" data-toggle="tooltip" data-placement="top"
-                                                title="Amount">
-                                                <i class="bx bx-money me-1 text-muted"></i>vmagnouwai@gmail.com
-                                            </h5>
+                                            
                                         </li>
                                         <li class="list-inline-item ms-1">
                                             <h5 class="font-size-14" data-toggle="tooltip" data-placement="top"

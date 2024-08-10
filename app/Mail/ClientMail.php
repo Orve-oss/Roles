@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -14,12 +15,12 @@ class ClientMail extends Mailable
     use Queueable, SerializesModels;
 
     public $client;
-    public $url;
+
 
     /**
      * Create a new message instance.
      */
-    public function __construct($client)
+    public function __construct( Client $client)
     {
         $this->client = $client;
 
@@ -44,6 +45,7 @@ class ClientMail extends Mailable
             view: 'pageEmail',
             with: [
                 'nom_clt' => $this->client->nom_clt,
+                'activation_token' => $this->client->activation_token
                 // 'url' => url(`http://127.0.0.1:8080/reset-password`),
             ]
         );
