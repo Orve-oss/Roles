@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AllMail;
 use App\Mail\ResolutionMail;
 use App\Mail\TicketMailDescription;
 use App\Mail\TicketReassign;
@@ -75,12 +76,34 @@ class TicketController extends Controller
 
 
         $ticket = Ticket::create($ticketData);
+        $this->notifyUser($ticket);
 
         return response()->json([
             'message' => 'Ticket créé avec succès',
             'status' => 200,
             'ticket' => $ticket
         ]);
+    }
+    private function notifyUser($ticket){
+        $users = User::where('role', 'Agent')
+        ->orWhere('role', 'Admin')
+        ->get();
+        foreach ($users as $key => $user) {
+            Mail::to($user->email)->send(new AllMail());
+        }
+    }
+    public function getUnassigned(){
+        $tickets = Ticket::whereNull('user_id')
+        ->with(['type', 'priorite', 'service'])
+        ->get();
+        return response()->json($tickets);
+    }
+    public function assignToAgent($ticketId, $agentId){
+        $ticket = Ticket::find($ticketId);
+        $ticket->user_id = $agentId;
+        $ticket->status = 'Assigné';
+        $ticket->save();
+        return response()->json(['message' => 'Ticket assigné', 'status'=>200]);
     }
 
     public function getTicketByStatus($status)

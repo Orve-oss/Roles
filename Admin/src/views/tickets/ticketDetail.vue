@@ -34,6 +34,7 @@ export default {
                 created_at: '',
             },
             showImageModal: false,
+            showNoteModal: false,
             showComment: false,
             workDescription: '',
             showWorkModal: false,
@@ -57,6 +58,7 @@ export default {
         },
         showWorkDescription() {
             this.showWorkModal = true;
+            this.showNoteModal = true;
         },
 
         fetchTicket() {
@@ -84,7 +86,7 @@ export default {
                 .then(() => {
                     alert('Statut mis à jour avec succès');
                     if (this.ticket.status === 'Résolu') {
-                        this.showComment = true;
+                        this.showNoteModal = true;
                     }
                 })
                 .catch(error => {
@@ -95,6 +97,26 @@ export default {
                 work_description: this.workDescription
             });
             this.showWorkModal = false;
+            Swal.fire('Succes!', 'Un mail a été envoyé au client', 'success');
+        },
+        async updateTicketResolved(){
+            const id = this.$route.params.id;
+            console.log(id);
+            await axios.put(`http://127.0.0.1:8000/api/tickets/update-status/${id}`, { status: this.ticket.status })
+                .then(() => {
+                    alert('Statut mis à jour avec succès');
+                    if (this.ticket.status === 'Résolu') {
+                        this.generateRapport();
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur survenue', error);
+                });
+            await axios.post(`http://127.0.0.1:8000/api/tickets/send-email`, {
+                ticket_id: this.ticket.id,
+                work_description: this.workDescription
+            });
+            this.showNoteModal = false;
             Swal.fire('Succes!', 'Un mail a été envoyé au client', 'success');
         },
         sendEmail() {
@@ -352,9 +374,9 @@ export default {
                                     Save Changes
                                 </BButton>
                                 <BButton variant="danger" @click="archiveTicket(ticket.id)" class="me-1">Fermer</BButton>
-                                <BButton variant="success" class="me-1" v-if="showbutton" @click="generateRapport">
+                                <!-- <BButton variant="success" class="me-1" v-if="showbutton" @click="generateRapport">
                                     Rapport
-                                </BButton>
+                                </BButton> -->
 
                             </div>
                             <!-- <div class="mt-2" v-if="ticket.status === 'Résolu'">
@@ -369,7 +391,7 @@ export default {
         <BModal v-model="showImageModal" title="image" hide-footer>
             <img :src="getImageUrl(ticket.image)" class="img-fluid" />
         </BModal>
-        <BRow v-if="showComment">
+        <!-- <BRow v-if="showComment">
             <BCol lg="12">
                 <BCard no-body>
                     <BCardBody>
@@ -430,12 +452,19 @@ export default {
                     </BCardBody>
                 </BCard>
             </BCol>
-        </BRow>
-        <BModal v-model="showWorkModal" hide-header :no-close-on-backdrop="true" @ok="updateTicketStatus">
+        </BRow> -->
+        <BModal v-model="showWorkModal" v-if="ticket.status === 'en cours'" hide-header :no-close-on-backdrop="true" @ok="updateTicketStatus">
             <BAlert :model-value="true" variant="success" class="text-center mb-4">
                 Ajouter une description du travail en cours
             </BAlert>
             <BFormTextarea v-model="workDescription" placeholder="Entrez la description du travail en cours" rows="5">
+            </BFormTextarea>
+        </BModal>
+        <BModal v-model="showNoteModal" v-else hide-header :no-close-on-backdrop="true" @ok="updateTicketResolved">
+            <BAlert :model-value="true" variant="success" class="text-center mb-4">
+                Ajouter une Note de travail en cours
+            </BAlert>
+            <BFormTextarea v-model="workDescription" placeholder="Entrez la note de travail" rows="5">
             </BFormTextarea>
         </BModal>
     </Layout>

@@ -333,7 +333,6 @@ export default {
                         <div class="mb-4">
                             <img :src=logo1 alt height="50" />
                         </div>
-
                         <p class="text-white">Pour plus d'informations contactez le mail suivant </p>
                     </BCol>
                 </BRow>

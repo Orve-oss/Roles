@@ -91,6 +91,12 @@ export default [
     component: () => import("../views/tickets/listeRapport")
   },
   {
+    path: "/unassign",
+    name: "Unassign",
+    meta: { title: "Unassign", authRequired: true },
+    component: () => import("../views/tickets/unassignTicket")
+  },
+  {
     path: "/agent/tickets",
     name: "opentickets",
     meta: { title: "opentickets", authRequired: true },
