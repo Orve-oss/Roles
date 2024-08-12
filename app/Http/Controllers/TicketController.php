@@ -98,13 +98,27 @@ class TicketController extends Controller
         ->get();
         return response()->json($tickets);
     }
-    public function assignToAgent($ticketId, $agentId){
+    public function assignToAgent(Request $request, $ticketId){
+        $agentId = $request->input('agentId');
         $ticket = Ticket::find($ticketId);
-        $ticket->user_id = $agentId;
-        $ticket->status = 'Assigné';
-        $ticket->save();
-        return response()->json(['message' => 'Ticket assigné', 'status'=>200]);
+
+        if ($ticket) {
+            $ticket->user_id = $agentId;
+            $ticket->status = 'Assigné';
+            $ticket->save();
+            return response()->json(['message' => 'Ticket assigné', 'status' => 200]);
+        } else {
+            return response()->json(['message' => 'Ticket non trouvé', 'status' => 404]);
+        }
     }
+
+    public function close(Ticket $ticket){
+        $ticket->status = 'Fermé';
+        $ticket->save();
+
+        return response()->json(['message' => 'Ticket fermé avec succès'], 200);
+    }
+
 
     public function getTicketByStatus($status)
     {

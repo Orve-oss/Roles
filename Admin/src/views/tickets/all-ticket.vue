@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Layout from "../../layouts/main";//besoin
 import PageHeader from "@/components/page-header";
+import emitter from "../../eventBus";
 
 
 /**
@@ -47,12 +48,16 @@ export default {
     },
     mounted() {
         this.fetchTickets();
+        emitter.on('ticket-status', this.fetchTickets);
         this.fetchTypes();
         this.fetchServices();
         this.fetchPriorites();
         this.fetchAgents();
         this.currentUser = this.getUserId();
         console.log(this.currentUser);
+    },
+    beforeUnmount(){
+        emitter.off('ticket-status', this.fetchTickets);
     },
     methods: {
         fetchTypes() {

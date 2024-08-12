@@ -61,9 +61,12 @@ Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
 
 Route::get('/ticket/unassigned', [TicketController::class, 'getUnassigned']);
 Route::post('/tickets/{ticket}/assigned', [TicketController::class, 'assignToAgent']);
+Route::put('/tickets/{ticket}/close', [TicketController::class, 'close']);
+
 
 
 Route::middleware('auth:sanctum')->get('/client-profile', [ClientController::class, 'getProfile']);
+Route::middleware('auth:sanctum')->get('/user-profile', [UserController::class, 'getProfile']);
 Route::post('/updateclient/profile', [ClientController::class, 'updateProfile']);
 
 Route::post('/login', [AuthController::class, 'login']);

@@ -3,6 +3,7 @@ import axios from "axios";
 // import Swal from "sweetalert2";
 import Layout from "../../layouts/main";//besoin
 import PageHeader from "@/components/page-header";
+import emitter from "../../eventBus";
 
 
 /**
@@ -21,7 +22,11 @@ export default {
     },
     mounted() {
         this.fetchTickets();
+        emitter.on('ticket-status', this.fetchTickets);
 
+    },
+    beforeUnmount(){
+        emitter.off('ticket-status', this.fetchTickets);
     },
     methods: {
         viewTicket(id) {

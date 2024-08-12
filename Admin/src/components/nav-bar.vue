@@ -3,6 +3,7 @@ import axios from "axios";
 import simplebar from "simplebar-vue";
 import { avatar3, avatar4, avatar1 } from "@/assets/images/users/data"
 import { useAuthStore } from '@/state/pinia'
+import userService from "../../services/userService";
 const auth = useAuthStore()
 
 import i18n from "../i18n";
@@ -46,7 +47,11 @@ export default {
           title: "Arabic",
         },
       ],
-      locales: ["fr", "en", "ar"]
+      locales: ["fr", "en", "ar"],
+      role: '',
+      image: '',
+      initial: '',
+      displayName: '',
     };
   },
   components: { simplebar },
@@ -63,7 +68,34 @@ export default {
   computed: {
     currentUser() {
       return auth.currentUser
+    },
+    getProfileLink(){
+        // const roleName = this.role?.roles?.[0]?.name;
+        // console.log(roleName);
+        if (this.role[0] === 'Admin' || this.role[0] ==='Agent') {
+            return '/profileUser';
+        } else if (this.role[0] === 'Client'){
+            return '/profileClient';
+        }else{
+            return '/';
+        }
+    },
+    getLogoutLink(){
+        // const this.role = this.role?.roles?.[0]?.name;
+        if (this.role[0] === 'Admin' || this.role[0] ==='Agent') {
+            return '/';
+        } else if (this.role[0] === 'Client'){
+            return '/accueil';
+        }else{
+            return '/';
+        }
     }
+  },
+  mounted(){
+    this.loadUserProfile();
+    const user = JSON.parse(localStorage.getItem('user'));
+    this.role = user ? user.role : '';
+    console.log(this.role[0]);
   },
   methods: {
     toggleMenu() {
@@ -116,6 +148,32 @@ export default {
         });
       });
     },
+    loadUserProfile(){
+        const role = localStorage.getItem('userRole');
+        console.log(role);
+        if (role === 'Client') {
+
+            userService.fetchClientProfile().then(profile =>{
+                this.image = profile.image;
+                this.initial = profile.initial;
+                this.displayName = profile.displayName;
+            }).catch(err =>{
+                console.error(err);
+            });
+
+        } else if(role === 'Admin' || role === 'Agent'){
+            userService.fetchAdminProfile().then(profile =>{
+                this.image = profile.image;
+                this.initial = profile.initial;
+                this.displayName = profile.displayName;
+            }).catch(err =>{
+                console.error(err);
+            });
+
+        }else{
+            console.log('erreur');
+        }
+    }
   },
 };
 </script>
@@ -291,7 +349,12 @@ export default {
 
         <BDropdown right variant="black" toggle-class="header-item" menu-class="dropdown-menu-end">
           <template v-slot:button-content>
-            <img class="rounded-circle header-profile-user" :src="avatar1" alt="Header Avatar" />
+            <div>
+                <img v-if="image" class="rounded-circle header-profile-user" :src="image" alt="Header Avatar" />
+                <div v-else class="rounded-circle header-profile-user profile-initial-wrapper"> {{ initial }}</div>
+            </div>
+
+
             <span class="d-none d-xl-inline-block ms-1">
               <div v-if="currentUser">
                 {{ currentUser.displayName }}
@@ -301,7 +364,7 @@ export default {
             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
           </template>
           <BDropdownItem>
-            <router-link to="/profileUser" v-slot="{ navigate }">
+            <router-link :to="getProfileLink" v-slot="{ navigate }">
               <span @click="navigate" @keypress.enter="navigate" class="text-body">
                 <i class="bx bx-user font-size-16 align-middle me-1"></i>
                 {{ $t("navbar.dropdown.henry.list.profile") }}
@@ -309,7 +372,7 @@ export default {
             </router-link>
           </BDropdownItem>
           <BDropdownDivider></BDropdownDivider>
-          <a href="/logout" class="dropdown-item text-danger">
+          <a :href="getLogoutLink" class="dropdown-item text-danger">
             <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
             {{ $t("navbar.dropdown.henry.list.logout") }}
           </a>
@@ -324,3 +387,19 @@ export default {
     </div>
   </header>
 </template>
+<style>
+
+.profile-initial-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  color: #555;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+</style>

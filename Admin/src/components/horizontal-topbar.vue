@@ -647,19 +647,6 @@ export default {
               </span>
             </router-link>
           </BDropdownItem>
-          <BDropdownItem href="javascript: void(0);">
-            <i class="bx bx-wallet font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.mywallet") }}
-          </BDropdownItem>
-          <BDropdownItem class="d-block" href="javascript: void(0);">
-            <span class="badge bg-success float-end">11</span>
-            <i class="bx bx-wrench font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.settings") }}
-          </BDropdownItem>
-          <BDropdownItem href="javascript: void(0);">
-            <i class="bx bx-lock-open font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.lockscreen") }}
-          </BDropdownItem>
           <BDropdownDivider></BDropdownDivider>
           <router-link to="/logout" class="dropdown-item text-danger">
             <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>

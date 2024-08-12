@@ -39,6 +39,7 @@
     "firebase": "^10.4.0",
     "maska": "^2.1.9",
     "metismenujs": "^1.4.0",
+    "mitt": "^3.0.1",
     "node-sass": "^9.0.0",
     "pinia": "^2.1.6",
     "sass": "^1.68.0",

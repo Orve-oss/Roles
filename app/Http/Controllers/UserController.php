@@ -220,7 +220,7 @@ class UserController extends Controller
         }
 
         $user->password = Hash::make($request->password);
-        $user->reset_token = null; 
+        $user->reset_token = null;
         $user->save();
 
         return response()->json([
@@ -242,6 +242,18 @@ class UserController extends Controller
                 'message' => 'Token invalide ou expiré'
             ], 404);
         }
+    }
+    public function getProfile()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+        $user->roles->pluck('name');
+        return response()->json([
+            'user' => $user,
+            'image' => $user->image ? url('storage/' . $user->image) : null,
+        ]);
     }
 
 }
