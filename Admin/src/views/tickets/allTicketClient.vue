@@ -62,7 +62,7 @@ export default {
 
 <template>
     <Layout>
-        <PageHeader title="Liste des tickets" pageTitle="All ticket" />
+        <PageHeader title="Liste des tickets" pageTitle="Tickets" />
 
         <BRow>
             <BCol cols="12">

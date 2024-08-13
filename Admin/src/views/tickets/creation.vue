@@ -127,9 +127,11 @@ export default {
             }
             else {
                Swal.fire('Erreur', 'Le fichier dépasse la taille maximale d 2Go.', 'error');
+               event.target.value = '';
             }
          } else {
             Swal.fire('Erreur', 'Seuls les fichiers au format JPEG, PNG, JPG, GIF et PDF sont autorisés', 'error');
+            event.target.value = '';
          }
       },
       async createTicket() {

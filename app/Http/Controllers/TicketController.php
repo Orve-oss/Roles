@@ -63,7 +63,7 @@ class TicketController extends Controller
             'type_ticket_id' => 'required',
             'priorite_id' => 'required',
             'client_id' => 'required|exists:clients,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,pdf|max:2048000'
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048000'
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
@@ -77,7 +77,7 @@ class TicketController extends Controller
 
 
         $ticket = Ticket::create($ticketData);
-        $this->notifyUser($ticket);
+        // $this->notifyUser($ticket);
 
         return response()->json([
             'message' => 'Ticket créé avec succès',

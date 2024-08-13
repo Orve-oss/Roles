@@ -339,7 +339,7 @@ export default {
             </BCol>
         </BRow>
     </Layout>
-    <BModal id="assignModal" v-model="showModal" ref="assignModal" title="Assigner un ticket à">
+    <BModal id="modal-scrollable" v-model="showModal" ref="modal-scrollable" title="Assigner un ticket à">
         <BForm @submit.prevent="assignTicket">
             <table class="table agent-table" @click="selectAgent">
 

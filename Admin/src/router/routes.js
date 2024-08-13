@@ -97,6 +97,12 @@ export default [
     component: () => import("../views/tickets/unassignTicket")
   },
   {
+    path: "/page/403",
+    name: "page403",
+    meta: { title: "page403", authRequired: true },
+    component: () => import("../views/account/403")
+  },
+  {
     path: "/agent/tickets",
     name: "opentickets",
     meta: { title: "opentickets", authRequired: true },
