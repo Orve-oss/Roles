@@ -257,7 +257,7 @@ export default {
                                         <BTh>Email du client</BTh>
                                         <!-- <BTh>Nbre ticket soumis</BTh> -->
                                         <BTh>Date de creation</BTh>
-                                        <BTh>Detail</BTh>
+
                                         <BTh>Action</BTh>
                                     </BTr>
                                 </BThead>
@@ -275,12 +275,12 @@ export default {
                                             </span>
                                         </BTd> -->
                                         <BTd>{{ new Date(clist.created_at).toLocaleDateString() }}</BTd>
-                                        <BTd>
+                                        <!-- <BTd>
                                             <BButton variant="primary" class="btn-sm btn-rounded"
                                                 @click="showModal = !showModal">
                                                 Voir
                                             </BButton>
-                                        </BTd>
+                                        </BTd> -->
                                         <BTd>
                                             <BDropdown class="card-drop" variant="white" right toggle-class="p-0"
                                                 menu-class="dropdown-menu-end">

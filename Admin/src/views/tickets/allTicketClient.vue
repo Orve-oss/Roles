@@ -45,7 +45,7 @@ export default {
 
             let url = `http://127.0.0.1:8000/api/tickets/client/${this.clientId}`;
             if (status) {
-                url = `http://127.0.0.1:8000/api/tickets/status/${status}`;
+                url = `http://127.0.0.1:8000/api/tickets/client/${this.clientId}/status/${status}`;
             }
             axios.get(url)
                 .then(response => {

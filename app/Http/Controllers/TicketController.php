@@ -197,6 +197,32 @@ class TicketController extends Controller
         }
         return response()->json(['serviceData' => $dashboardData]);
     }
+    public function getdashboardClient($clientId)
+    {
+        $services = Service::all();
+        $dashboardData = [];
+        foreach ($services as $key => $service) {
+            $tickets = Ticket::where('client_id', $clientId)
+                ->where('service_id', $service->id)
+                ->with(['type', 'priorite', 'service'])->get();
+            $totalCreated = $tickets->count();
+            $pending = $tickets->where('status', 'En attente')->count();
+            $progress = $tickets->where('status', 'En cours')->count();
+            $resolved = $tickets->where('status', 'Résolu')->count();
+
+            $dashboardData[] = [
+                'service' => $service->nom_service,
+                'created' => $totalCreated,
+                'pending' => $pending,
+                'progress' => $progress,
+                'resolved' => $resolved
+
+            ];
+
+
+        }
+        return response()->json( $dashboardData);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -275,6 +301,13 @@ class TicketController extends Controller
     public function getStatusByAgent($agentId, $status)
     {
         $tickets = Ticket::where('user_id', $agentId)->with(['type', 'priorite', 'service'])
+            ->where('status', $status)->with(['type', 'priorite', 'service'])
+            ->get();
+        return response()->json($tickets);
+    }
+    public function getStatusByClient($clientId, $status)
+    {
+        $tickets = Ticket::where('client_id', $clientId)->with(['type', 'priorite', 'service'])
             ->where('status', $status)->with(['type', 'priorite', 'service'])
             ->get();
         return response()->json($tickets);

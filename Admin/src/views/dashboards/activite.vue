@@ -42,11 +42,11 @@ export default {
                axios.get(`http://127.0.0.1:8000/api/tickets/status/Résolu`),
             ]);
             this.numAgents = agentResponse.data.length;
-            this.numClients = clientResponse.data.length;
-            this.numTickets = ticketsResponse.data.length;
-            this.numTicketsAssigned = ticketsAssignedResponse.data.length;
-            this.numTicketsInProgress = ticketsInProgressResponse.data.length;
-            this.numTicketsResolved = ticketsResolvedResponse.data.length;
+            this.numClients = clientResponse.data.data.length;
+            this.numTickets = ticketsResponse.data.total;
+            this.numTicketsAssigned = ticketsAssignedResponse.data.total;
+            this.numTicketsInProgress = ticketsInProgressResponse.data.total;
+            this.numTicketsResolved = ticketsResolvedResponse.data.total;
 
          } catch (error) {
             console.error('Erreur', error);

@@ -139,6 +139,9 @@ Route::get('/tickets/client/{clientId}', [TicketController::class, 'getTicketByC
 Route::get('/ticket/{ticketId}/comments', [TicketController::class, 'getComments']);
 Route::get('/ticket/{ticketId}/rapport', [TicketController::class, 'getTicketRapport']);
 Route::get('/ticket/{agentId}/dashboard', [TicketController::class, 'getdashboard']);
+Route::get('/ticket/{clientId}/client', [TicketController::class, 'getdashboardClient']);
+
 
 Route::get('/tickets/agent/{agentId}/status/{status}', [TicketController::class, 'getStatusByAgent']);
+Route::get('/tickets/client/{clientId}/status/{status}', [TicketController::class, 'getStatusByClient']);
 
