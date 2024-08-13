@@ -20,24 +20,29 @@ class ClientController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index( Request $request)
     {
         // Nombre d'éléments par page
 
 
         try {
-            $list = Client::getAllclients();
-            if ($list) {
-                $resp = ClientResource::collection($list);
-                return response()->json($resp);
-            } elseif ($list->isEmpty()) {
+            $perPage = $request->get('perPage', 5);
+            $list = Client::getAllclients($perPage);
+            if ($list->isEmpty()) {
                 return response()->json(['message' => 'Aucun Enregistrement']);
-            } else {
-                return response()->json([
-                    'message' => 'Aucun client n\'existe',
-                    'Status' => 'None'
-                ]);
             }
+            return response()->json($list);
+            // if ($list) {
+            //     $resp = ClientResource::collection($list);
+            //     return response()->json($resp);
+            // } elseif ($list->isEmpty()) {
+            //     return response()->json(['message' => 'Aucun Enregistrement']);
+            // } else {
+            //     return response()->json([
+            //         'message' => 'Aucun client n\'existe',
+            //         'Status' => 'None'
+            //     ]);
+            // }
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),

@@ -20,9 +20,10 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $list = Ticket::getAllTickets();
+        $perPage = $request->get('perPage', 5);
+        $list = Ticket::getAllTickets($perPage);
         if ($list->isEmpty()) {
             return response()->json(['message' => 'Aucun Enregistrement']);
         }
@@ -36,17 +37,17 @@ class TicketController extends Controller
     {
         $ticket = Ticket::with('user', 'client', 'type', 'priorite', 'service')->findOrFail($ticketId);
         return response()->json([
-            'ticket_id'=>$ticket->id,
+            'ticket_id' => $ticket->id,
             'statut' => $ticket->status,
-            'description'=> $ticket->description,
-            'priorite'=>$ticket->priorite->niveau,
-            'service'=>$ticket->service->nom_service,
-            'type'=>$ticket->type->libelle,
-            'agent'=>$ticket->user->email,
-            'client'=>$ticket->client->email,
-            'created_at'=>$ticket->created_at,
-            'updated_at'=>$ticket->updated_at,
-            'commentaire'=>$ticket->comments
+            'description' => $ticket->description,
+            'priorite' => $ticket->priorite->niveau,
+            'service' => $ticket->service->nom_service,
+            'type' => $ticket->type->libelle,
+            'agent' => $ticket->user->email,
+            'client' => $ticket->client->email,
+            'created_at' => $ticket->created_at,
+            'updated_at' => $ticket->updated_at,
+            'commentaire' => $ticket->comments
         ]);
     }
 
@@ -61,7 +62,7 @@ class TicketController extends Controller
             'service_id' => 'required',
             'type_ticket_id' => 'required',
             'priorite_id' => 'required',
-            'client_id'=> 'required|exists:clients,id',
+            'client_id' => 'required|exists:clients,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,pdf|max:2048000'
         ]);
         if ($validator->fails()) {
@@ -84,21 +85,24 @@ class TicketController extends Controller
             'ticket' => $ticket
         ]);
     }
-    private function notifyUser($ticket){
+    private function notifyUser($ticket)
+    {
         $users = User::where('role', 'Agent')
-        ->orWhere('role', 'Admin')
-        ->get();
+            ->orWhere('role', 'Admin')
+            ->get();
         foreach ($users as $key => $user) {
             Mail::to($user->email)->send(new AllMail());
         }
     }
-    public function getUnassigned(){
+    public function getUnassigned()
+    {
         $tickets = Ticket::whereNull('user_id')
-        ->with(['type', 'priorite', 'service'])
-        ->get();
+            ->with(['type', 'priorite', 'service'])
+            ->get();
         return response()->json($tickets);
     }
-    public function assignToAgent(Request $request, $ticketId){
+    public function assignToAgent(Request $request, $ticketId)
+    {
         $agentId = $request->input('agentId');
         $ticket = Ticket::find($ticketId);
 
@@ -112,7 +116,8 @@ class TicketController extends Controller
         }
     }
 
-    public function close(Ticket $ticket){
+    public function close(Ticket $ticket)
+    {
         $ticket->status = 'Fermé';
         $ticket->save();
 
@@ -120,10 +125,17 @@ class TicketController extends Controller
     }
 
 
-    public function getTicketByStatus($status)
+    public function getTicketByStatus($status, Request $request)
     {
-        $tickets = Ticket::where('status', $status)->with(['type', 'priorite', 'service'])->get();
+        $perPage = $request->get('perPage', 5);
+
+        // Récupère les tickets par statut avec pagination
+        $tickets = Ticket::where('status', $status)->with(['type', 'service', 'priorite'])->orderBy('created_at', 'desc')->paginate($perPage);
+
+        // Retourne la réponse en JSON avec les données paginées
         return response()->json($tickets);
+        // $tickets = Ticket::where('status', $status)->with(['type', 'priorite', 'service'])->get();
+        // return response()->json($tickets);
     }
 
     /**
@@ -145,7 +157,7 @@ class TicketController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status'=>'required'
+            'status' => 'required'
         ]);
         $ticket = Ticket::findOrFail($id);
         $ticket->status = $request->status;
@@ -162,21 +174,21 @@ class TicketController extends Controller
         $dashboardData = [];
         foreach ($services as $key => $service) {
             $tickets = Ticket::where('user_id', $agentId)
-            ->where('service_id', $service->id)
-            ->with(['type', 'priorite', 'service'])->get();
+                ->where('service_id', $service->id)
+                ->with(['type', 'priorite', 'service'])->get();
             $totalAssigned = $tickets->count();
             $pending = $tickets->where('status', 'En attente')->count();
             $progress = $tickets->where('status', 'En cours')->count();
             $resolved = $tickets->where('status', 'Résolu')->count();
 
-            $dashboardData[]=[
-                'service'=>$service->nom_service,
-                'totalAssigned'=>$totalAssigned,
-                'chartSeries'=>[
+            $dashboardData[] = [
+                'service' => $service->nom_service,
+                'totalAssigned' => $totalAssigned,
+                'chartSeries' => [
                     $totalAssigned > 0 ? 100 : 0,
-                    $totalAssigned > 0 ? ($pending / $totalAssigned) * 100: 0,
-                    $totalAssigned > 0 ? ($progress / $totalAssigned) * 100: 0,
-                    $totalAssigned > 0 ? ($resolved / $totalAssigned) * 100: 0,
+                    $totalAssigned > 0 ? ($pending / $totalAssigned) * 100 : 0,
+                    $totalAssigned > 0 ? ($progress / $totalAssigned) * 100 : 0,
+                    $totalAssigned > 0 ? ($resolved / $totalAssigned) * 100 : 0,
 
                 ]
             ];
@@ -243,7 +255,7 @@ class TicketController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'assigned_by'=> 'required|exists:users,id'
+            'assigned_by' => 'required|exists:users,id'
 
         ]);
 
@@ -263,11 +275,12 @@ class TicketController extends Controller
     public function getStatusByAgent($agentId, $status)
     {
         $tickets = Ticket::where('user_id', $agentId)->with(['type', 'priorite', 'service'])
-        ->where('status', $status)->with(['type', 'priorite', 'service'])
-        ->get();
+            ->where('status', $status)->with(['type', 'priorite', 'service'])
+            ->get();
         return response()->json($tickets);
     }
-    public function getTicketsByservice($servicename){
+    public function getTicketsByservice($servicename)
+    {
         $service = Service::where('nom_service', $servicename)->first();
         if (!$service) {
             return response()->json(['error' => 'Service not found'], 400);
@@ -275,17 +288,19 @@ class TicketController extends Controller
         $tickets = Ticket::where('service_id', $service->id)->get();
         return response()->json($tickets);
     }
-    public function sendEmail($id){
+    public function sendEmail($id)
+    {
         $ticket = Ticket::findOrFail($id);
         $admin = $ticket->assignedBy;
         if (!$admin) {
-            return response()->json(['message'=>'Admin not found']);
+            return response()->json(['message' => 'Admin not found']);
         }
         Mail::to($admin->email)->send(new TicketReassign($ticket));
-        return response()->json(['message'=>'Email envoyé']);
+        return response()->json(['message' => 'Email envoyé']);
     }
 
-    public function email(Request $request){
+    public function email(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'ticket_id' => 'required|exists:tickets,id',
             'work_description' => 'required|string'
@@ -297,12 +312,13 @@ class TicketController extends Controller
         $client = $ticket->client;
         $workDescription = $request->work_description;
         try {
-            Mail::to($client->email)->send(new TicketMailDescription($ticket,$workDescription));
+            Mail::to($client->email)->send(new TicketMailDescription($ticket, $workDescription));
         } catch (\Throwable $th) {
             //throw $th;
         }
     }
-    public function sendResolution($id){
+    public function sendResolution($id)
+    {
         $ticket = Ticket::findOrFail($id);
         $client = $ticket->client;
         if (!$client || !$client->email) {
@@ -315,7 +331,8 @@ class TicketController extends Controller
             'status' => 200
         ]);
     }
-    public function generateReport($ticketId) {
+    public function generateReport($ticketId)
+    {
         try {
             $ticket = Ticket::findOrFail($ticketId);
             $report = Historique::create([
@@ -335,12 +352,14 @@ class TicketController extends Controller
         }
     }
 
-    public function getTicketByClient($clientId){
+    public function getTicketByClient($clientId)
+    {
 
         $ticket = Ticket::where('client_id', $clientId)->with(['type', 'priorite', 'service'])->get();
         return response()->json($ticket);
     }
-    public function getComments($ticketId){
+    public function getComments($ticketId)
+    {
         $ticket = Ticket::findOrFail($ticketId);
         $comments = $ticket->comments;
         return response()->json($comments);

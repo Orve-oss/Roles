@@ -23,9 +23,11 @@ export default {
     name: 'Client list',
     data() {
         return {
+            currentPage: 1,
+            totalPages: 1,
             clients: [],
             searchClient: '',
-            filteredClient: [],
+            filteredClients: [],
 
             showModal: false,
             newClient: {
@@ -69,30 +71,33 @@ export default {
     methods: {
         filterClient() {
             const query = this.searchClient.toLowerCase();
-            this.filteredClient = this.clients.filter(client => {
-                const clientName = client.nom_clt ? client.nom_clt.toLowerCase() : '';
-                const clientEmail = client.email ? client.email.toLowerCase() : '';
-                return clientName.includes(query) || clientEmail.includes(query);
+            this.filteredClients = this.clients.filter(client => {
+                return (
+                    client.nom_clt.toLowerCase().includes(query) ||
+                   client.email.toLowerCase().includes(query)
+
+                );
             });
         },
-        async fetchClients() {
+        async fetchClients(page = 1) {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/clients`, {
+                const response = await axios.get(`http://127.0.0.1:8000/api/clients?page=${page}&perPage=5&sortBy=created_at&sortOrder=asc`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     }
                 });
-                this.clients = response.data;
+                this.clients = response.data.data;
+                this.filteredClients = [...this.clients];
+                this.filterClient();
+                this.totalPages = response.data.last_page;
+                this.currentPage = response.data.current_page;
 
 
             } catch (error) {
                 console.error('Erreur lors de la récupération des clients:', error);
             }
         },
-        handlePageChange(page) {
-            this.currentPage = page;
-            this.fetchClients(page);
-        },
+
         async createClient() {
             this.v$.$touch();
             if (this.v$.$invalid) {
@@ -229,7 +234,7 @@ export default {
                                 <div class="search-box me-2 mb-2 d-inline-block">
                                     <div class="position-relative">
                                         <input type="text" class="form-control" placeholder="Recherche"
-                                        v-model="searchClient" @input="filterClient"/>
+                                            v-model="searchClient" @input="filterClient" />
                                         <i class="bx bx-search-alt search-icon"></i>
                                     </div>
                                 </div>
@@ -257,7 +262,7 @@ export default {
                                     </BTr>
                                 </BThead>
                                 <BTbody>
-                                    <BTr v-for="(clist, index) in clients" :key="index">
+                                    <BTr v-for="(clist, index) in filteredClients" :key="index">
                                         <BTd>{{ index + 1 }}</BTd>
                                         <BTd>{{ clist.nom_clt }}</BTd>
                                         <BTd>
@@ -299,6 +304,7 @@ export default {
                                 </BTbody>
                             </BTableSimple>
                         </div>
+                        <BPagination  v-model="currentPage" :total-rows="totalPages * 5" :per-page="5" @update:modelValue="fetchClients( currentPage)"  />
                         <!-- <div class="mt-3">
                             <BPagination v-model="currentPage" :total-rows="totalClients" :per-page="perPage"
                                 align="end" @change="handlePageChange" />

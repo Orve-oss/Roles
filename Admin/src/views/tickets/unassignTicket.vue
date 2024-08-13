@@ -137,6 +137,7 @@ export default {
                                 </BTbody>
                             </BTableSimple>
                             <BTableSimple v-else colspan="6">
+                                
                                 <p align="center"> Aucun ticket non assigné</p>
                             </BTableSimple>
                         </div>

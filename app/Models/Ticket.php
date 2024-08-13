@@ -44,8 +44,8 @@ class Ticket extends Model
         return $this->belongsTo(Priorite::class, 'priorite_id');
     }
     protected $table = 'tickets';
-    public static function getAllTickets(){
-        return Self::with(['type','service', 'priorite'])->get();
+    public static function getAllTickets($perPage = 5){
+        return Self::with(['type','service', 'priorite'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public static function getOneTicket($id){

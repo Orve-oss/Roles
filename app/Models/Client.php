@@ -28,9 +28,9 @@ class Client extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public static function getAllclients()
+    public static function getAllclients($perPage = 5)
     {
-        return Self::all();
+        return Self::query()->orderBy('created_at', 'desc')->paginate($perPage);
     }
     public static function getOneClient($id)
     {

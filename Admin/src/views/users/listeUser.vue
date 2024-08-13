@@ -117,7 +117,7 @@ export default {
             </BCol>
         </BRow>
         <BRow id="user-list">
-            <BCol xl="3" md="3" v-for="user in filteredUsers" :key="user.id">
+            <BCol xl="3" md="4" v-for="user in filteredUsers" :key="user.id">
                 <BCard no-body>
                     <BCardBody>
                         <span class="text-danger text-end p-1 mb-1" @click="deleteUser(user.id)">
@@ -134,8 +134,8 @@ export default {
 
 
                         <div class="mt-4 pt-1">
-                            <router-link to="/jobs/candidate/overview" class="btn btn-soft-primary d-block">View
-                                Profile</router-link>
+                            <a :href="'mailto:'+  user.email" class="btn btn-soft-primary d-block">
+                                {{user.email}}</a>
                         </div>
                     </BCardBody>
                 </BCard>

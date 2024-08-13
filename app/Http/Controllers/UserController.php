@@ -69,7 +69,7 @@ class UserController extends Controller
             $validator = $request->validate([
                 'name' => 'required|string|unique:users,name',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|string',
+                'password' => 'nullable|string',
                 'role' => 'required|string|exists:roles,name'
             ]);
             if (!$validator) {
@@ -79,12 +79,20 @@ class UserController extends Controller
                 ]);
             }
             $token = Str::random(60);
-            $user = User::create([
+            $userdata = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'reset_token' => $token
-            ]);
+                'reset_token' => $token,
+
+            ];
+            if($request->has('password') && !empty($request->password)) {
+                $userdata['password'] = Hash::make($request->password);
+            } else {
+                $userdata['password'] = Hash::make(Str::random(8));
+            }
+
+
+            $user = User::create($userdata);
             $role = Role::where('name', $request->role)->get();
             // $role = Role::findByName($validator['role']);
             $user->assignRole($role);

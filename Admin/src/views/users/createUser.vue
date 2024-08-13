@@ -26,7 +26,7 @@ export default {
             user: {
                 name: '',
                 email: '',
-                password: '',
+                //password: '',
                 role: '',
             },
             roles: [],
@@ -44,9 +44,9 @@ export default {
                     required: helpers.withMessage("l'email est requis", required),
                     // email: helpers.withMessage("Please enter valid email", email),
                 },
-                password: {
-                    required: helpers.withMessage("le mot de passe est requis", required),
-                },
+                // password: {
+                //     required: helpers.withMessage("le mot de passe est requis", required),
+                // },
                 role: {
                     required: helpers.withMessage("Le role est requis", required),
                 }
@@ -90,17 +90,16 @@ export default {
                         this.user = {
                             name: '',
                             email: '',
-                            password: '',
+                            // password: '',
                             role: '',
                         };
                         this.errors = null;
-
-
                         Swal.fire(
                             'Créé!',
                             this.successMessage = response.data.message,
                             'success'
                         );
+                        
 
 
                     })
@@ -157,7 +156,7 @@ export default {
                                 </div>
                             </BFormGroup>
 
-                            <BFormGroup class="mb-4" label="Mot de passe" label-for="horizontal-password-input"
+                            <!-- <BFormGroup class="mb-4" label="Mot de passe" label-for="horizontal-password-input"
                                 label-cols-sm="3">
                                 <BFormInput id="horizontal-password-input" v-model="user.password" type="password"
                                     placeholder="Enter the password" :class="{
@@ -167,7 +166,7 @@ export default {
                                     class="invalid-feedback">
                                     <span v-if="item.$message">{{ item.$message }}</span>
                                 </div>
-                            </BFormGroup>
+                            </BFormGroup> -->
                             <BFormGroup class="mb-4" label="Role" label-for="horizontal-role-input" label-cols-sm="3">
                                 <BFormSelect v-model="user.role" class="form-select" :class="{
                                     'is-invalid': submitted && v$.user.role.$error,

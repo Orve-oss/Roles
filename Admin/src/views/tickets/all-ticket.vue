@@ -14,7 +14,11 @@ export default {
 
     data() {
         return {
+            searchQuery: '',
+            filteredTickets: [],
             tickets: [],
+            currentPage: 1,
+            totalPages: 1,
             userId: null,
             types: [],
             services: [],
@@ -41,11 +45,10 @@ export default {
 
         };
     },
-    computed:{
-        totalPages(){
-            return Math.ceil(this.totalTickets/this.perPage);
-        }
+    created(){
+        this.fetchTickets();
     },
+
     mounted() {
         this.fetchTickets();
         emitter.on('ticket-status', this.fetchTickets);
@@ -60,6 +63,16 @@ export default {
         emitter.off('ticket-status', this.fetchTickets);
     },
     methods: {
+        filterTickets(){
+            const query = this.searchQuery.toLowerCase();
+            this.filteredTickets = this.tickets.filter(ticket => {
+                return (
+                    ticket.sujet.toLowerCase().includes(query) ||
+                    ticket.status.toLowerCase().includes(query) ||
+                    ticket.priorite.niveau.toLowerCase().includes(query)
+                );
+            });
+        },
         fetchTypes() {
             axios.get('http://127.0.0.1:8000/api/types')
                 .then(response => {
@@ -94,11 +107,11 @@ export default {
             Swal.fire('Information', 'Vous n\'avez pas la possibilité de modidier ou de supprimer ce ticket', 'info');
         },
 
-        fetchTickets(status) {
+        fetchTickets(status, page = 1) {
 
-            let url = `http://127.0.0.1:8000/api/tickets`;
+            let url = `http://127.0.0.1:8000/api/tickets?page=${page}&perPage=5&sortBy=created_at&sortOrder=asc`;
             if (status) {
-                url = `http://127.0.0.1:8000/api/tickets/status/${status}`;
+                url = `http://127.0.0.1:8000/api/tickets/status/${status}?page=${page}&perPage=5&sortBy=created_at&sortOrder=asc`;
             }
             axios.get(url, {
                 headers: {
@@ -106,7 +119,12 @@ export default {
                 }
             })
                 .then(response => {
-                    this.tickets = response.data;
+                    this.tickets = response.data.data;
+                    console.log(this.tickets);
+                    this.filteredTickets = [...this.tickets];
+                    this.filterTickets();
+                    this.totalPages = response.data.last_page;
+                    this.currentPage = response.data.current_page;
                 })
                 .catch(error => {
                     console.error('Erreur lors de la récupération des tickets:', error);
@@ -222,7 +240,7 @@ export default {
                             <BCol sm="4">
                                 <div class="search-box me-2 mb-2 d-inline-block">
                                     <div class="position-relative">
-                                        <input type="text" class="form-control" placeholder="Recherche" />
+                                        <input type="text" class="form-control" placeholder="Recherche" v-model="searchQuery" @input="filterTickets"/>
                                         <i class="bx bx-search-alt search-icon"></i>
                                     </div>
                                 </div>
@@ -267,10 +285,10 @@ export default {
                                     </BTr>
                                 </BThead>
                                 <BTbody>
-                                    <BTr v-for="(ticket, index) in tickets" :key="index">
+                                    <BTr v-for="(ticket, index) in filteredTickets" :key="index">
                                         <BTd> {{ index + 1 }} </BTd>
-                                        <BTd> {{ ticket.sujet }} </BTd>
-                                        <BTd> {{ ticket.status }} </BTd>
+                                        <BTd> {{ ticket.sujet || 'Sujet indisponible' }} </BTd>
+                                        <BTd> {{ ticket?.status || 'N/A' }} </BTd>
                                         <!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
                                         <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd>
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
@@ -315,7 +333,7 @@ export default {
                                 </BTbody>
                             </BTableSimple>
                         </div>
-                        <pagination />
+                        <BPagination  v-model="currentPage" :total-rows="totalPages * 5" :per-page="5" @update:modelValue="fetchTickets(status, currentPage)"  />
                     </BCardBody>
                 </BCard>
             </BCol>
