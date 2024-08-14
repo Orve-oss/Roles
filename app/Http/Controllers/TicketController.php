@@ -6,10 +6,12 @@ use App\Mail\AllMail;
 use App\Mail\ResolutionMail;
 use App\Mail\TicketMailDescription;
 use App\Mail\TicketReassign;
+use App\Mail\TicketReportMail;
 use App\Models\Historique;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -371,7 +373,9 @@ class TicketController extends Controller
             $report = Historique::create([
                 'ticket_id' => $ticket->id,
                 'description' => 'Rapport du ticket ID ' . $ticket->id,
+                
             ]);
+            Mail::to($ticket->client->email)->send(new TicketReportMail($ticket, $report));
             return response()->json([
                 'message' => 'Rapport créé',
                 'report' => $report

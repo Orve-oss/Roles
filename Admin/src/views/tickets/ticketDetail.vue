@@ -95,7 +95,7 @@ export default {
             console.log(id);
             await axios.put(`http://127.0.0.1:8000/api/tickets/update-status/${id}`, { status: this.ticket.status })
                 .then(() => {
-                    alert('Statut mis à jour avec succès');
+                    //alert('Statut mis à jour avec succès');
                     emitter.emit('ticket-status');
                     // if (this.ticket.status === 'Résolu') {
                     //     this.showNoteModal = true;
@@ -127,20 +127,12 @@ export default {
                 if (result.isConfirmed) {
                     axios.put(`http://127.0.0.1:8000/api/tickets/${id}/close`, { status: this.ticket.status })
                         .then(() => {
-                            // alert('Statut mis à jour avec succès');
-                            if (this.ticket.status === 'Fermé') {
-                                this.generateRapport();
-                                Swal.fire('Succes!', 'Un mail est envoyé au client avec son rapport de résolution', 'success');
-                                this.$router.push({ name: 'opentickets' });
-                            }
+
+                            this.generateRapport();
+                            Swal.fire('Succes!', 'Un mail est envoyé au client avec son rapport de résolution', 'success');
+                            this.$router.push({ name: 'opentickets' });
+
                         })
-                    axios.post(`http://127.0.0.1:8000/api/tickets/send-email`, {
-                        ticket_id: this.ticket.id,
-
-                    });
-                    this.showNoteModal = false;
-                    console.log('Email envoyé');
-
 
                 } else {
                     Swal.fire(
@@ -264,36 +256,7 @@ export default {
                 }).catch(error => {
                     console.error('Erreur', error);
                 })
-            // Swal.fire({
-            //     title: 'Voulez vous générer un rapport de résolution?',
-            //     icon: 'question',
-            //     showCancelButton: true,
-            //     confirmButtonColor: '#3085d6',
-            //     cancelButtonText: 'Cancel',
-            //     confirmButtonText: 'Générer'
-            // }).then((result) => {
-            //     if (result.isConfirmed) {
-            //         axios.post(`http://127.0.0.1:8000/api/ticket/${this.ticketId}/rapport`)
-            //             .then(response => {
-            //                 Swal.fire('Succes', response.data.message, 'success');
-            //                 this.$router.push({name: 'opentickets'});
-            //             })
-            //     } else {
-            //         Swal.fire(
-            //             'Erreur!',
-            //             'Erreur de génération de rapport',
-            //             'error'
-            //         );
-            //     }
-            // }).catch((error) => {
-            //     if (error.response) {
-            //         Swal.fire(
-            //             'Erreur',
-            //             'erreur',
-            //             'error'
-            //         );
-            //     }
-            // })
+
         },
         addComment() {
             const id = this.$route.params.id;
