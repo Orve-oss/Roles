@@ -60,11 +60,18 @@ router.beforeEach((routeTo, routeFrom, next) => {
     } else {
         const publicPages = ["/", "/accueil", "/forgot-password"];
         const authpage = !publicPages.includes(routeTo.path);
-        const loggeduser = localStorage.getItem("user");
+        const loggeduser = JSON.parse(localStorage.getItem("user"));
+        const userRole = loggeduser ? loggeduser.role[0] : null;
+        console.log(userRole);
 
         if (authpage && !loggeduser) {
+
             return next("/");
         }
+        else if (publicPages === "/accueil" && userRole !== "Client") {
+            return next("/page/403");
+        }
+
 
         next();
     }

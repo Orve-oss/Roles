@@ -10,7 +10,7 @@ import application from "@/assets/images/application.jpeg"
 import "swiper/css";
 import "swiper/css/autoplay";
 // import axios from "axios";
-import { useAuthStore } from "../../state/pinia/auth";
+import { useAuthStore } from "../../state/pinia/authClient";
 
 import { useNotificationStore } from '@/state/pinia'
 import { required, helpers } from "@vuelidate/validators";
@@ -132,13 +132,13 @@ export default {
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                <ul class="navbar-nav ml-auto">
                   <li class="nav-item active">
-                     <a class="nav-link" href="#">Accueil</a>
+                     <a class="nav-link" href="#head">Accueil</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="#">Services</a>
+                     <a class="nav-link" href="#services">Services</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="#">Contact</a>
+                     <a class="nav-link" href="#footer">Contact</a>
                   </li>
                   <!-- <li class="nav-item">
                      <a class="btn btn-primary" href="#">SIGN IN / SIGN UP</a>
@@ -165,7 +165,7 @@ export default {
       </header>
 
       <!-- Services Section -->
-      <section class="services text-center my-5">
+      <section class="services text-center my-5" id="services">
          <div class="container">
             <h2 class="font-weight-light">Nos services</h2>
             <p class="text-muted">Parcourez ici nos services</p>
@@ -182,9 +182,9 @@ export default {
                                  </div>
                                  <div class="text-muted mt-4">
 
-                                    <div class="d-flex" :style="{ height: '400px' }">
+                                    <div class="d-flex" >
 
-                                       <span class="ms-2 text-truncate"
+                                       <span class="ms-2" style="white-space: normal;"
                                        >Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation. Lorem ipsum is derived from the Latin “dolorem ipsum” roughly translated as “pain itself.”</span>
                                     </div>
                                     <img :src="googleWorkspace" alt="" height="100">
@@ -196,28 +196,18 @@ export default {
                            <BCard no-body :style="{ height: '400px' }" class="card-hover">
                               <BCardBody>
                                  <div class="d-flex align-items-center mb-3">
-                                    <div class="avatar-xs me-3">
-                                       <span class="
-                        avatar-title
-                        rounded-circle
-                        bg-primary-subtle
-                        text-primary
-                        font-size-18
-                      ">
-                                          <i :class="`bx bx-receipt`"></i>
-                                       </span>
-                                    </div>
-                                    <h5 class="font-size-14 mb-0">Google workspace</h5>
+
+                                    <h5 class="font-size-14 mb-0"> <strong>Google workspace</strong></h5>
                                  </div>
                                  <div class="text-muted mt-4">
 
                                     <div class="d-flex">
 
-                                       <span class="ms-2 text-truncate">Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation.
+                                       <span class="ms-2 " style="white-space: normal;">Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation.
                                         Lorem ipsum is derived from the Latin “dolorem ipsum” roughly translated as “pain itself.”</span>
                                     </div>
                                  </div>
-                                 <img :src="googleCloud" alt="" height="100"/>
+                                 <img :src="googleCloud"  alt="" height="100"/>
                               </BCardBody>
                            </BCard>
                         </BCol>
@@ -232,7 +222,7 @@ export default {
 
                                     <div class="d-flex">
 
-                                       <span class="ms-2 text-truncate">Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation. Lorem ipsum is derived from the Latin “dolorem ipsum” roughly translated as “pain itself.”</span>
+                                       <span class="ms-2" style="white-space: normal;">Lorem ipsum, in graphical and textual context, refers to filler text that is placed in a document or visual presentation. Lorem ipsum is derived from the Latin “dolorem ipsum” roughly translated as “pain itself.”</span>
                                     </div>
                                     <img :src="application" alt="" height="100"/>
                                  </div>
@@ -335,7 +325,7 @@ export default {
       </section>
 
       <!-- Footer -->
-      <footer class="footer-expand-lg bg-dark text-center py-4">
+      <footer class="footer-expand-lg bg-dark text-center py-4" id="footer">
          <div class="container">
             <p class="text-white">Pour plus d'informations, contactez le mail suivant <a href="mailto:info@example.com">info@example.com</a></p>
 
