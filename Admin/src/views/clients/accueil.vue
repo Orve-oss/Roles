@@ -10,7 +10,7 @@ import application from "@/assets/images/application.jpeg"
 import "swiper/css";
 import "swiper/css/autoplay";
 // import axios from "axios";
-import { useAuthStore } from "../../state/pinia/authClient";
+import { useAuthStore } from "../../state/pinia/auth";
 
 import { useNotificationStore } from '@/state/pinia'
 import { required, helpers } from "@vuelidate/validators";

@@ -53,9 +53,9 @@ Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
     Route::get('/clients', [ClientController::class, 'index']);
-Route::post('/clients', [ClientController::class, 'store']);
-Route::put('/updateclt/{id}', [ClientController::class, 'update']);
-Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
+    Route::post('/clients', [ClientController::class, 'store']);
+    Route::put('/updateclt/{id}', [ClientController::class, 'update']);
+    Route::delete('/deleteclt/{id}', [ClientController::class, 'destroy']);
 
 });
 

@@ -68,9 +68,9 @@ router.beforeEach((routeTo, routeFrom, next) => {
 
             return next("/");
         }
-        else if (publicPages === "/accueil" && userRole !== "Client") {
-            return next("/page/403");
-        }
+        // else if (publicPages === "/accueil" && userRole !== "Client") {
+        //     return next("/page/403");
+        // }
 
 
         next();

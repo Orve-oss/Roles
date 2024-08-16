@@ -51,6 +51,10 @@ export const useAuthStore = defineStore("authClient", {
             if (this.currentUser && this.currentUser.role) {
                 const role = this.currentUser.role[0]; // Assurez-vous d'accéder directement à la propriété
                 switch (role) {
+                    case 'Admin':
+                        return 'default';
+                    case 'Agent':
+                        return 'statistiques';
                     case 'Client':
                         return 'Accueil Client';
                     default:
