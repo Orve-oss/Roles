@@ -87,6 +87,7 @@ Route::put('/update/{id}', [ServiceController::class, 'update']);
 Route::delete('/delete/{id}', [ServiceController::class, 'destroy']);
 
 Route::get('/types', [TypeTicketController::class, 'index']);
+Route::get('/services/{serviceId}/types', [TypeTicketController::class, 'getTypesByService']);
 Route::post('/types', [TypeTicketController::class, 'store']);
 Route::get('/types/{id}', [TypeTicketController::class, 'show']);
 Route::put('/updatetype/{id}', [TypeTicketController::class, 'update']);
@@ -144,4 +145,6 @@ Route::get('/ticket/{clientId}/client', [TicketController::class, 'getdashboardC
 
 Route::get('/tickets/agent/{agentId}/status/{status}', [TicketController::class, 'getStatusByAgent']);
 Route::get('/tickets/client/{clientId}/status/{status}', [TicketController::class, 'getStatusByClient']);
+Route::post('/tickets/{ticket}/feedback', [TicketController::class, 'sendFeedback']);
+
 

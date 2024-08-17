@@ -31,6 +31,12 @@ export default {
                 created_at: '',
                 image: null
             },
+            selectedTicket: null,
+            showTicketModal: false,
+            showFeedbackModal: false,
+            description: '',
+            ticket: null,
+
 
 
         };
@@ -43,18 +49,18 @@ export default {
         this.fetchPriorites();
 
     },
-    beforeUnmount(){
+    beforeUnmount() {
         emitter.off('ticket-status', this.fetchTickets);
     },
     methods: {
-        viewTicket(id) {
-            this.$router.push({ name: 'ShowTicket', params: { id } });
-        },
-        getClientId(){
+        // viewTicket(id) {
+        //     this.$router.push({ name: 'ShowTicket', params: { id } });
+        // },
+        getClientId() {
             const user = JSON.parse(localStorage.getItem('user'));
             return user ? user.id : null;
         },
-        filterTickets(){
+        filterTickets() {
             const query = this.searchQuery.toLowerCase();
             this.filteredTickets = this.tickets.filter(ticket => {
                 return (
@@ -141,7 +147,50 @@ export default {
         },
         removeTicket(ticketId) {
             this.tickets = this.tickets.filter(ticket => ticket.id !== ticketId);
-        }
+        },
+        viewTicket(ticketId) {
+            axios.get(`http://127.0.0.1:8000/api/tickets/${ticketId}`)
+                .then((res) => {
+                    console.log(res.data);
+                    if (Array.isArray(res.data) && res.data.length > 0) {
+                        this.selectedTicket = res.data[0]; // Accède au premier élément du tableau
+                        console.log('Données du ticket:', this.ticket); // Affiche les données du ticket après l'assignation
+                    }
+                    console.log(this.selectedTicket);
+                    this.showTicketModal = true;
+                })
+                .catch((err) => {
+                    return err;
+                });
+        },
+        resetSelectedTicket() {
+            this.selectedTicket = null; // Réinitialiser les données du ticket sélectionné lors de la fermeture du modal
+        },
+        openFeedbackModal(ticket) {
+            this.selectedTicket = ticket;
+            this.showFeedbackModal = true;
+        },
+        sendFeedback() {
+            // const feedbackData = {
+            //     ticketId: this.selectedTicket.id,
+            //     description: this.description,
+            // };
+
+            // Envoyer les données au backend
+            axios.post(`http://127.0.0.1:8000/api/tickets/${this.ticket}/feedback`, {
+                description: this.description,
+            })
+                .then(() => {
+                    // Fermer le modal
+                    this.showFeedbackModal = false;
+                    this.description = '';
+                    console.log('Feedback envoyé avec succès.');
+                })
+                .catch(() => {
+                    console.error("Une erreur s'est produite lors de l'envoi du feedback.");
+                });
+        },
+
     }
 }
 
@@ -159,7 +208,8 @@ export default {
                             <BCol sm="4">
                                 <div class="search-box me-2 mb-2 d-inline-block">
                                     <div class="position-relative">
-                                        <input type="text" class="form-control" placeholder="Recherche" v-model="searchQuery" @input="filterTickets"/>
+                                        <input type="text" class="form-control" placeholder="Recherche"
+                                            v-model="searchQuery" @input="filterTickets" />
                                         <i class="bx bx-search-alt search-icon"></i>
                                     </div>
                                 </div>
@@ -213,13 +263,23 @@ export default {
                                                     <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                                 </template>
 
-                                                <BDropdownItem v-if="!['Assigné','En cours', 'Résolu', 'Fermé'].includes(ticket.status)"
-                                                @click="editticket(ticket)">
+                                                <BDropdownItem
+                                                    v-if="!['Assigné', 'En cours', 'En attente', 'Fermé'].includes(ticket.status)"
+                                                    @click="openFeedbackModal(ticket)">
+                                                    <i class="fas fa-pencil-alt text-success me-1"></i>
+                                                    Feedback
+                                                </BDropdownItem>
+
+                                                <BDropdownItem
+                                                    v-if="!['Assigné', 'En cours', 'Résolu', 'Fermé'].includes(ticket.status)"
+                                                    @click="editticket(ticket)">
                                                     <i class="fas fa-pencil-alt text-success me-1"></i>
                                                     Edit
                                                 </BDropdownItem>
 
-                                                <BDropdownItem v-if="!['Assigné','En cours', 'Résolu'].includes(ticket.status)" @click="removeTicket(ticket.id)">
+                                                <BDropdownItem
+                                                    v-if="!['En attente', 'Assigné', 'En cours', 'Résolu'].includes(ticket.status)"
+                                                    @click="removeTicket(ticket.id)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>
@@ -293,6 +353,66 @@ export default {
             <div class="text-end pt-2 mt-1">
                 <BButton variant="light" @click="showEditModal = false">Fermer</BButton>
                 <BButton type="submit" variant="success" class="ms-1">Modifier le ticket</BButton>
+            </div>
+        </BForm>
+    </BModal>
+    <BModal v-model="showTicketModal" title="Details du ticket" title-class="font-18" body-class="p-3" hide-footer
+        hide-header class="v-modal-custom" v-if="selectedTicket" id="view-ticket-modal" @hide="resetSelectedTicket">
+        <BForm>
+            <BRow>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="sujet">Service </label>
+                        <input id="sujet" :value="selectedTicket.service.nom_service" type="text" class="form-control"
+                            disabled />
+                    </div>
+                </BCol>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="sujet">Type de ticket </label>
+                        <input id="sujet" :value="selectedTicket.type.libelle" type="text" class="form-control"
+                            disabled />
+                    </div>
+                </BCol>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="sujet">Sujet </label>
+                        <input id="sujet" :value="selectedTicket.sujet" type="text" class="form-control" disabled />
+                    </div>
+                </BCol>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="description">Description</label>
+                        <BFormTextarea id="productdesc" :value="selectedTicket.description" class="form-control"
+                            placeholder="Product Description" disabled>
+                        </BFormTextarea>
+                    </div>
+                </BCol>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="sujet">Priorite </label>
+                        <input id="sujet" :value="selectedTicket.priorite.niveau" type="text" class="form-control"
+                            disabled />
+                    </div>
+                </BCol>
+
+            </BRow>
+
+        </BForm>
+    </BModal>
+    <BModal v-model="showFeedbackModal" hide-footer hide-header>
+        <BAlert :model-value="true" variant="success" class="text-center mb-4">
+            Veuillez renseigner votre feedback
+        </BAlert>
+
+        <BForm @submit.prevent="sendFeedback">
+            <BFormGroup label="Description" label-for="description">
+                <BFormTextarea id="description" v-model="description" rows="5" placeholder="Entrez votre feedback ici">
+                </BFormTextarea>
+            </BFormGroup>
+            <div class="d-flex justify-content-end">
+                <BButton variant="secondary" @click="showFeedbackModal = false">Annuler</BButton>
+                <BButton type="submit" variant="primary" class="ms-2">Envoyer</BButton>
             </div>
         </BForm>
     </BModal>

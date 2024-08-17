@@ -8,7 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class TypeTicket extends Model
 {
     use HasFactory;
-    protected $fillable = ['libelle'];
+
+    public function problemes(){
+        return $this->hasMany(Probleme::class);
+    }
+    public function service(){
+        return $this->belongsTo(Service::class);
+    }
+
+    protected $fillable = ['libelle', 'service_id'];
     protected $table = 'type_tickets';
     public static function getAlltypes(){
         return Self::all();

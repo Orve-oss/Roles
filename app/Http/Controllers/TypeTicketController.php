@@ -16,7 +16,7 @@ class TypeTicketController extends Controller
     {
         $list = TypeTicket::getAlltypes();
         if ($list->isEmpty()) {
-            return response()->json(['message'=>'Aucun Enregistrement']);
+            return response()->json(['message' => 'Aucun Enregistrement']);
         }
         return response()->json($list);
     }
@@ -34,8 +34,8 @@ class TypeTicketController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'libelle'=>'required|string|max:50'
+        $validator = Validator::make($request->all(), [
+            'libelle' => 'required|string|max:50'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -45,8 +45,8 @@ class TypeTicketController extends Controller
         }
         TypeTicket::addType($request);
         return response()->json([
-            'message'=> 'Type de ticket crée',
-            'status'=>200
+            'message' => 'Type de ticket crée',
+            'status' => 200
         ]);
     }
 
@@ -58,17 +58,25 @@ class TypeTicketController extends Controller
         if (TypeTicket::where('id', $id)->exists()) {
             $type = TypeTicket::getOneType($id);
             return response()->json([
-                'message'=> 'Type de ticket',
-                'service'=>$type,
-                'status'=>200
+                'message' => 'Type de ticket',
+                'service' => $type,
+                'status' => 200
             ]);
         } else {
             return response()->json([
-                'message'=> 'Le type de ticket n\'existe pas',
-                'status'=>401
+                'message' => 'Le type de ticket n\'existe pas',
+                'status' => 401
             ]);
         }
     }
+    public function getTypesByService($serviceId)
+    {
+        $types = TypeTicket::where('service_id', $serviceId)
+            ->with('problemes')
+            ->get();
+        return response()->json($types);
+    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -87,16 +95,15 @@ class TypeTicketController extends Controller
             if (TypeTicket::where('id', $id)->exists()) {
                 TypeTicket::updateType($request, $id);
                 return response()->json([
-                    'message'=> 'Type modifié',
-                    'status'=>200
+                    'message' => 'Type modifié',
+                    'status' => 200
                 ]);
             } else {
                 return response()->json([
-                    'message'=> 'Le type n\'existe pas',
-                    'status'=>401
+                    'message' => 'Le type n\'existe pas',
+                    'status' => 401
                 ]);
             }
-
         } catch (Exception $e) {
             return response()->json([
                 "statut" => "fail",

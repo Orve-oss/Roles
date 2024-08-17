@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\AllMail;
+use App\Mail\FeedbackMail;
 use App\Mail\ResolutionMail;
 use App\Mail\TicketMailDescription;
 use App\Mail\TicketReassign;
@@ -10,6 +11,7 @@ use App\Mail\TicketReportMail;
 use App\Models\Historique;
 use App\Models\Service;
 use App\Models\Ticket;
+use App\Models\TypeTicket;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -61,9 +63,9 @@ class TicketController extends Controller
         $validator = Validator::make($request->all(), [
             'sujet' => 'required|string|max:100',
             'description' => 'required|string',
-            'service_id' => 'required',
+            'service_id' => 'nullable',
             'type_ticket_id' => 'required',
-            'priorite_id' => 'required',
+            'priorite_id' => 'nullable',
             'client_id' => 'required|exists:clients,id',
             'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048000'
         ]);
@@ -76,6 +78,8 @@ class TicketController extends Controller
             $imagePath = $request->file('image')->store('tickets', 'public');
             $ticketData['image'] = $imagePath;
         }
+        $typeTicket = TypeTicket::find($ticketData['type_ticket_id']);
+        $ticketData['priorite_id'] = $typeTicket->priorite_id;
 
 
         $ticket = Ticket::create($ticketData);
@@ -194,8 +198,6 @@ class TicketController extends Controller
 
                 ]
             ];
-
-
         }
         return response()->json(['serviceData' => $dashboardData]);
     }
@@ -220,10 +222,8 @@ class TicketController extends Controller
                 'resolved' => $resolved
 
             ];
-
-
         }
-        return response()->json( $dashboardData);
+        return response()->json($dashboardData);
     }
 
     /**
@@ -373,14 +373,13 @@ class TicketController extends Controller
             $report = Historique::create([
                 'ticket_id' => $ticket->id,
                 'description' => 'Rapport du ticket ID ' . $ticket->id,
-                
+
             ]);
             Mail::to($ticket->client->email)->send(new TicketReportMail($ticket, $report));
             return response()->json([
                 'message' => 'Rapport créé',
                 'report' => $report
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Erreur lors de la création du rapport',
@@ -400,5 +399,20 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($ticketId);
         $comments = $ticket->comments;
         return response()->json($comments);
+    }
+    public function sendFeedback(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'description' => 'required|string|max:5000',
+        ]);
+        Mail::to('sikamagnou@gmail.com')->send(new FeedbackMail($ticket, $validated['description']));
+
+        // Envoyer un e-mail aux admins
+        // $admins = User::where('role', 'admin')->get();
+        // foreach ($admins as $admin) {
+        //     Mail::to($admin->email)->send(new FeedbackMail($ticket, $validated['description']));
+        // }
+
+        return response()->json(['message' => 'Feedback envoyé avec succès!'], 200);
     }
 }

@@ -41,11 +41,11 @@ export default {
                 created_at: '',
                 image: null
             },
-
-
+            selectedTicket: null,
+            showTicketModal: false,
         };
     },
-    created(){
+    created() {
         this.fetchTickets();
     },
 
@@ -59,11 +59,11 @@ export default {
         this.currentUser = this.getUserId();
         console.log(this.currentUser);
     },
-    beforeUnmount(){
+    beforeUnmount() {
         emitter.off('ticket-status', this.fetchTickets);
     },
     methods: {
-        filterTickets(){
+        filterTickets() {
             const query = this.searchQuery.toLowerCase();
             this.filteredTickets = this.tickets.filter(ticket => {
                 return (
@@ -100,9 +100,27 @@ export default {
                     console.error('Error fetching priorites:', error);
                 });
         },
-        viewTicket(id) {
-            this.$router.push({ name: 'voirTicket', params: { id } });
+        viewTicket(ticketId) {
+            axios.get(`http://127.0.0.1:8000/api/tickets/${ticketId}`)
+                .then((res) => {
+                    console.log(res.data);
+                    if (Array.isArray(res.data) && res.data.length > 0) {
+                        this.selectedTicket = res.data[0]; // Accède au premier élément du tableau
+                        console.log('Données du ticket:', this.ticket); // Affiche les données du ticket après l'assignation
+                    }
+                    console.log(this.selectedTicket);
+                    this.showTicketModal = true;
+                })
+                .catch((err) => {
+                    return err;
+                });
         },
+        resetSelectedTicket() {
+            this.selectedTicket = null; // Réinitialiser les données du ticket sélectionné lors de la fermeture du modal
+        },
+        // viewTicket(id) {
+        //     this.$router.push({ name: 'voirTicket', params: { id } });
+        // },
         any() {
             Swal.fire('Information', 'Vous n\'avez pas la possibilité de modidier ou de supprimer ce ticket', 'info');
         },
@@ -240,7 +258,8 @@ export default {
                             <BCol sm="4">
                                 <div class="search-box me-2 mb-2 d-inline-block">
                                     <div class="position-relative">
-                                        <input type="text" class="form-control" placeholder="Recherche" v-model="searchQuery" @input="filterTickets"/>
+                                        <input type="text" class="form-control" placeholder="Recherche"
+                                            v-model="searchQuery" @input="filterTickets" />
                                         <i class="bx bx-search-alt search-icon"></i>
                                     </div>
                                 </div>
@@ -305,7 +324,7 @@ export default {
                                                     <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                                 </template>
                                                 <BDropdownItem
-                                                    v-if="['En cours', 'Résolu', 'Fermé', 'Assigné'].includes(ticket.status)"
+                                                    v-if="['En cours', 'Résolu', 'Assigné'].includes(ticket.status)"
                                                     @click="any">
                                                     Aucun
                                                 </BDropdownItem>
@@ -318,7 +337,7 @@ export default {
                                                 </BDropdownItem>
 
                                                 <BDropdownItem
-                                                    v-if="!['En cours', 'Résolu', 'Fermé', 'Assigné'].includes(ticket.status)">
+                                                    v-if="!['En cours', 'Résolu', 'Assigné'].includes(ticket.status)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>
@@ -333,7 +352,8 @@ export default {
                                 </BTbody>
                             </BTableSimple>
                         </div>
-                        <BPagination  v-model="currentPage" :total-rows="totalPages * 5" :per-page="5" @update:modelValue="fetchTickets(status, currentPage)"  />
+                        <BPagination v-model="currentPage" :total-rows="totalPages * 5" :per-page="5"
+                            @update:modelValue="fetchTickets(status, currentPage)" />
                     </BCardBody>
                 </BCard>
             </BCol>
@@ -345,8 +365,7 @@ export default {
 
                 <tbody>
                     <tr v-for="(agent, index) in agents" :key="agent.id"
-                        :class="[{ 'selected-agent': selectedAgent === agent.id }, index % 2 === 0]"
-                        >
+                        :class="[{ 'selected-agent': selectedAgent === agent.id }, index % 2 === 0]">
                         <td>
                             <input type="checkbox" :checked="selectedAgent === agent.id"
                                 @change="selectAgent(agent.id)" />
@@ -426,22 +445,48 @@ export default {
             </div>
         </BForm>
     </BModal>
-    <!-- <BModal id="assignModal" v-model="showModal" ref="assignModal" title="Assigner un ticket à">
-        <BForm @submit.prevent="assignTicket">
-            <BFormGroup label="Choisir un agent" label-for="agents">
-                <BFormCheckboxGroup v-model="selectedAgents" id="agents">
-                    <BFormCheckbox v-for="agent in agents" :key="agent.id" :value="agent.id">
-                        {{ agent.name }} - {{ agent.email }}
-                    </BFormCheckbox>
-                </BFormCheckboxGroup>
-            </BFormGroup>
-            <div style="margin-top: 10px;">
-                <BFormGroup>
-                    <BButton variant="primary" type="submit">Assigner</BButton>
-                </BFormGroup>
-            </div>
+    <BModal v-model="showTicketModal" title="Details du ticket" title-class="font-18" body-class="p-3" hide-footer
+        hide-header class="v-modal-custom" v-if="selectedTicket" id="view-ticket-modal" @hide="resetSelectedTicket">
+        <BForm >
+            <BRow>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="sujet">Service </label>
+                        <input id="sujet" :value="selectedTicket.service.nom_service" type="text" class="form-control" disabled/>
+                    </div>
+                </BCol>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="sujet">Type de ticket </label>
+                        <input id="sujet" :value="selectedTicket.type.libelle" type="text" class="form-control" disabled/>
+                    </div>
+                </BCol>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="sujet">Sujet </label>
+                        <input id="sujet" :value="selectedTicket.sujet" type="text" class="form-control" disabled/>
+                    </div>
+                </BCol>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="description">Description</label>
+                        <BFormTextarea id="productdesc" :value="selectedTicket.description" class="form-control"
+                            placeholder="Product Description" disabled>
+                        </BFormTextarea>
+                    </div>
+                </BCol>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <label for="sujet">Priorite </label>
+                        <input id="sujet" :value="selectedTicket.priorite.niveau" type="text" class="form-control" />
+                    </div>
+                </BCol>
+
+            </BRow>
+
         </BForm>
-    </BModal> -->
+    </BModal>
+
 </template>
 <style>
 .agent-table {
