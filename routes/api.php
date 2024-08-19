@@ -146,5 +146,6 @@ Route::get('/ticket/{clientId}/client', [TicketController::class, 'getdashboardC
 Route::get('/tickets/agent/{agentId}/status/{status}', [TicketController::class, 'getStatusByAgent']);
 Route::get('/tickets/client/{clientId}/status/{status}', [TicketController::class, 'getStatusByClient']);
 Route::post('/tickets/{ticket}/feedback', [TicketController::class, 'sendFeedback']);
+Route::post('/users/{id}/generate-reset', [UserController::class, 'generateResetLink']);
 
 

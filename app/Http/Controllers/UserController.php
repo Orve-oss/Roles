@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
@@ -262,6 +263,27 @@ class UserController extends Controller
             'user' => $user,
             'image' => $user->image ? url('storage/' . $user->image) : null,
         ]);
+    }
+    public function generateResetLink($id){
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message'=> 'Utilisateur non trouvé'], 404);
+        }
+        $token = Str::random(60);
+        DB::table('password_resets')->insert([
+            'email' => $user->email,
+            'token' => Hash::make($token),
+            'created_at' => now(),
+        ]);
+        $link = url(`http://localhost:8080`. $token. '?email='.urlencode($user->email));
+        Mail::send('Html.view', ['link' => $link], function ($message) use ($user) {
+
+            $message->to($user->email);
+
+            $message->subject('Réinitialisation du mot de passe');
+
+        });
+        return response()->json(['message' => 'Lien de réinitialisation']);
     }
 
 }

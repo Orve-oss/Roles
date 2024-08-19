@@ -29,7 +29,10 @@ export const useAuthStore = defineStore("authClient", {
                     throw new Error(response.data.message);
                 }
             } catch (error) {
-                console.error("Login error:", error);
+                console.error("Login error:", error.message);
+                if (error.response && error.response.status === 403) {
+                    alert("Votre compte est bloqué. Veuillez contacter l'administrateur.");
+                }
                 throw error;
             }
         },

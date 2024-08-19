@@ -97,6 +97,14 @@ export default {
 
             });
 
+        },
+        generateResetLink(id){
+            axios.post(`http://127.0.0.1:8000/api/users/${id}/generate-reset`)
+            .then(response =>{
+                Swal.fire('Succes', response.data, 'success');
+            }).catch(error =>{
+                console.error("Une erreur s'est produite", error);
+            });
         }
     }
 }
@@ -130,6 +138,17 @@ export default {
 
                             <p class="mb-0 text-muted">{{ user.roles[0]?.name || 'N/A' }}</p>
 
+                        </div>
+                        <div class="mt-2 text-center">
+                            <span v-if="user.isBlocked" class="text-danger">
+                                <i class="fas fa-circle"></i>Bloqué
+                            </span>
+                            <span v-else class="text-success">
+                                <i class="fas fa-circle"></i> Actif
+                            </span>
+                        </div>
+                        <div v-if="user.isBlocked" class="mt-2 text-center">
+                            <BButton variant="danger" size="sm" @click="generateResetLink(user.id)"></BButton>
                         </div>
 
 

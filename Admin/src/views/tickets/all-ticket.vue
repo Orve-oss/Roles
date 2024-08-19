@@ -299,6 +299,7 @@ export default {
                                         <BTh>Statut</BTh>
                                         <BTh>Priorite</BTh>
                                         <BTh>Date</BTh>
+                                        <Bth>Traité</Bth>
                                         <BTh>Detail</BTh>
                                         <BTh>Action</BTh>
                                     </BTr>
@@ -311,6 +312,7 @@ export default {
                                         <!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
                                         <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd>
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
+                                        <BTd v-if="ticket.user_id">{{ ticket.user?.email }}</BTd>
                                         <BTd>
                                             <BButton variant="primary" class="btn-sm btn-rounded"
                                                 @click="viewTicket(ticket.id)">
@@ -328,6 +330,7 @@ export default {
                                                     @click="any">
                                                     Aucun
                                                 </BDropdownItem>
+
 
                                                 <BDropdownItem
                                                     v-if="!['En cours', 'Résolu', 'Fermé', 'Assigné'].includes(ticket.status)"

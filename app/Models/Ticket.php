@@ -45,7 +45,7 @@ class Ticket extends Model
     }
     protected $table = 'tickets';
     public static function getAllTickets($perPage = 5){
-        return Self::with(['type','service', 'priorite'])->orderBy('created_at', 'desc')->paginate($perPage);
+        return Self::with(['type','service', 'priorite','user'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public static function getOneTicket($id){

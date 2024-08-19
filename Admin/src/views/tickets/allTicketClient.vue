@@ -171,13 +171,8 @@ export default {
             this.showFeedbackModal = true;
         },
         sendFeedback() {
-            // const feedbackData = {
-            //     ticketId: this.selectedTicket.id,
-            //     description: this.description,
-            // };
 
-            // Envoyer les données au backend
-            axios.post(`http://127.0.0.1:8000/api/tickets/${this.ticket}/feedback`, {
+            axios.post(`http://127.0.0.1:8000/api/tickets/${this.selectedTicket.id}/feedback`, {
                 description: this.description,
             })
                 .then(() => {
