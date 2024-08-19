@@ -103,7 +103,12 @@ export default {
                     this.$router.push({ name: redirectRoute });
                 } catch (error) {
                     console.error("Login error: ", error);
-                    this.authError = "Email ou mot de passe invalide";
+                    if (error.response && error.response.status === 403) {
+                        this.authError = "Compte bloqué; Veuillez contacter votre administrateur"
+                    } else {
+                        this.authError = "Email ou mot de passe invalide";
+                    }
+
                     this.isAuthError = true;
                 }
 

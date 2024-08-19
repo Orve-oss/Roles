@@ -275,8 +275,8 @@ class UserController extends Controller
             'token' => Hash::make($token),
             'created_at' => now(),
         ]);
-        $link = url(`http://localhost:8080`. $token. '?email='.urlencode($user->email));
-        Mail::send('Html.view', ['link' => $link], function ($message) use ($user) {
+        $link = 'http://127.0.0.1:8080/change/'. $token. '?email=' .urlencode($user->email);
+        Mail::send('emails.reset', ['link' => $link], function ($message) use ($user) {
 
             $message->to($user->email);
 
@@ -284,6 +284,33 @@ class UserController extends Controller
 
         });
         return response()->json(['message' => 'Lien de réinitialisation']);
+    }
+    public function changePassword(Request $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|confirmed',
+        ]);
+        if ($validator->fails()) {
+           return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $passwordReset = DB::table('password_resets')
+        ->where('email', $request->email)
+        ->first();
+        if (!$passwordReset) {
+            return response()->json(['message' => 'Token ou email invalide.'], 404);
+        }
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non trouvé.'], 404);
+        }
+        $user->password = Hash::make($request->password);
+        $user->login_attempts = 0;
+        $user->last_login_attempt = null;
+        $user->account_locked_at = null;
+        $user->save();
+        DB::table('password_resets')->where('email', $request->email)->delete();
+        return response()->json(['message' => 'Mot de passe réinitialisé avec succès']);
     }
 
 }

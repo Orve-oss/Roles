@@ -176,6 +176,17 @@ export default [
     // props: (route) => ({ token: route.query.token})
   },
   {
+    path: "/change/:token",
+    name: "ChangePassword",
+    meta: { title: "ChangePassword", authRequired: true },
+    component: () => import("../views/sample-pages/register-sample"),
+    props: route => ({
+        token: route.params.token,
+        email: route.query.email
+    })
+    // props: (route) => ({ token: route.query.token})
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("../views/account/login"),

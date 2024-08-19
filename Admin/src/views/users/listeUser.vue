@@ -33,7 +33,7 @@ export default {
                 }
             })
                 .then(response => {
-                    this.users = response.data.filter(user=> user.roles[0]?.name !=='Admin');
+                    this.users = response.data.filter(user => user.roles[0]?.name !== 'Admin');
                     this.filteredUsers = this.users;
                 })
                 .catch(error => {
@@ -98,13 +98,56 @@ export default {
             });
 
         },
-        generateResetLink(id){
-            axios.post(`http://127.0.0.1:8000/api/users/${id}/generate-reset`)
-            .then(response =>{
-                Swal.fire('Succes', response.data, 'success');
-            }).catch(error =>{
-                console.error("Une erreur s'est produite", error);
+        generateResetLink(id) {
+            Swal.fire({
+                title: 'Etes vous sûr de vouloir générer un lien de réinitialisation?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'oui!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post(`http://127.0.0.1:8000/api/users/${id}/generate-reset`)
+                        .then((response) => {
+                            if (response) {
+
+                                Swal.fire(
+                                    'Succes!',
+                                    'lien généré',
+                                    'success'
+                                );
+                            } else {
+                                Swal.fire(
+                                    'Erreur!',
+                                    'erreur de génération',
+                                    'error'
+
+                                );
+                            }
+
+                        }).catch((error) => {
+                            if (error.response) {
+                                Swal.fire(
+                                    'Erreur!',
+                                    'Erreur',
+                                    'error'
+
+                                );
+
+                            }
+
+                        })
+
+                }
+
             });
+            // axios.post(`http://127.0.0.1:8000/api/users/${id}/generate-reset`)
+            // .then(response =>{
+            //     Swal.fire('Succes', response.data, 'success');
+            // }).catch(error =>{
+            //     console.error("Une erreur s'est produite", error);
+            // });
         }
     }
 }
@@ -140,21 +183,21 @@ export default {
 
                         </div>
                         <div class="mt-2 text-center">
-                            <span v-if="user.isBlocked" class="text-danger">
+                            <span v-if="user.account_locked_at" class="text-danger">
                                 <i class="fas fa-circle"></i>Bloqué
                             </span>
                             <span v-else class="text-success">
                                 <i class="fas fa-circle"></i> Actif
                             </span>
                         </div>
-                        <div v-if="user.isBlocked" class="mt-2 text-center">
-                            <BButton variant="danger" size="sm" @click="generateResetLink(user.id)"></BButton>
+                        <div v-if="user.account_locked_at" class="mt-2 text-center">
+                            <BButton variant="danger" size="sm" @click="generateResetLink(user.id)">Lien</BButton>
                         </div>
 
 
                         <div class="mt-4 pt-1">
-                            <a :href="'mailto:'+  user.email" class="btn btn-soft-primary d-block">
-                                {{user.email}}</a>
+                            <a :href="'mailto:' + user.email" class="btn btn-soft-primary d-block">
+                                {{ user.email }}</a>
                         </div>
                     </BCardBody>
                 </BCard>

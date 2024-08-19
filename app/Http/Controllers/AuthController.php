@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Models\Client;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -18,31 +19,29 @@ class AuthController extends Controller
 
         try {
             $creds = $request->validated();
-
             if (Auth::guard('web')->attempt($creds)) {
-                if (!Auth::attempt($creds)) {
-                    return response()->json([
-                        'message' => 'Email ou mot de passe invalide'
-                    ]);
-                }
-                $user = Auth::user();
+                // Récupérer l'utilisateur authentifié
+                $user = Auth::guard('web')->user();
                 if ($user) {
                     return $this->handleLoginAttempt($user, $creds);
                 }
-                // $token = $user->createToken('auth_token', ['*'])->plainTextToken;
+            }
 
-                // return response()->json([
-                //     'message' => 'Connexion réussie',
-                //     'access_token' => $token, 'token_type' => 'Bearer',
-                //     'status' => 'success',
-                //     'user' => [
-                //         'id' => $user->id,
-                //         'name' => $user->name,
-                //         'email' => $user->email,
-                //         'role' => $user->roles->pluck('name')
-                //     ]
-                // ]);
-            } else if ($client = Client::where('email', $creds['email'])->first()) {
+
+            // $token = $user->createToken('auth_token', ['*'])->plainTextToken;
+
+            // return response()->json([
+            //     'message' => 'Connexion réussie',
+            //     'access_token' => $token, 'token_type' => 'Bearer',
+            //     'status' => 'success',
+            //     'user' => [
+            //         'id' => $user->id,
+            //         'name' => $user->name,
+            //         'email' => $user->email,
+            //         'role' => $user->roles->pluck('name')
+            //     ]
+            // ]);
+            else if ($client = Client::where('email', $creds['email'])->first()) {
                 if ($client && Hash::check($creds['password'], $client->password)) {
                     Auth::login($client);
                     if ($client) {
@@ -64,9 +63,7 @@ class AuthController extends Controller
                     // ]);
                 }
             } else {
-                return response()->json([
-                    'message' => 'Email ou mot de passe invalide'
-                ], 401);
+                return $this->handleFailedAttempt($creds);
             }
 
         } catch (Exception $e) {
@@ -79,35 +76,10 @@ class AuthController extends Controller
 
     private function handleLoginAttempt($user, $creds, $type = 'User')
     {
-        // Vérifiez si le compte est verrouillé
         if ($user->account_locked_at) {
             return response()->json([
                 'message' => 'Votre compte est bloqué. Veuillez contacter l\'administrateur.'
             ], 403);
-        }
-
-        // Incrémenter les tentatives de connexion si l'authentification échoue
-        if (!Auth::attempt($creds)) {
-            $user->login_attempts++;
-            $user->last_login_attempt = now();
-
-            // Bloquer le compte après 5 tentatives échouées
-            if ($user->login_attempts >= 5) {
-                $user->account_locked_at = now();
-
-                // Envoyer un email à l'administrateur
-                $adminEmail = 'sikamagnou@gmail.com'; // Remplacez par l'email de l'admin
-                Mail::raw("Le compte {$type} de l'utilisateur {$user->email} a été bloqué après 5 tentatives de connexion échouées.", function ($message) use ($adminEmail) {
-                    $message->to($adminEmail)
-                        ->subject('Compte utilisateur bloqué');
-                });
-            }
-
-            $user->save();
-
-            return response()->json([
-                'message' => 'Email ou mot de passe invalide'
-            ], 401);
         }
 
         // Réinitialiser les tentatives de connexion après une connexion réussie
@@ -131,4 +103,32 @@ class AuthController extends Controller
             ]
         ]);
     }
+    private function handleFailedAttempt($creds)
+    {
+        $user = User::where('email', $creds['email'])->first() ?? Client::where('email', $creds['email'])->first();
+
+        if ($user) {
+            $user->login_attempts++;
+            $user->last_login_attempt = now();
+
+            // Bloquer le compte après 5 tentatives échouées
+            if ($user->login_attempts >= 2) {
+                $user->account_locked_at = now();
+
+                // Envoyer un email à l'administrateur
+                $adminEmail = 'sikamagnou@gmail.com';
+                Mail::raw("Le compte de l'utilisateur {$user->email} a été bloqué après 5 tentatives de connexion échouées.", function ($message) use ($adminEmail) {
+                    $message->to($adminEmail)
+                        ->subject('Compte utilisateur bloqué');
+                });
+            }
+
+            $user->save();
+        }
+
+        return response()->json([
+            'message' => 'Email ou mot de passe invalide',
+        ], 401);
+    }
+
 }
