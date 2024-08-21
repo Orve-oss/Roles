@@ -65,7 +65,9 @@ export default {
             return fileExtension === pdfExtension;
         },
         getImageUrl(imagePath) {
-            return `http://127.0.0.1:8000/storage/${imagePath}`;
+            const fullUrl = `http://127.0.0.1:8000/storage/${imagePath}`;
+            console.log(fullUrl); // Ajoutez ceci pour voir l'URL générée
+            return fullUrl;
         },
         showWorkDescription() {
             this.showWorkModal = true;
@@ -110,6 +112,7 @@ export default {
             });
             this.showWorkModal = false;
             this.showNoteModal = false;
+            this.$router.push('/agent/tickets');
             Swal.fire('Succes!', 'Un mail a été envoyé au client', 'success');
         },
         async updateTicketResolved() {

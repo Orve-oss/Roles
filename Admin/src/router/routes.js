@@ -48,7 +48,7 @@ export default [
   {
     path: "/",
     name: "AccueilUser",
-    meta: { title: "Accueil Utilisateur", role: ['Admin', 'Agent'],
+    meta: { title: "Accueil Utilisateur", role: ['Admin'],
         beforeResolve(routeTo, routeFrom, next){
             const auth = useAuthStore();
             if (auth.loggedIn) {
@@ -59,6 +59,21 @@ export default [
         }
     },
     component: () => import("../views/users/accueilUser")
+  },
+  {
+    path: "/accueil/agent",
+    name: "AccueilAgent",
+    meta: { title: "Accueil Agent", role: [ 'Agent'],
+        beforeResolve(routeTo, routeFrom, next){
+            const auth = useAuthStore();
+            if (auth.loggedIn) {
+                next({ name: auth.redirectRouteBasedOnRole()});
+            } else {
+                next();
+            }
+        }
+    },
+    component: () => import("../views/users/accueilAgent")
   },
   {
     path: "/createUser",

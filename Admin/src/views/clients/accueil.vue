@@ -240,14 +240,13 @@ export default {
                     </BRow>
                 </Layout>
             </div>
-            <BModal md="12" v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true">
-
+            <BModal md="12"  v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true" >
 
                 <div class="p-2">
                     <BRow>
 
                         <BCol>
-                            <BCardBody class="pt-0">
+                            <BCardBody class="pt-0 fly-in-top">
                                 <h4>Se connecter</h4>
                                 <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{ authError }}
                                 </BAlert>
@@ -261,7 +260,7 @@ export default {
                                     {{ notification.message }}
                                 </div>
 
-                                <BForm class="p-5 " @submit.prevent="tryToLogIn">
+                                <BForm class="p-4 " @submit.prevent="tryToLogIn">
                                     <BFormGroup class="mb-3" id="input-group-1" label="Email" label-for="input-1">
                                         <BFormInput id="input-1" v-model="email" class="w-100 mb-2" type="text"
                                             placeholder="Enter email" :class="{
@@ -370,5 +369,19 @@ export default {
     background-size: cover;
     width: 100%;
     height: 600px;
+}
+@keyframes flyInFromTop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fly-in-top {
+  animation: flyInFromTop 0.5s ease-out;
 }
 </style>

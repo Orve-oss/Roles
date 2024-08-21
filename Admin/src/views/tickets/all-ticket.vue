@@ -297,9 +297,9 @@ export default {
                                         <BTh>Index</BTh>
                                         <BTh>Sujet</BTh>
                                         <BTh>Statut</BTh>
-                                        <BTh>Priorite</BTh>
+                                        <!-- <BTh>Priorite</BTh> -->
                                         <BTh>Date</BTh>
-                                        <Bth>Traité</Bth>
+                                        <BTh>Traité par</BTh>
                                         <BTh>Detail</BTh>
                                         <BTh>Action</BTh>
                                     </BTr>
@@ -310,9 +310,10 @@ export default {
                                         <BTd> {{ ticket.sujet || 'Sujet indisponible' }} </BTd>
                                         <BTd> {{ ticket?.status || 'N/A' }} </BTd>
                                         <!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
-                                        <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd>
+                                        <!-- <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd> -->
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
                                         <BTd v-if="ticket.user_id">{{ ticket.user?.email }}</BTd>
+                                        <BTd v-else> Pas d'agent</BTd>
                                         <BTd>
                                             <BButton variant="primary" class="btn-sm btn-rounded"
                                                 @click="viewTicket(ticket.id)">
@@ -448,8 +449,8 @@ export default {
             </div>
         </BForm>
     </BModal>
-    <BModal v-model="showTicketModal" title="Details du ticket" title-class="font-18" body-class="p-3" hide-footer
-        hide-header class="v-modal-custom" v-if="selectedTicket" id="view-ticket-modal" @hide="resetSelectedTicket">
+    <BModal v-model="showTicketModal" title="Details du ticket" title-class="font-18" body-class="p-3"
+        hide-header class="v-modal-custom fly-in-top" v-if="selectedTicket" id="view-ticket-modal" @hide="resetSelectedTicket">
         <BForm >
             <BRow>
                 <BCol cols="12">
@@ -473,7 +474,7 @@ export default {
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="description">Description</label>
-                        <BFormTextarea id="productdesc" :value="selectedTicket.description" class="form-control"
+                        <BFormTextarea id="productdesc" v-model="selectedTicket.description" class="form-control"
                             placeholder="Product Description" disabled>
                         </BFormTextarea>
                     </div>
@@ -481,7 +482,7 @@ export default {
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="sujet">Priorite </label>
-                        <input id="sujet" :value="selectedTicket.priorite.niveau" type="text" class="form-control" />
+                        <input id="sujet" :value="selectedTicket.priorite.niveau" type="text" class="form-control" disabled>
                     </div>
                 </BCol>
 
@@ -532,5 +533,19 @@ export default {
 
 .selected-agent {
     background-color: #007bff;
+}
+@keyframes flyInFromTop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fly-in-top {
+  animation: flyInFromTop 0.5s ease-out;
 }
 </style>

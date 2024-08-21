@@ -203,10 +203,10 @@ export default {
 
           <router-link to="/" class="logo logo-light">
             <span class="logo-sm">
-              <img src="@/assets/images/logo-light.svg" alt height="22" />
+              <img src="@/assets/images/logo1.png" alt height="22" />
             </span>
             <span class="logo-lg">
-              <img src="@/assets/images/logo-light.png" alt height="19" />
+              <img src="@/assets/images/logo1.png" alt height="19" />
             </span>
           </router-link>
         </div>

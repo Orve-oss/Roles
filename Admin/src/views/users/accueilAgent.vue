@@ -2,7 +2,7 @@
 import { timelineData } from "./data"
 import logo1 from "@/assets/images/logo1.png"
 import support1 from "@/assets/images/support1.jpg"
-// import accueil from "@/assets/images/accueil.jpg"
+import agent from "@/assets/images/agent.jpg"
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -39,7 +39,7 @@ export default {
                 { title: 'Problème', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
 
             ],
-            support1, logo1,
+            support1, logo1, agent,
             logo, Navigation, Pagination,
             email: "",
             password: "",
@@ -146,7 +146,7 @@ export default {
 
 <template>
     <div>
-        <nav class="navbar navbar-expand-lg navigation fixed-top sticky" id="navbar">
+        <nav class="navbar navbar-expand-lg bg-dark navigation fixed-top sticky" id="navbar">
             <BContainer>
                 <router-link class="navbar-logo" to="/">
                     <img :src=logo alt height="50" class="logo logo-dark" />
@@ -165,25 +165,47 @@ export default {
                     </ul>
 
                     <!-- <div class="ms-lg-2">
-            <BLink href="javascript: void(0);" class="btn btn-outline-success w-xs">Sign in</BLink>
+            <BLink href="javascript: void(0);" class="btn btn-outline-success w-xs">Espace agent</BLink>
           </div> -->
                 </div>
             </BContainer>
         </nav>
         <div v-scroll-spy>
-            <section class="section hero-section image" :style="{ backgroundImage: `url(${support1})` }" id="home">
-                <div class="bg-overlay "></div>
-                <BContainer>
-                    <BRow class="align-items-center">
-                        <BCol lg="5">
-                            <div class="text-dark-50">
-                                <h1 class="text-dark fw-semibold mb-3 hero-title">Bienvenue sur votre portail</h1>
-                                <p class="font-size-14">Veuillez vous connecter pour avoir accès à votre espace
-                                    d'administateur</p>
+            <section class="section hero-section image" :style="{ height: '600px', backgroundImage: `url(${agent})` }"
+                id="home">
+                <div class="bg-overlay" style="background: none;"></div>
+                <div class="container text-center">
+                    <h1 class="display-4 fw-bold" style="font-family: 'Times New Roman', Times, serif">Bienvenue dans
+                        votre espace</h1>
+                    <p class="lead">Trouvez des articles et des discussions pour répondre à vos questions</p>
+                    <form class="search-bar mx-auto" @submit.prevent="onSearch" style="max-width: 500px; ">
+                        <div class="input-group position-relative">
+                            <input type="text" class="form-control" placeholder="Rechercher" v-model="searchQuery"
+                                style="padding-right: 40px; height: 40px; border: 1px solid gray; border-radius: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                            <button class="btn btn-primary" type="submit"
+                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background-color: transparent;">
+                                <i class="mdi mdi-magnify"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+                <!-- <BContainer>
+                    <BRow class="justify-content-center align-items-center text-center">
+                        <BCol lg="8">
+                            <div class="welcome-text mb-4">
+                                <h1 class="text-dark fw-bold">Bienvenue sur votre espace agent</h1>
+                            </div>
+                            <div class="search-bar mb-5">
+                                <BFormInput v-model="searchQuery" class="rounded-pill" type="text"
+                                    placeholder="Rechercher..." />
                             </div>
                         </BCol>
+                    </BRow>
+                    <BRow class="align-items-center">
+
                         <BCol lg="5" md="8" sm="10" class="ms-lg-auto">
-                            <BCard no-body class="overflow-hidden mb-0 mt-5 mt-lg-0 fly-in-right">
+                            <BCard no-body class="overflow-hidden ">
                                 <BRow>
 
                                     <BCol>
@@ -196,7 +218,7 @@ export default {
                                             </div>
                                             <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{
                                                 authSucces
-                                                }}
+                                            }}
                                             </BAlert>
                                             <div v-if="notification.message" :class="'alert ' + notification.type">
                                                 {{ notification.message }}
@@ -225,7 +247,7 @@ export default {
                                                         class="invalid-feedback">
                                                         <span v-if="v$.password.required.$message">{{
                                                             v$.password.required.$message
-                                                            }}</span>
+                                                        }}</span>
                                                     </div>
                                                 </BFormGroup>
 
@@ -245,7 +267,7 @@ export default {
                             </BCard>
                         </BCol>
                     </BRow>
-                </BContainer>
+                </BContainer> -->
             </section>
 
             <section class="section bg-white" id="roadmap">
@@ -371,18 +393,43 @@ export default {
     width: 100%;
     height: 600px;
 }
-@keyframes flyInFromRight {
-  0% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
+
+/*.hero-section {
+    background-color: #fdfdfd;
+
+    padding: 80px 0;
+
+} */
+
+/* .hero-section h1 {
+    color: #333;
+
+    margin-bottom: 20px;
+} */
+
+/* .search-bar {
+    max-width: 500px;
+
 }
 
-.fly-in-right {
-  animation: flyInFromRight 0.5s ease-out;
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.input-group .form-control {
+    border-radius: 50px;
+    padding: 15px;
+}
+
+.input-group .btn {
+    border-radius: 50px;
+    background-color: #6c63ff;
+} */
+
+.background {
+    background-color: #f9f9f9;
+
+
 }
 </style>

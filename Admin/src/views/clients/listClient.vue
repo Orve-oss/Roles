@@ -42,6 +42,9 @@ export default {
                 email: '',
             },
             errors: {},
+            submitted: false,
+            errorMessage: '',
+            showAlert: false
 
         };
     },
@@ -74,7 +77,7 @@ export default {
             this.filteredClients = this.clients.filter(client => {
                 return (
                     client.nom_clt.toLowerCase().includes(query) ||
-                   client.email.toLowerCase().includes(query)
+                    client.email.toLowerCase().includes(query)
 
                 );
             });
@@ -99,6 +102,7 @@ export default {
         },
 
         async createClient() {
+            this.submitted = true;
             this.v$.$touch();
             if (this.v$.$invalid) {
                 return;
@@ -121,8 +125,12 @@ export default {
                         console.log('Client created successfully:', response.data);
                     })
                     .catch((error) => {
-                        if (error.response) {
-                            this.errors = error.response.data.errors;
+                        if (error.response && error.response.data.email) {
+                            this.errorMessage = error.response.data.email[0];
+                            this.showAlert = true;
+                            setTimeout(() => {
+                                this.showAlert = false
+                            }, 2000);
                         }
                     })
 
@@ -255,7 +263,7 @@ export default {
                                         <BTh>Index</BTh>
                                         <BTh>Nom du client</BTh>
                                         <BTh>Email du client</BTh>
-                                        <!-- <BTh>Nbre ticket soumis</BTh> -->
+                                        <BTh>Compte</BTh>
                                         <BTh>Date de creation</BTh>
 
                                         <BTh>Action</BTh>
@@ -268,12 +276,16 @@ export default {
                                         <BTd>
                                             <p class="mb-0">{{ clist.email }}</p>
                                         </BTd>
-                                        <!-- <BTd>
-                                            <span class="badge bg-success font-size-12">
-                                                <i class="mdi mdi-receipt me-1"></i>
-                                                0
-                                            </span>
-                                        </BTd> -->
+                                        <BTd>
+                                            <div class="mt-2 text-center">
+                                                <span v-if="clist.account_locked_at" class="text-danger">
+                                                    <i class="fas fa-circle"></i>Bloqué
+                                                </span>
+                                                <span v-else class="text-success">
+                                                    <i class="fas fa-circle"></i> Actif
+                                                </span>
+                                            </div>
+                                        </BTd>
                                         <BTd>{{ new Date(clist.created_at).toLocaleDateString() }}</BTd>
                                         <!-- <BTd>
                                             <BButton variant="primary" class="btn-sm btn-rounded"
@@ -304,7 +316,8 @@ export default {
                                 </BTbody>
                             </BTableSimple>
                         </div>
-                        <BPagination  v-model="currentPage" :total-rows="totalPages * 5" :per-page="5" @update:modelValue="fetchClients( currentPage)"  />
+                        <BPagination v-model="currentPage" :total-rows="totalPages * 5" :per-page="5"
+                            @update:modelValue="fetchClients(currentPage)" />
                         <!-- <div class="mt-3">
                             <BPagination v-model="currentPage" :total-rows="totalClients" :per-page="perPage"
                                 align="end" @change="handlePageChange" />
@@ -319,6 +332,8 @@ export default {
     <BModal v-model="showModal" title="Ajouter un nouveau client" title-class="font-18" body-class="p-3" hide-footer
         class="v-modal-custom">
         <BForm @submit.prevent="createClient">
+            <BAlert v-model="showAlert" variant="danger" dismissible @dismissed="showAlert = false">{{ errorMessage }}
+            </BAlert>
             <BRow>
                 <BCol cols="12">
                     <div class="mb-3">
@@ -375,4 +390,5 @@ export default {
             </div>
         </BForm>
     </BModal>
+
 </template>
