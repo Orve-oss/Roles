@@ -184,12 +184,20 @@ export default {
       <div class="d-flex">
         <!-- LOGO -->
         <div class="navbar-brand-box">
-          <router-link to="/" class="logo logo-dark">
+            <router-link to="/" class="logo logo-dark">
             <span class="logo-sm">
               <img src="@/assets/images/logo1.png" alt height="22" />
             </span>
             <span class="logo-lg">
               <img src="@/assets/images/logo1.png" alt height="17" />
+            </span>
+          </router-link>
+          <router-link to="/" class="logo logo-light">
+            <span class="logo-sm">
+              <img src="@/assets/images/logo1.png" alt height="22" />
+            </span>
+            <span class="logo-lg">
+              <img src="@/assets/images/logo1.png" alt height="30" />
             </span>
           </router-link>
 
@@ -200,7 +208,7 @@ export default {
           <i class="fa fa-fw fa-bars"></i>
         </BButton>
 
-        
+
 
       </div>
 
@@ -371,11 +379,11 @@ export default {
           </a>
         </BDropdown>
 
-        <div class="dropdown d-inline-block">
+        <!-- <div class="dropdown d-inline-block">
           <BButton variant="white" type="button" class="btn header-item noti-icon right-bar-toggle toggle-right" @click="toggleRightSidebar">
             <i class="bx bx-cog bx-spin toggle-right"></i>
           </BButton>
-        </div>
+        </div> -->
       </div>
     </div>
   </header>

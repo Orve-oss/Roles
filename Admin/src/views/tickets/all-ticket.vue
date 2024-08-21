@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import Layout from "../../layouts/main";//besoin
 import PageHeader from "@/components/page-header";
 import emitter from "../../eventBus";
+// import { EventBus } from "../../components/eventBus";
 
 
 /**
@@ -45,9 +46,13 @@ export default {
             showTicketModal: false,
         };
     },
-    created() {
-        this.fetchTickets();
-    },
+    // created() {
+    //     EventBus.$on('ticketCreated', (newTicket) => {
+    //         this.tickets.push(newTicket);
+    //     });
+
+
+    // },
 
     mounted() {
         this.fetchTickets();

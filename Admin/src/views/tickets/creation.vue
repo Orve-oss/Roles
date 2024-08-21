@@ -8,6 +8,7 @@ import useVuelidate from "@vuelidate/core";
 
 import Layout from '../../layouts/main'
 import PageHeader from '@/components/page-header'
+// import { EventBus } from "../../components/eventBus";
 const notificationStore = useNotificationStore();
 
 /**
@@ -182,6 +183,7 @@ export default {
                         this.errors = null;
                         console.log(response);
 
+
                         this.ticket = {
                             sujet: '',
                             description: '',
@@ -198,6 +200,7 @@ export default {
                             this.successMessage = response.data.message,
                             'success'
                         );
+                        // EventBus.$emit('ticketCreated', response.data.ticket);
 
                     })
                     .catch(error => {

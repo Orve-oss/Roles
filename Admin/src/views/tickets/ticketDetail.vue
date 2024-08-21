@@ -40,7 +40,8 @@ export default {
             workDescription: '',
             showWorkModal: false,
             showbutton: false,
-            ticketId: null
+            ticketId: null,
+            reportGenerate: false
 
         };
     },
@@ -98,10 +99,11 @@ export default {
             await axios.put(`http://127.0.0.1:8000/api/tickets/update-status/${id}`, { status: this.ticket.status })
                 .then(() => {
                     //alert('Statut mis à jour avec succès');
-                    emitter.emit('ticket-status');
+                    // emitter.emit('ticket-status');
                     // if (this.ticket.status === 'Résolu') {
                     //     this.showNoteModal = true;
                     // }
+                    this.$router.push('/agent/tickets');
                 })
                 .catch(error => {
                     console.error('Erreur survenue', error);
@@ -112,7 +114,7 @@ export default {
             });
             this.showWorkModal = false;
             this.showNoteModal = false;
-            this.$router.push('/agent/tickets');
+
             Swal.fire('Succes!', 'Un mail a été envoyé au client', 'success');
         },
         async updateTicketResolved() {
@@ -132,6 +134,8 @@ export default {
                         .then(() => {
 
                             this.generateRapport();
+                            this.reportGenerate = true;
+                            console.log(this.reportGenerate);
                             Swal.fire('Succes!', 'Un mail est envoyé au client avec son rapport de résolution', 'success');
                             this.$router.push({ name: 'opentickets' });
 
@@ -415,7 +419,7 @@ export default {
                                 <BButton variant="primary" type="submit" class="me-1">
                                     Save Changes
                                 </BButton>
-                                <BButton variant="danger" @click="updateTicketResolved" class="me-1">Fermer
+                                <BButton variant="danger"  class="me-1">Fermer
                                 </BButton>
                                 <!-- <BButton variant="success" class="me-1" v-if="showbutton" @click="generateRapport">
                                     Rapport
@@ -496,7 +500,7 @@ export default {
                 </BCard>
             </BCol>
         </BRow> -->
-        <BModal v-model="showWorkModal" v-if="ticket.status === 'En cours'" hide-header :no-close-on-backdrop="true"
+        <BModal v-model="showWorkModal" v-if="ticket.status === ['En cours', 'Résolu']" hide-header :no-close-on-backdrop="true"
             @ok="updateTicketStatus">
             <BAlert :model-value="true" variant="success" class="text-center mb-4">
                 Ajouter une description du travail en cours
@@ -504,7 +508,7 @@ export default {
             <BFormTextarea v-model="workDescription" placeholder="Entrez la description du travail en cours" rows="5">
             </BFormTextarea>
         </BModal>
-        <BModal v-model="showNoteModal" v-else hide-header :no-close-on-backdrop="true" @ok="updateTicketStatus">
+        <BModal v-model="showNoteModal" v-else hide-header :no-close-on-backdrop="true" @ok="updateTicketResolved">
             <BAlert :model-value="true" variant="success" class="text-center mb-4">
                 Ajouter une Note de travail en cours
             </BAlert>

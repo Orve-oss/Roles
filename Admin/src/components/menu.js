@@ -103,7 +103,7 @@ export const menuItems = [
             {
                 id: 48,
                 label: "Creation",
-                link: "/createtickets",
+                link: "/createticket",
                 parentId: 43,
                 roles: ['Client']
             },

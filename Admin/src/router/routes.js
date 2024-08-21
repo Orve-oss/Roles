@@ -124,7 +124,7 @@ export default [
     component: () => import("../views/tickets/ticketAssign")
   },
   {
-    path: "/createtickets",
+    path: "/createticket",
     name: "CreationTicket",
     meta: { title: "CreationTicket", authRequired: true, role: 'Client' },
     component: () => import("../views/tickets/creation")
