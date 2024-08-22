@@ -10,7 +10,7 @@ import application from "@/assets/images/application.jpeg"
 import "swiper/css";
 import "swiper/css/autoplay";
 // import axios from "axios";
-import { useAuthStore } from "../../state/pinia/auth";
+import { useAuthStore } from "../../state/pinia/authClient";
 
 import { useNotificationStore } from '@/state/pinia'
 import { required, helpers } from "@vuelidate/validators";
@@ -81,7 +81,14 @@ export default {
                     const authStore = useAuthStore();
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
                     const userRole = localStorage.getItem('userRole');
+                    if (userRole !== 'Client') {
+                        // Si l'utilisateur n'est pas un client, déconnectez-le et redirigez-le vers une page 403
+                        authStore.logOut();
+                        this.$router.push({ name: 'page403' });
+                        return;
+                    }
                     console.log('User role from local storage:', userRole);
+
 
 
                     this.authSucces = "Connexion réussie";
@@ -240,7 +247,7 @@ export default {
                     </BRow>
                 </Layout>
             </div>
-            <BModal md="12"  v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true" >
+            <BModal md="12" v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true">
 
                 <div class="p-2">
                     <BRow>
@@ -280,7 +287,7 @@ export default {
                                         <div v-if="submitted && v$.password.$error" class="invalid-feedback">
                                             <span v-if="v$.password.required.$message">{{
                                                 v$.password.required.$message
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                     </BFormGroup>
 
@@ -288,7 +295,7 @@ export default {
                                         <BButton type="submit" variant="primary" class="btn-block">Log In</BButton>
                                     </div>
                                     <div class="mt-4 text-center">
-                                        <router-link to="/forgot-password" class="text-muted">
+                                        <router-link to="/emailClient" class="text-muted">
                                             <i class="mdi mdi-lock me-1"></i> Forgot your password?
                                         </router-link>
                                     </div>
@@ -370,18 +377,20 @@ export default {
     width: 100%;
     height: 600px;
 }
+
 @keyframes flyInFromTop {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .fly-in-top {
-  animation: flyInFromTop 0.5s ease-out;
+    animation: flyInFromTop 0.5s ease-out;
 }
 </style>

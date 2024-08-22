@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ClientResource;
 use App\Mail\ClientMail;
+use App\Mail\VerificationCodeMail;
 use App\Models\Client;
 use App\Notifications\AccountActivation;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -95,18 +98,6 @@ class ClientController extends Controller
             'client_id' => $client->id
         ]);
     }
-    // public function send($id){
-    //     $client = Client::find($id);
-    //     if (!$client) {
-    //         return response()->json([
-    //             'message' => 'Client non trouve',
-    //         ]);
-    //     }
-    //     $client->notify(new AccountActivation($client->activation_token));
-    //     return response()->json([
-    //                 'message' => 'Voulez vous l\'envoyer le mail d\'activation?',
-    //             ]);
-    // }
 
     public function reset(Request $request)
     {
@@ -266,5 +257,68 @@ class ClientController extends Controller
             'message' => 'Mot de passe changé avec succès',
             'status' => 'success'
         ]);
+    }
+    public function sendVerificationCode(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $email = $request->input('email');
+        $client = Client::where('email', $email)->first();
+
+        if (!$client) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        // Générer un code de vérification aléatoire de 6 chiffres
+        $code = rand(100000, 999999);
+
+        // Enregistrer le code et l'expiration dans la base de données
+        DB::table('verificationclient_codes')->updateOrInsert(
+            ['client_id' => $client->id],
+            [
+                'code' => $code,
+                'expire_at' => Carbon::now()->addHour(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]
+        );
+
+        // Envoyer l'email avec le code de vérification
+        Mail::to($email)->send(new VerificationCodeMail($code));
+
+        return response()->json(['message' => 'Code de vérification envoyé.']);
+    }
+
+    // Méthode pour vérifier le code de vérification
+    public function verifyCode(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required|numeric'
+        ]);
+
+        $email = $request->input('email');
+        $code = $request->input('code');
+
+        $client = Client::where('email', $email)->first();
+
+        if (!$client) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        $verification = DB::table('verificationclient_codes')
+            ->where('client_id', $client->id)
+            ->where('code', $code)
+            ->first();
+
+        if (!$verification) {
+            return response()->json(['message' => 'Code invalide'], 400);
+        }
+
+        if (Carbon::now()->greaterThan($verification->expire_at)) {
+            return response()->json(['message' => 'Code expiré'], 400);
+        }
+
+        return response()->json(['message' => 'Code vérifié avec succès']);
     }
 }

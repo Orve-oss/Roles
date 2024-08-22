@@ -148,5 +148,5 @@ Route::get('/tickets/client/{clientId}/status/{status}', [TicketController::clas
 Route::post('/tickets/{ticket}/feedback', [TicketController::class, 'sendFeedback']);
 Route::post('/users/{id}/generate-reset', [UserController::class, 'generateResetLink']);
 Route::post('/change', [UserController::class, 'changePassword']);
-
-
+Route::post('/sendVerification', [UserController::class, 'sendVerificationCode']);
+Route::post('/sendVerificationClient', [UserController::class, 'sendVerificationCode']);

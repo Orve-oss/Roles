@@ -49,6 +49,7 @@ export default {
             authError: null,
             tryingToLogIn: false,
             isAuthError: false,
+            showLoginForm: false,
             role: null,
             timelineData,
             Autoplay: Autoplay,
@@ -77,9 +78,10 @@ export default {
             this.userRole = userRole;
         }
     },
-    // mounted() {
+    mounted() {
+        this.showLoginForm = true;
 
-    // },
+    },
     methods: {
 
         async tryToLogIn() {
@@ -145,8 +147,10 @@ export default {
 </script>
 
 <template>
+
     <div>
-        <nav class="navbar navbar-expand-lg bg-dark navigation fixed-top sticky" id="navbar">
+        <nav class="navbar navbar-expand-lg navigation fixed-top sticky" :style="{ backgroundColor: '#FFFFFF' }"
+            id="navbar">
             <BContainer>
                 <router-link class="navbar-logo" to="/">
                     <img :src=logo alt height="50" class="logo logo-dark" />
@@ -171,7 +175,7 @@ export default {
             </BContainer>
         </nav>
         <div v-scroll-spy>
-            <section class="section hero-section image" :style="{ height: '600px', backgroundImage: `url(${agent})` }"
+            <section class="section hero-section image" :style="{ height: '600px', backgroundColor: '#D2D2E6' }"
                 id="home">
                 <div class="bg-overlay" style="background: none;"></div>
                 <div class="container text-center">
@@ -202,72 +206,63 @@ export default {
                             </div>
                         </BCol>
                     </BRow>
-                    <BRow class="align-items-center">
+                </BContainer>-->
+                <transition class="fly-in-top">
+                    <div v-if="showLoginForm" class="login-overlay">
+                        <BRow class="justify-content-center align-items-center min-vh-100">
+                            <BCol lg="12" md="12" sm="12">
+                                <BCard no-body class="overflow-hidden card-large">
+                                    <BCardBody class="p-5">
+                                        <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{
+                                            authError }}</BAlert>
+                                        <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{
+                                            authSucces }}</BAlert>
 
-                        <BCol lg="5" md="8" sm="10" class="ms-lg-auto">
-                            <BCard no-body class="overflow-hidden ">
-                                <BRow>
-
-                                    <BCol>
-                                        <BCardBody class="pt-0">
-                                            <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{
-                                                authError }}
-                                            </BAlert>
-                                            <div v-if="notification.message" :class="'alert ' + notification.type">
-                                                {{ notification.message }}
-                                            </div>
-                                            <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{
-                                                authSucces
-                                            }}
-                                            </BAlert>
-                                            <div v-if="notification.message" :class="'alert ' + notification.type">
-                                                {{ notification.message }}
-                                            </div>
-
-                                            <BForm class="p-5" @submit.prevent="tryToLogIn">
-                                                <BFormGroup class="mb-3" id="input-group-1" label="Email"
-                                                    label-for="input-1">
-                                                    <BFormInput id="input-1" v-model="email" class="w-100 mb-2"
-                                                        type="text" placeholder="Enter email" :class="{
-                                                            'is-invalid': submitted && v$.email.$error,
-                                                        }"></BFormInput>
-                                                    <div v-for="(item, index) in v$.email.$errors" :key="index"
-                                                        class="invalid-feedback">
-                                                        <span v-if="item.$message">{{ item.$message }}</span>
-                                                    </div>
-                                                </BFormGroup>
-
-                                                <BFormGroup class="mb-3" id="input-group-2" label="Password"
-                                                    label-for="input-2">
-                                                    <BFormInput id="input-2" v-model="password" type="password"
-                                                        placeholder="Enter password" :class="{
-                                                            'is-invalid': submitted && v$.password.$error,
-                                                        }"></BFormInput>
-                                                    <div v-if="submitted && v$.password.$error"
-                                                        class="invalid-feedback">
-                                                        <span v-if="v$.password.required.$message">{{
-                                                            v$.password.required.$message
-                                                        }}</span>
-                                                    </div>
-                                                </BFormGroup>
-
-                                                <div class="mt-3 d-grid">
-                                                    <BButton type="submit" variant="primary" class="btn-block">Log In
-                                                    </BButton>
+                                        <BForm @submit.prevent="tryToLogIn">
+                                            <BFormGroup class="mb-3" id="input-group-1" label="Email"
+                                                label-for="input-1">
+                                                <BFormInput id="input-1" v-model="email" class="w-100 mb-2" type="text"
+                                                    placeholder="Enter email"
+                                                    :class="{ 'is-invalid': submitted && v$.email.$error }">
+                                                </BFormInput>
+                                                <div v-for="(item, index) in v$.email.$errors" :key="index"
+                                                    class="invalid-feedback">
+                                                    <span v-if="item.$message">{{ item.$message }}</span>
                                                 </div>
-                                                <div class="mt-4 text-center">
-                                                    <router-link to="/forgot-password" class="text-muted">
-                                                        <i class="mdi mdi-lock me-1"></i> Forgot your password?
-                                                    </router-link>
+                                            </BFormGroup>
+
+                                            <BFormGroup class="mb-3" id="input-group-2" label="Password"
+                                                label-for="input-2">
+                                                <BFormInput id="input-2" v-model="password" type="password"
+                                                    placeholder="Enter password"
+                                                    :class="{ 'is-invalid': submitted && v$.password.$error }">
+                                                </BFormInput>
+                                                <div v-if="submitted && v$.password.$error" class="invalid-feedback">
+                                                    <span v-if="v$.password.required.$message">{{
+                                                        v$.password.required.$message }}</span>
                                                 </div>
-                                            </BForm>
-                                        </BCardBody>
-                                    </BCol>
-                                </BRow>
-                            </BCard>
-                        </BCol>
-                    </BRow>
-                </BContainer> -->
+                                            </BFormGroup>
+
+                                            <div class="mt-3 d-grid">
+                                                <BButton type="submit" variant="primary" class="btn-block">Log In
+                                                </BButton>
+                                            </div>
+                                            <div class="mt-4 text-center">
+                                                <router-link to="/forgot-password" class="text-muted">
+                                                    <i class="mdi mdi-lock me-1"></i> Forgot your password?
+                                                </router-link>
+                                            </div>
+                                        </BForm>
+                                    </BCardBody>
+                                </BCard>
+                            </BCol>
+                        </BRow>
+                    </div>
+                </transition>
+
+
+
+
             </section>
 
             <section class="section bg-white" id="roadmap">
@@ -431,5 +426,44 @@ export default {
     background-color: #f9f9f9;
 
 
+}
+
+@keyframes flyInFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.fly-in-top {
+    animation: flyInFromTop 0.5s ease-out;
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Ajouter une couleur de fond semi-transparente pour le survol */
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card-large {
+    margin: auto;
+  width: 150%; /* S'assurer que la carte prenne toute la largeur du conteneur */
+  max-width: 700px; /* Ajustez cette valeur pour augmenter la taille */
+  margin: 0 auto;
 }
 </style>

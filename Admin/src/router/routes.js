@@ -327,6 +327,18 @@ export default [
     component: () => import("../views/sample-pages/recoverpw-sample")
   },
   {
+    path: "/email",
+    name: "Email Verification",
+    meta: { title: "Email Verification", authRequired: true },
+    component: () => import("../views/sample-pages/email")
+  },
+  {
+    path: "/emailClient",
+    name: "Email Client Verification",
+    meta: { title: "Email Client Verification", authRequired: true },
+    component: () => import("../views/sample-pages/emailClient")
+  },
+  {
     path: "/auth/recoverpwd-2",
     name: "Recover pwd-2",
     meta: { title: "Recover Password 2", authRequired: true },

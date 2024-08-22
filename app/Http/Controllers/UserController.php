@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Mail\UserMail;
+use App\Mail\VerificationCodeMail;
 use App\Models\User;
 use \Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -312,5 +314,69 @@ class UserController extends Controller
         DB::table('password_resets')->where('email', $request->email)->delete();
         return response()->json(['message' => 'Mot de passe réinitialisé avec succès']);
     }
+    public function sendVerificationCode(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $email = $request->input('email');
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        // Générer un code de vérification aléatoire de 6 chiffres
+        $code = rand(100000, 999999);
+
+        // Enregistrer le code et l'expiration dans la base de données
+        DB::table('verification_codes')->updateOrInsert(
+            ['user_id' => $user->id],
+            [
+                'code' => $code,
+                'expire_at' => Carbon::now()->addHour(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]
+        );
+
+        // Envoyer l'email avec le code de vérification
+        Mail::to($email)->send(new VerificationCodeMail($code));
+
+        return response()->json(['message' => 'Code de vérification envoyé.']);
+    }
+
+    // Méthode pour vérifier le code de vérification
+    public function verifyCode(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required|numeric'
+        ]);
+
+        $email = $request->input('email');
+        $code = $request->input('code');
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        $verification = DB::table('verification_codes')
+            ->where('user_id', $user->id)
+            ->where('code', $code)
+            ->first();
+
+        if (!$verification) {
+            return response()->json(['message' => 'Code invalide'], 400);
+        }
+
+        if (Carbon::now()->greaterThan($verification->expire_at)) {
+            return response()->json(['message' => 'Code expiré'], 400);
+        }
+
+        return response()->json(['message' => 'Code vérifié avec succès']);
+    }
+
 
 }

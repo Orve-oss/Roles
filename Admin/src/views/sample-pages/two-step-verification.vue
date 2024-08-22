@@ -46,8 +46,8 @@ export default {
         <BCol lg="12">
           <div class="text-center mb-5 text-muted">
             <router-link to="/" class="d-block auth-logo">
-              <img src="@/assets/images/logo-dark.png" alt="" height="20" class="auth-logo-dark mx-auto" />
-              <img src="@/assets/images/logo-light.png" alt="" height="20" class="auth-logo-light mx-auto" />
+              <img src="@/assets/images/logo1.png" alt="" height="20" class="auth-logo-dark mx-auto" />
+              <img src="@/assets/images/logo1.png" alt="" height="20" class="auth-logo-light mx-auto" />
             </router-link>
             <p class="mt-3">Responsive Bootstrap 5 Admin Dashboard</p>
           </div>
@@ -66,9 +66,9 @@ export default {
                     </div>
                   </div>
                   <div class="p-2 mt-4">
-                    <h4>Verify your email</h4>
+                    <h4>Code de vérification</h4>
                     <p class="mb-5">
-                      Please enter the 6 digit code sent to
+                      Veuillez entrer le code de vérification envoyé à
                       <span class="fw-semibold">example@abc.com</span>
                     </p>
                     <BForm>
@@ -93,12 +93,6 @@ export default {
             <p>
               Didn't receive a code ?
               <Blink href="#" class="fw-medium text-primary"> Resend </Blink>
-            </p>
-            <p>
-              ©
-              {{ new Date().getFullYear() }}
-              Skote. Crafted with <i class="mdi mdi-heart text-danger"></i> by
-              Themesbrand
             </p>
           </div>
         </BCol>

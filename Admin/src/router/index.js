@@ -66,7 +66,7 @@ router.beforeEach((routeTo, routeFrom, next) => {
 
         if (authpage && !loggeduser) {
 
-            return next();
+            return next("/");
         }
         // else if (publicPages === "/accueil" && userRole !== "Client") {
         //     return next("/page/403");

@@ -147,6 +147,7 @@ export default {
         },
         removeTicket(ticketId) {
             this.tickets = this.tickets.filter(ticket => ticket.id !== ticketId);
+            console.log(ticketId);
         },
         viewTicket(ticketId) {
             axios.get(`http://127.0.0.1:8000/api/tickets/${ticketId}`)
