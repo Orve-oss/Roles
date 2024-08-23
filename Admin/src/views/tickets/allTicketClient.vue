@@ -17,6 +17,7 @@ export default {
             tickets: [],
             searchQuery: '',
             filteredTickets: [],
+            deletedTickets: [],
             clientId: null,
             showModal: false,
             showEditModal: false,
@@ -84,7 +85,7 @@ export default {
             axios.get(url)
                 .then(response => {
                     this.tickets = response.data;
-                    this.filteredTickets = [...this.tickets];
+                    this.filteredTickets = this.tickets.filter(ticket => !this.deletedTickets.includes(ticket.id));
                     this.filterTickets();
                 })
                 .catch(error => {
@@ -146,8 +147,35 @@ export default {
                 })
         },
         removeTicket(ticketId) {
-            this.tickets = this.tickets.filter(ticket => ticket.id !== ticketId);
-            console.log(ticketId);
+            // Afficher une boîte de dialogue de confirmation avant de supprimer
+            Swal.fire({
+                title: 'Êtes-vous sûr?',
+                text: "Cette action est irreversible!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, supprimer!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.deletedTickets.push(ticketId);
+                    // Utilisez un index pour identifier le ticket dans le tableau
+                    const index = this.tickets.findIndex(ticket => ticket.id === ticketId);
+                    if (index !== -1) {
+                        // Supprimez le ticket du tableau des tickets
+                        this.tickets.splice(index, 1);
+                        this.filteredTickets = this.filteredTickets.filter(ticket => ticket.id !== ticketId);
+                        console.log(`Ticket with ID ${ticketId} removed from the display.`);
+                        Swal.fire(
+                            'Supprimé!',
+                            'Le ticket a été supprimé.',
+                            'success'
+                        );
+                    } else {
+                        console.log(`Ticket with ID ${ticketId} not found.`);
+                    }
+                }
+            });
         },
         viewTicket(ticketId) {
             axios.get(`http://127.0.0.1:8000/api/tickets/${ticketId}`)
@@ -166,6 +194,9 @@ export default {
         },
         resetSelectedTicket() {
             this.selectedTicket = null; // Réinitialiser les données du ticket sélectionné lors de la fermeture du modal
+        },
+        any() {
+            Swal.fire('Information', 'Vous n\'avez pas la possibilité de modidier ou de supprimer ce ticket', 'info');
         },
         openFeedbackModal(ticket) {
             this.selectedTicket = ticket;
@@ -232,7 +263,7 @@ export default {
                                         <BTh>Index</BTh>
                                         <BTh>Sujet</BTh>
                                         <BTh>Statut</BTh>
-                                        <BTh>Priorite</BTh>
+                                        <!-- <BTh>Priorite</BTh> -->
                                         <BTh>Date</BTh>
                                         <BTh>Detail</BTh>
                                         <BTh>Action</BTh>
@@ -244,7 +275,7 @@ export default {
                                         <BTd> {{ ticket.sujet }} </BTd>
                                         <BTd> {{ ticket.status }} </BTd>
                                         <!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
-                                        <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd>
+                                        <!-- <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd> -->
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
                                         <BTd>
                                             <BButton variant="primary" class="btn-sm btn-rounded"
@@ -258,6 +289,11 @@ export default {
                                                 <template v-slot:button-content>
                                                     <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                                 </template>
+                                                <BDropdownItem
+                                                    v-if="['En cours', 'Résolu', 'Assigné'].includes(ticket.status)"
+                                                    @click="any">
+                                                    Aucun
+                                                </BDropdownItem>
 
                                                 <BDropdownItem
                                                     v-if="!['Assigné', 'En cours', 'En attente', 'Fermé'].includes(ticket.status)"
@@ -274,7 +310,7 @@ export default {
                                                 </BDropdownItem>
 
                                                 <BDropdownItem
-                                                    v-if="!['En attente', 'Assigné', 'En cours', 'Résolu'].includes(ticket.status)"
+                                                    v-if="!['Assigné', 'En cours', 'Résolu'].includes(ticket.status)"
                                                     @click="removeTicket(ticket.id)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
@@ -294,7 +330,7 @@ export default {
         </BRow>
     </Layout>
     <BModal v-model="showEditModal" title="Modifier le ticket" title-class="font-18" body-class="p-3" hide-footer
-        hide-header class="v-modal-custom">
+        hide-header class="v-modal-custom fly-in-top">
         <BForm @submit.prevent="updateTicket">
             <BRow>
                 <BCol cols="12">
@@ -333,7 +369,7 @@ export default {
                         </BFormTextarea>
                     </div>
                 </BCol>
-                <BCol cols="12">
+                <!-- <BCol cols="12">
                     <div class="mb-3">
                         <BFormGroup label="Priorite">
                             <BFormSelect v-model="editTicket.priorite.id" class="form-select">
@@ -343,7 +379,7 @@ export default {
                             </BFormSelect>
                         </BFormGroup>
                     </div>
-                </BCol>
+                </BCol> -->
 
             </BRow>
             <div class="text-end pt-2 mt-1">
@@ -353,7 +389,7 @@ export default {
         </BForm>
     </BModal>
     <BModal v-model="showTicketModal" title="Details du ticket" title-class="font-18" body-class="p-3" hide-footer
-        hide-header class="v-modal-custom" v-if="selectedTicket" id="view-ticket-modal" @hide="resetSelectedTicket">
+        class="v-modal-custom fly-in-top" v-if="selectedTicket" id="view-ticket-modal" @hide="resetSelectedTicket">
         <BForm>
             <BRow>
                 <BCol cols="12">
@@ -379,18 +415,18 @@ export default {
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="description">Description</label>
-                        <BFormTextarea id="productdesc" :value="selectedTicket.description" class="form-control"
+                        <BFormTextarea id="productdesc" v-model="selectedTicket.description" class="form-control"
                             placeholder="Product Description" disabled>
                         </BFormTextarea>
                     </div>
                 </BCol>
-                <BCol cols="12">
+                <!-- <BCol cols="12">
                     <div class="mb-3">
                         <label for="sujet">Priorite </label>
                         <input id="sujet" :value="selectedTicket.priorite.niveau" type="text" class="form-control"
                             disabled />
                     </div>
-                </BCol>
+                </BCol> -->
 
             </BRow>
 
@@ -414,3 +450,20 @@ export default {
     </BModal>
 
 </template>
+<style>
+@keyframes flyInFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.fly-in-top {
+    animation: flyInFromTop 0.5s ease-out;
+}
+</style>

@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 /**
  * Lock screen page -component
@@ -12,11 +13,17 @@ export default {
     },
     methods:{
         sendEmail(){
-            axios.post(`http://127.0.0.1:8000/api/sendVerificationClient`)
+            console.log(this.email);
+            const email = this.email;
+            axios.post(`http://127.0.0.1:8000/api/sendVerificationClient`, {email: email })
+
             .then(response =>{
+
+                Swal.fire('Code envoyé', 'Vous recevrez un code dans votre boîte mail', 'success');
                 console.log(response.data);
-                this.$router.push('/auth/two-step-verification');
+                this.$router.push({name: 'Verification', query: {email: response.data.email}});
             }).catch(error =>{
+                Swal.fire('Erreur', 'Erreur lors de l\'envoi du code', 'error');
                 console.log(error);
             })
         }

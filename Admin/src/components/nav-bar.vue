@@ -1,6 +1,6 @@
 <script>
 import axios from "axios";
-import simplebar from "simplebar-vue";
+// import simplebar from "simplebar-vue";
 import { avatar3, avatar4, avatar1 } from "@/assets/images/users/data"
 import { useAuthStore } from '@/state/pinia'
 import userService from "../../services/userService";
@@ -54,7 +54,7 @@ export default {
       displayName: '',
     };
   },
-  components: { simplebar },
+//   components: { simplebar },
 //   mounted() {
 //     if (process.env.VUE_APP_I18N_LOCALE) {
 //       this.flag = this.$i18n.locale || process.env.VUE_APP_I18N_LOCALE;
@@ -232,7 +232,7 @@ export default {
           </BForm>
         </BDropdown>
 
-        <BDropdown right menu-class="dropdown-menu-lg p-0 dropdown-menu-end" toggle-class="header-item noti-icon" variant="black">
+        <!-- <BDropdown right menu-class="dropdown-menu-lg p-0 dropdown-menu-end" toggle-class="header-item noti-icon" variant="black">
           <template v-slot:button-content>
             <i class="bx bx-bell bx-tada"></i>
             <span class="badge bg-danger rounded-pill">{{
@@ -346,7 +346,7 @@ export default {
               {{ $t("navbar.dropdown.notification.button") }}
             </BLink>
           </div>
-        </BDropdown>
+        </BDropdown> -->
 
         <BDropdown right variant="black" toggle-class="header-item" menu-class="dropdown-menu-end">
           <template v-slot:button-content>

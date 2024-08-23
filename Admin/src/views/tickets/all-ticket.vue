@@ -44,6 +44,7 @@ export default {
             },
             selectedTicket: null,
             showTicketModal: false,
+            blockedAgent: false,
         };
     },
     // created() {
@@ -218,6 +219,18 @@ export default {
         selectAgent(agentId) {
             this.userId = agentId;
             this.selectedAgent = agentId;
+            this.blockedAgent = this.agents.find((agent) => agent.id === agentId)?.account_locked_at
+                ? true
+                : false;
+
+            if (this.blockedAgent) {
+                // Display the Swal message if the account is blocked
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Compte bloqué',
+                    text: 'L\'agent sélectionné a un compte bloqué. Vous ne pouvez pas lui assigner un ticket.',
+                });
+            }
         },
         editticket(ticket) {
             this.editTicket = { ...ticket };
@@ -303,7 +316,7 @@ export default {
                                         <BTh>Sujet</BTh>
                                         <BTh>Statut</BTh>
                                         <!-- <BTh>Priorite</BTh> -->
-                                        <BTh>Date</BTh>
+                                        <BTh>Date de création</BTh>
                                         <BTh>Traité par</BTh>
                                         <BTh>Detail</BTh>
                                         <BTh>Action</BTh>
@@ -338,20 +351,20 @@ export default {
                                                 </BDropdownItem>
 
 
-                                                <BDropdownItem
+                                                <!-- <BDropdownItem
                                                     v-if="!['En cours', 'Résolu', 'Fermé', 'Assigné'].includes(ticket.status)"
                                                     @click="editticket(ticket)">
                                                     <i class="fas fa-pencil-alt text-success me-1"></i>
                                                     Edit
-                                                </BDropdownItem>
+                                                </BDropdownItem> -->
 
                                                 <BDropdownItem
-                                                    v-if="!['En cours', 'Résolu', 'Assigné'].includes(ticket.status)">
+                                                    v-if="[ 'Fermé'].includes(ticket.status)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>
                                                 <BDropdownItem @click="openAssignModal(ticket.id)"
-                                                    v-if="!['En cours', 'Résolu', 'Assigné'].includes(ticket.status)">
+                                                    v-if="!['En cours', 'Résolu', 'Assigné', 'Fermé'].includes(ticket.status)">
                                                     <i class="fas fa-user-alt text-primary me-1"></i>
                                                     Assigner à
                                                 </BDropdownItem>
@@ -368,7 +381,8 @@ export default {
             </BCol>
         </BRow>
     </Layout>
-    <BModal id="modal-scrollable" v-model="showModal" ref="modal-scrollable" title="Assigner un ticket à">
+    <BModal id="modal-scrollable" v-model="showModal" ref="modal-scrollable" hide-footer title="Assigner un ticket à"
+        scrollable>
         <BForm @submit.prevent="assignTicket">
             <table class="table agent-table" @click="selectAgent">
 
@@ -384,13 +398,23 @@ export default {
                                 <span class="agent-name">{{ agent.name }}</span>
                                 <span class="agent-email">{{ agent.email }}</span>
                             </div>
+                            <div class="mt-2">
+                                <!-- Statut du compte -->
+                                <span v-if="agent.account_locked_at" class="text-danger">
+                                    <i class="fas fa-circle"></i> Bloqué
+                                </span>
+                                <span v-else class="text-success">
+                                    <i class="fas fa-circle"></i> Actif
+                                </span>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
             <div class="mt-3">
                 <BFormGroup>
-                    <BButton variant="primary" type="submit" :disabled="!selectedAgent">Assigner</BButton>
+                    <BButton variant="primary" type="submit" :disabled="!selectedAgent || blockedAgent">Assigner
+                    </BButton>
                 </BFormGroup>
             </div>
         </BForm>
@@ -454,26 +478,28 @@ export default {
             </div>
         </BForm>
     </BModal>
-    <BModal v-model="showTicketModal" title="Details du ticket" title-class="font-18" body-class="p-3"
-        hide-header class="v-modal-custom fly-in-top" v-if="selectedTicket" id="view-ticket-modal" @hide="resetSelectedTicket">
-        <BForm >
+    <BModal v-model="showTicketModal" title="Details du ticket" title-class="font-18" body-class="p-3" hide-header
+        class="v-modal-custom fly-in-top" v-if="selectedTicket" id="view-ticket-modal" @hide="resetSelectedTicket">
+        <BForm>
             <BRow>
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="sujet">Service </label>
-                        <input id="sujet" :value="selectedTicket.service.nom_service" type="text" class="form-control" disabled/>
+                        <input id="sujet" :value="selectedTicket.service.nom_service" type="text" class="form-control"
+                            disabled />
                     </div>
                 </BCol>
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="sujet">Type de ticket </label>
-                        <input id="sujet" :value="selectedTicket.type.libelle" type="text" class="form-control" disabled/>
+                        <input id="sujet" :value="selectedTicket.type.libelle" type="text" class="form-control"
+                            disabled />
                     </div>
                 </BCol>
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="sujet">Sujet </label>
-                        <input id="sujet" :value="selectedTicket.sujet" type="text" class="form-control" disabled/>
+                        <input id="sujet" :value="selectedTicket.sujet" type="text" class="form-control" disabled />
                     </div>
                 </BCol>
                 <BCol cols="12">
@@ -487,7 +513,8 @@ export default {
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="sujet">Priorite </label>
-                        <input id="sujet" :value="selectedTicket.priorite.niveau" type="text" class="form-control" disabled>
+                        <input id="sujet" :value="selectedTicket.priorite.niveau" type="text" class="form-control"
+                            disabled>
                     </div>
                 </BCol>
 
@@ -539,18 +566,20 @@ export default {
 .selected-agent {
     background-color: #007bff;
 }
+
 @keyframes flyInFromTop {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .fly-in-top {
-  animation: flyInFromTop 0.5s ease-out;
+    animation: flyInFromTop 0.5s ease-out;
 }
 </style>

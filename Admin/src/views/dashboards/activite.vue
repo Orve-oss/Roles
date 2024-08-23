@@ -39,7 +39,7 @@ export default {
                     axios.get(`http://127.0.0.1:8000/api/tickets`),
                     axios.get(`http://127.0.0.1:8000/api/tickets/status/Assigné`),
                     axios.get(`http://127.0.0.1:8000/api/tickets/status/En cours`),
-                    axios.get(`http://127.0.0.1:8000/api/tickets/status/Résolu`),
+                    axios.get(`http://127.0.0.1:8000/api/tickets/status/Fermé`),
                 ]);
                 this.numAgents = agentResponse.data.length;
                 this.numClients = clientResponse.data.data.length;

@@ -286,7 +286,7 @@ class ClientController extends Controller
         // Envoyer l'email avec le code de vérification
         Mail::to($email)->send(new VerificationCodeMail($code));
 
-        return response()->json(['message' => 'Code de vérification envoyé.']);
+        return response()->json(['message' => 'Code de vérification envoyé.', 'email'=>$email]);
     }
 
     // Méthode pour vérifier le code de vérification
@@ -294,7 +294,7 @@ class ClientController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'code' => 'required|numeric'
+            'code' => 'required|numeric|digits:6'
         ]);
 
         $email = $request->input('email');
@@ -318,7 +318,13 @@ class ClientController extends Controller
         if (Carbon::now()->greaterThan($verification->expire_at)) {
             return response()->json(['message' => 'Code expiré'], 400);
         }
+        $token = Str::random(60);
+        DB::table('password_resets')->insert([
+            'email' => $client->email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
 
-        return response()->json(['message' => 'Code vérifié avec succès']);
+        return response()->json(['message' => 'Code vérifié avec succès', 'token' => $token]);
     }
 }

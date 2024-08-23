@@ -199,7 +199,17 @@ export default [
         token: route.params.token,
         email: route.query.email
     })
-    // props: (route) => ({ token: route.query.token})
+
+  },
+  {
+    path: "/verificationEmail",
+    name: "Verification",
+    meta: { title: "Verification", authRequired: true },
+    component: () => import("../views/sample-pages/two-step-verification"),
+    props: route => ({
+        email: route.query.email
+    })
+
   },
   {
     path: "/login",
@@ -339,10 +349,14 @@ export default [
     component: () => import("../views/sample-pages/emailClient")
   },
   {
-    path: "/auth/recoverpwd-2",
-    name: "Recover pwd-2",
-    meta: { title: "Recover Password 2", authRequired: true },
-    component: () => import("../views/sample-pages/recoverpwd-2")
+    path: "/reset-password",
+    name: "ResetPassword",
+    meta: { title: "Reset Password", authRequired: true },
+    component: () => import("../views/sample-pages/recoverpwd-2"),
+    props: route => ({
+        email: route.query.email,
+        token: route.query.token
+    })
   },
   {
     path: "/auth/confirm-mail",
@@ -368,12 +382,12 @@ export default [
     meta: { title: "Email Verification 2", authRequired: true },
     component: () => import("../views/sample-pages/email-verification-2")
   },
-  {
-    path: "/auth/two-step-verification",
-    name: "two-step-verification",
-    meta: { title: "Two Step Verification", authRequired: true },
-    component: () => import("../views/sample-pages/two-step-verification")
-  },
+//   {
+//     path: "/auth/two-step-verification",
+//     name: "two-step-verification",
+//     meta: { title: "Two Step Verification", authRequired: true },
+//     component: () => import("../views/sample-pages/two-step-verification")
+//   },
   {
     path: "/auth/two-step-verification-2",
     name: "two-step-verification-2",

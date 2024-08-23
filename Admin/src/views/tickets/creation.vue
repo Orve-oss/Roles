@@ -194,6 +194,7 @@ export default {
                             //  priorite: '',
                             client_id: null
                         };
+                        this.$router.push('/listTicketClient');
 
                         Swal.fire(
                             'Créé!',

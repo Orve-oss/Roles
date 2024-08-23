@@ -500,7 +500,7 @@ export default {
                 </BCard>
             </BCol>
         </BRow> -->
-        <BModal v-model="showWorkModal" v-if="ticket.status === 'En cours'&& ticket.status === 'Résolu'" hide-header :no-close-on-backdrop="true"
+        <BModal v-model="showWorkModal" v-if="['En cours', 'Résolu'].includes(ticket.status)" hide-header :no-close-on-backdrop="true"
             @ok="updateTicketStatus">
             <BAlert :model-value="true" variant="success" class="text-center mb-4">
                 Ajouter une description du travail en cours
