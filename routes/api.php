@@ -147,7 +147,9 @@ Route::get('/tickets/agent/{agentId}/status/{status}', [TicketController::class,
 Route::get('/tickets/client/{clientId}/status/{status}', [TicketController::class, 'getStatusByClient']);
 Route::post('/tickets/{ticket}/feedback', [TicketController::class, 'sendFeedback']);
 Route::post('/users/{id}/generate-reset', [UserController::class, 'generateResetLink']);
+Route::post('/clients/{id}/generate-reset', [ClientController::class, 'generateResetLink']);
 Route::post('/change', [UserController::class, 'changePassword']);
+Route::post('/changeClient', [ClientController::class, 'changePassword']);
 Route::post('/sendVerification', [UserController::class, 'sendVerificationCode']);
 Route::post('/verify', [UserController::class, 'verifyCode']);
 Route::post('/resetPasswordUser', [UserController::class, 'resetPasswordUser']);

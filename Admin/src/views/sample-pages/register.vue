@@ -43,7 +43,7 @@ export default {
                 return;
             } else {
                 axios
-                    .post(`http://127.0.0.1:8000/api/change`, {
+                    .post(`http://127.0.0.1:8000/api/changeClient`, {
                         email: this.localEmail,
                         password: this.password,
                         password_confirmation: this.password_confirmation,
@@ -52,13 +52,7 @@ export default {
                     .then((res) => {
                         if (res.data.message) {
                             alert('Compte activé avec succès!');
-                            const userRole = localStorage.getItem('userRole');
-                            if (userRole === 'Agent') {
-                                this.$router.push('/accueil/agent');
-
-                            } else {
-                                this.$router.push('/');
-                            }
+                            this.$router.push('/accueil');
                         } else {
                             this.errorMessage = 'Erreur';
                         }
@@ -84,9 +78,7 @@ export default {
                                         <p>Veuillez changer de mot de passe.</p>
                                     </div>
                                 </BCol>
-                                <BCol cols="5" class="align-self-end">
-                                    <img src="@/assets/images/logo1.png" alt class="img-fluid" />
-                                </BCol>
+
                             </BRow>
                         </div>
                         <BCardBody class="pt-0">

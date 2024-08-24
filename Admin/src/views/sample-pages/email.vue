@@ -34,11 +34,11 @@ export default {
 
 <template>
   <div>
-    <div class="home-btn d-none d-sm-block">
+    <!-- <div class="home-btn d-none d-sm-block">
       <router-link to="/accueil" class="text-dark">
         <i class="mdi mdi-home-variant h2"></i>
       </router-link>
-    </div>
+    </div> -->
     <div class="account-pages my-5 pt-5">
       <BContainer>
         <BRow class="justify-content-center">

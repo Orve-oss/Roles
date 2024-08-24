@@ -221,6 +221,52 @@ export default {
 
             });
 
+        },
+        generateResetLink(id) {
+            Swal.fire({
+                title: 'Etes vous sûr de vouloir générer un lien de réinitialisation?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'oui!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post(`http://127.0.0.1:8000/api/clients/${id}/generate-reset`)
+                        .then((response) => {
+                            if (response) {
+
+                                Swal.fire(
+                                    'Succes!',
+                                    'lien généré',
+                                    'success'
+                                );
+                            } else {
+                                Swal.fire(
+                                    'Erreur!',
+                                    'erreur de génération',
+                                    'error'
+
+                                );
+                            }
+
+                        }).catch((error) => {
+                            if (error.response) {
+                                Swal.fire(
+                                    'Erreur!',
+                                    'Erreur',
+                                    'error'
+
+                                );
+
+                            }
+
+                        })
+
+                }
+
+            });
+
         }
 
 
@@ -280,6 +326,10 @@ export default {
                                             <div class="mt-2 text-center">
                                                 <span v-if="clist.account_locked_at" class="text-danger">
                                                     <i class="fas fa-circle"></i>Bloqué
+                                                    <BButton variant="link" size="sm"
+                                                        @click="generateResetLink(clist.id)">
+                                                        <i class="fas fa-link"></i>
+                                                    </BButton>
                                                 </span>
                                                 <span v-else class="text-success">
                                                     <i class="fas fa-circle"></i> Actif

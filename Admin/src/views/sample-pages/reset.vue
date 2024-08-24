@@ -79,7 +79,13 @@ export default {
                     .then((res) => {
                         if (res.data.message) {
                             alert('Compte activé avec succès!');
-                            this.$router.push('/');
+                            const userRole = localStorage.getItem('userRole');
+                            if (userRole === 'Agent') {
+                                this.$router.push('/accueil/agent');
+
+                            } else {
+                                this.$router.push('/');
+                            }
                         } else {
                             this.errorMessage = 'Erreur';
                         }

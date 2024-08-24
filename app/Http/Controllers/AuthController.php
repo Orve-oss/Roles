@@ -27,40 +27,13 @@ class AuthController extends Controller
                 }
             }
 
-
-            // $token = $user->createToken('auth_token', ['*'])->plainTextToken;
-
-            // return response()->json([
-            //     'message' => 'Connexion réussie',
-            //     'access_token' => $token, 'token_type' => 'Bearer',
-            //     'status' => 'success',
-            //     'user' => [
-            //         'id' => $user->id,
-            //         'name' => $user->name,
-            //         'email' => $user->email,
-            //         'role' => $user->roles->pluck('name')
-            //     ]
-            // ]);
             else if ($client = Client::where('email', $creds['email'])->first()) {
                 if ($client && Hash::check($creds['password'], $client->password)) {
                     Auth::login($client);
                     if ($client) {
-                        return $this->handleLoginAttempt($client, $creds, 'Client');
+                        return $this->handleLoginAttemptClient($client, $creds, 'Client');
                     }
 
-
-                    // $token = $client->createToken('auth_token', ['*'])->plainTextToken;
-                    // return response()->json([
-                    //     'message' => 'Client connecté',
-                    //     'access_token' => $token, 'token_type' => 'Bearer',
-                    //     'status' => 'success',
-                    //     'user'=>[
-                    //         'id' => $client->id,
-                    //         'name' => $client->nom_clt,
-                    //         'email'=>$client->email,
-                    //         'role'=>$client->roles->pluck('name')
-                    //     ]
-                    // ]);
                 }
             } else {
                 return $this->handleFailedAttempt($creds);
@@ -103,6 +76,35 @@ class AuthController extends Controller
             ]
         ]);
     }
+    private function handleLoginAttemptClient($client, $creds, $type = 'User')
+    {
+        if ($client->account_locked_at) {
+            return response()->json([
+                'message' => 'Votre compte est bloqué. Veuillez contacter l\'administrateur.'
+            ], 403);
+        }
+
+        // Réinitialiser les tentatives de connexion après une connexion réussie
+        $client->login_attempts = 0;
+        $client->last_login_attempt = null;
+        $client->account_locked_at = null;
+        $client->save();
+
+        $token = $client->createToken('auth_token', ['*'])->plainTextToken;
+
+        return response()->json([
+            'message' => 'Connexion réussie',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'status' => 'success',
+            'user' => [
+                'id' => $client->id,
+                'name' => $type === 'Client' ? $client->name : $client->nom_clt,
+                'email' => $client->email,
+                'role' => $client->roles->pluck('name')
+            ]
+        ]);
+    }
     private function handleFailedAttempt($creds)
     {
         $user = User::where('email', $creds['email'])->first() ?? Client::where('email', $creds['email'])->first();
@@ -117,7 +119,7 @@ class AuthController extends Controller
 
                 // Envoyer un email à l'administrateur
                 $adminEmail = 'sikamagnou@gmail.com';
-                Mail::raw("Le compte de l'utilisateur {$user->email} a été bloqué après 5 tentatives de connexion échouées.", function ($message) use ($adminEmail) {
+                Mail::raw("Le compte de l'utilisateur {$user->email} a été bloqué après 3 tentatives de connexion échouées.", function ($message) use ($adminEmail) {
                     $message->to($adminEmail)
                         ->subject('Compte utilisateur bloqué');
                 });

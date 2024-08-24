@@ -202,6 +202,17 @@ export default [
 
   },
   {
+    path: "/changePassword/:token",
+    name: "ChangePassword Client",
+    meta: { title: "ChangePassword Client", authRequired: true },
+    component: () => import("../views/sample-pages/register"),
+    props: route => ({
+        token: route.params.token,
+        email: route.query.email
+    })
+
+  },
+  {
     path: "/verificationEmail",
     name: "Verification",
     meta: { title: "Verification", authRequired: true },

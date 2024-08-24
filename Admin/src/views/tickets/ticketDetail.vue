@@ -41,13 +41,18 @@ export default {
             showWorkModal: false,
             showbutton: false,
             ticketId: null,
-            reportGenerate: false
+            reportGenerate: false,
+            isStatusDisabled: false,
 
         };
+    },
+    created(){
+        this.disableStatus();
     },
 
     mounted() {
         this.fetchTicket();
+        this.disableStatus();
         const id = this.$route.params.id;
         this.comment.ticket_id = id;
         console.log(this.comment.ticket_id);
@@ -73,6 +78,13 @@ export default {
         showWorkDescription() {
             this.showWorkModal = true;
             this.showNoteModal = true;
+        },
+        disableStatus(){
+            if (this.ticket.status === 'Fermé') {
+                this.isStatusDisabled = true;
+                console.log(this.isStatusDisabled);
+
+            }
         },
 
         fetchTicket() {
@@ -134,8 +146,8 @@ export default {
                         .then(() => {
 
                             this.generateRapport();
-                            this.reportGenerate = true;
-                            console.log(this.reportGenerate);
+                            this.isStatusDisabled = true;
+                            console.log(this.isStatusDisabled);
                             Swal.fire('Succes!', 'Un mail est envoyé au client avec son rapport de résolution', 'success');
                             this.$router.push({ name: 'opentickets' });
 
@@ -383,7 +395,7 @@ export default {
                                             <BFormInput v-model="ticket.status" disabled />
                                         </BFormGroup> -->
                                         <BFormGroup label="Statut">
-                                            <BFormSelect v-model="ticket.status">
+                                            <BFormSelect v-model="ticket.status" :disabled="isStatusDisabled">
                                                 <BFormSelectOption value="En cours">En cours</BFormSelectOption>
                                                 <BFormSelectOption value="Résolu">Résolu</BFormSelectOption>
                                                 <BFormSelectOption value="Fermé"> Fermé</BFormSelectOption>
@@ -510,7 +522,7 @@ export default {
         </BModal>
         <BModal v-model="showNoteModal" v-else hide-header :no-close-on-backdrop="true" @ok="updateTicketResolved">
             <BAlert :model-value="true" variant="success" class="text-center mb-4">
-                Ajouter une Note de travail en cours
+                Ajouter une note de fermeture
             </BAlert>
             <BFormTextarea v-model="workDescription" placeholder="Entrez la note de travail" rows="5">
             </BFormTextarea>

@@ -327,4 +327,52 @@ class ClientController extends Controller
 
         return response()->json(['message' => 'Code vérifié avec succès', 'token' => $token]);
     }
+    public function generateResetLink($id){
+        $client = Client::find($id);
+        if (!$client) {
+            return response()->json(['message'=> 'Utilisateur non trouvé'], 404);
+        }
+        $token = Str::random(60);
+        DB::table('password_resets')->insert([
+            'email' => $client->email,
+            'token' => Hash::make($token),
+            'created_at' => now(),
+        ]);
+        $link = 'http://127.0.0.1:8080/changePassword/'. $token. '?email=' .urlencode($client->email);
+        Mail::send('emails.reset', ['link' => $link], function ($message) use ($client) {
+
+            $message->to($client->email);
+
+            $message->subject('Réinitialisation du mot de passe');
+
+        });
+        return response()->json(['message' => 'Lien de réinitialisation']);
+    }
+    public function changePassword(Request $request){
+        $validator = Validator::make($request->all(), [
+            'token' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|confirmed',
+        ]);
+        if ($validator->fails()) {
+           return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $passwordReset = DB::table('password_resets')
+        ->where('email', $request->email)
+        ->first();
+        if (!$passwordReset) {
+            return response()->json(['message' => 'Token ou email invalide.'], 404);
+        }
+        $client = Client::where('email', $request->email)->first();
+        if (!$client) {
+            return response()->json(['message' => 'Utilisateur non trouvé.'], 404);
+        }
+        $client->password = Hash::make($request->password);
+        $client->login_attempts = 0;
+        $client->last_login_attempt = null;
+        $client->account_locked_at = null;
+        $client->save();
+        DB::table('password_resets')->where('email', $request->email)->delete();
+        return response()->json(['message' => 'Mot de passe réinitialisé avec succès']);
+    }
 }

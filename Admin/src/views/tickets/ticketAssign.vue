@@ -1,5 +1,6 @@
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import Layout from "../../layouts/main";//besoin
 import PageHeader from "@/components/page-header";
@@ -51,6 +52,9 @@ export default {
                     console.error('Error fetching tickets:', error);
                 });
 
+        },
+        any() {
+            Swal.fire('Information', 'Vous n\'avez pas la possibilité de modidier ou de supprimer ce ticket', 'info');
         },
 
     }
@@ -125,7 +129,12 @@ export default {
                                                 <template v-slot:button-content>
                                                     <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                                 </template>
-                                                <BDropdownItem>
+                                                <BDropdownItem
+                                                    v-if="['En cours', 'Résolu', 'Assigné', 'En attente'].includes(ticket.status)"
+                                                    @click="any">
+                                                    Aucun
+                                                </BDropdownItem>
+                                                <BDropdownItem v-if="['Fermé'].includes(ticket.status)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>
