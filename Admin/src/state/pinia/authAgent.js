@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-export const useAuthStore = defineStore("auth", {
+export const useAuthStore = defineStore("authAgent", {
     state: () => ({
         currentUser: null,
         loggedIn: false,
@@ -36,7 +36,7 @@ export const useAuthStore = defineStore("auth", {
         setUser(user) {
             this.currentUser = user;
             this.loggedIn = true;
-            this.saveState("auth.currentUser", user);
+            this.saveState("authAgent.currentUser", user);
         },
         saveState(key, state) {
             window.sessionStorage.setItem(key, JSON.stringify(state));
@@ -52,13 +52,13 @@ export const useAuthStore = defineStore("auth", {
                 const role = this.currentUser.role[0]; // Assurez-vous d'accéder directement à la propriété
                 switch (role) {
                     case 'Agent':
-                        return 'opentickets';
-                    
+                        return 'AccueilAgent';
+
                     default:
-                        return 'default';
+                        return 'page 403';
                 }
             }
-            return 'default'; // Par défaut, redirigez vers 'default'
+            return 'page 403'; // Par défaut, redirigez vers 'default'
         }
     }
 });

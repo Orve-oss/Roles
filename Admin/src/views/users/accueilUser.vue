@@ -95,6 +95,12 @@ export default {
                     const authStore = useAuthStore();
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
                     const userRole = localStorage.getItem('userRole');
+                    if (userRole !== 'Admin') {
+                        // Si l'utilisateur n'est pas un agent, déconnectez-le et redirigez-le vers une page 403
+                        authStore.logOut();
+                        this.$router.push({ name: 'page403' });
+                        return;
+                    }
                     console.log('User role from local storage:', userRole);
 
 
@@ -162,11 +168,13 @@ export default {
                         <li class="nav-item">
                             <BLink class="nav-link" v-scroll-to="'#home'" href="#home">Accueil</BLink>
                         </li>
+                        <li class="nav-item">
+                            <BLink class="nav-link" v-scroll-to="'#home'" href="#exemple">Exemples</BLink>
+                        </li>
+                        <li class="nav-item">
+                            <BLink class="nav-link" v-scroll-to="'#home'" href="#contact">Contact</BLink>
+                        </li>
                     </ul>
-
-                    <!-- <div class="ms-lg-2">
-            <BLink href="javascript: void(0);" class="btn btn-outline-success w-xs">Sign in</BLink>
-          </div> -->
                 </div>
             </BContainer>
         </nav>
@@ -230,7 +238,7 @@ export default {
                                                 </BFormGroup>
 
                                                 <div class="mt-3 d-grid">
-                                                    <BButton type="submit" variant="primary" class="btn-block">Log In
+                                                    <BButton type="submit" variant="success" class="btn-block">Log In
                                                     </BButton>
                                                 </div>
                                                 <div class="mt-4 text-center">
@@ -248,7 +256,7 @@ export default {
                 </BContainer>
             </section>
 
-            <section class="section bg-white" id="roadmap">
+            <section class="section bg-white" id="exemple">
                 <BContainer>
                     <BRow>
                         <BCol lg="12">
@@ -332,7 +340,7 @@ export default {
                 </BContainer>
             </section>
 
-            <footer class="bg-dark text-center">
+            <footer class="bg-dark text-center" id="contact">
                 <BRow>
                     <BCol lg="6">
                         <div class="mb-4">

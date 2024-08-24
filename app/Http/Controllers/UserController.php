@@ -342,7 +342,7 @@ class UserController extends Controller
         // Envoyer l'email avec le code de vérification
         Mail::to($email)->send(new VerificationCodeMail($code));
 
-        return response()->json(['message' => 'Code de vérification envoyé.']);
+        return response()->json(['message' => 'Code de vérification envoyé.', 'email'=>$email]);
     }
 
     // Méthode pour vérifier le code de vérification
@@ -350,7 +350,7 @@ class UserController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'code' => 'required|numeric'
+            'code' => 'required|numeric|digits:6'
         ]);
 
         $email = $request->input('email');
@@ -374,9 +374,59 @@ class UserController extends Controller
         if (Carbon::now()->greaterThan($verification->expire_at)) {
             return response()->json(['message' => 'Code expiré'], 400);
         }
+        $token = Str::random(60);
+        DB::table('password_resets')->insert([
+            'email' => $user->email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
 
-        return response()->json(['message' => 'Code vérifié avec succès']);
+        return response()->json(['message' => 'Code vérifié avec succès', 'token' => $token]);
     }
+    public function resetPasswordUser(Request $request)
+{
+    // Valider les entrées
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'token' => 'required|string',
+        'password' => 'required|string|min:8|confirmed', // 'confirmed' s'attend à un champ 'password_confirmation'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    // Récupérer les données de la requête
+    $email = $request->input('email');
+    $token = $request->input('token');
+    $password = $request->input('password');
+
+    // Vérifier si le token de réinitialisation est valide
+    $passwordReset = DB::table('password_resets')->where([
+        ['email', $email],
+        ['token', $token],
+    ])->first();
+
+    if (!$passwordReset) {
+        return response()->json(['message' => 'Le lien de réinitialisation est invalide ou expiré.'], 400);
+    }
+
+    // Trouver le client par email
+    $user = User::where('email', $email)->first();
+
+    if (!$user) {
+        return response()->json(['message' => 'Utilisateur non trouvé.'], 404);
+    }
+
+    // Mettre à jour le mot de passe du client
+    $user->password = Hash::make($password);
+    $user->save();
+
+    // Supprimer l'enregistrement de réinitialisation pour éviter l'usage multiple
+    DB::table('password_resets')->where('email', $email)->delete();
+
+    return response()->json(['message' => 'Votre mot de passe a été réinitialisé avec succès.'], 200);
+}
 
 
 }

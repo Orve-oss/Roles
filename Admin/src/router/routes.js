@@ -212,6 +212,16 @@ export default [
 
   },
   {
+    path: "/verification",
+    name: "Verification Email",
+    meta: { title: "Verification Email", authRequired: true },
+    component: () => import("../views/sample-pages/two-verification"),
+    props: route => ({
+        email: route.query.email
+    })
+
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("../views/account/login"),
@@ -353,6 +363,16 @@ export default [
     name: "ResetPassword",
     meta: { title: "Reset Password", authRequired: true },
     component: () => import("../views/sample-pages/recoverpwd-2"),
+    props: route => ({
+        email: route.query.email,
+        token: route.query.token
+    })
+  },
+  {
+    path: "/reset-password-user",
+    name: "ResetPassword User",
+    meta: { title: "Reset Password User", authRequired: true },
+    component: () => import("../views/sample-pages/recoverpwd-1"),
     props: route => ({
         email: route.query.email,
         token: route.query.token

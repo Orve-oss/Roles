@@ -149,5 +149,7 @@ Route::post('/tickets/{ticket}/feedback', [TicketController::class, 'sendFeedbac
 Route::post('/users/{id}/generate-reset', [UserController::class, 'generateResetLink']);
 Route::post('/change', [UserController::class, 'changePassword']);
 Route::post('/sendVerification', [UserController::class, 'sendVerificationCode']);
+Route::post('/verify', [UserController::class, 'verifyCode']);
+Route::post('/resetPasswordUser', [UserController::class, 'resetPasswordUser']);
 Route::post('/sendVerificationClient', [ClientController::class, 'sendVerificationCode']);
 Route::post('/verifyCode', [ClientController::class, 'verifyCode']);
