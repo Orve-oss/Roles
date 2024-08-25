@@ -189,7 +189,7 @@ export default {
                     <h1 class="display-4 fw-bold" style="font-family: 'Times New Roman', Times, serif">Bienvenue dans
                         votre espace</h1>
                     <p class="lead">Trouvez des articles et des discussions pour répondre à vos questions</p>
-                    <form class="search-bar mx-auto" @submit.prevent="onSearch" style="max-width: 500px; ">
+                    <!-- <form class="search-bar mx-auto" @submit.prevent="onSearch" style="max-width: 500px; ">
                         <div class="input-group position-relative">
                             <input type="text" class="form-control" placeholder="Rechercher" v-model="searchQuery"
                                 style="padding-right: 40px; height: 40px; border: 1px solid gray; border-radius: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
@@ -198,7 +198,7 @@ export default {
                                 <i class="mdi mdi-magnify"></i>
                             </button>
                         </div>
-                    </form>
+                    </form> -->
 
                 </div>
                 <!-- <BContainer>

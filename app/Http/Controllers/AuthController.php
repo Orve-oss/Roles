@@ -118,7 +118,7 @@ class AuthController extends Controller
                 $user->account_locked_at = now();
 
                 // Envoyer un email à l'administrateur
-                $adminEmail = 'sikamagnou@gmail.com';
+                $adminEmail = 'wequipuinternational@gmail.com';
                 Mail::raw("Le compte de l'utilisateur {$user->email} a été bloqué après 3 tentatives de connexion échouées.", function ($message) use ($adminEmail) {
                     $message->to($adminEmail)
                         ->subject('Compte utilisateur bloqué');

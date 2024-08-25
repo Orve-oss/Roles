@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Ticket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,13 +13,14 @@ use Illuminate\Queue\SerializesModels;
 class AllMail extends Mailable
 {
     use Queueable, SerializesModels;
+    public $ticket;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Ticket $ticket)
     {
-        //
+        $this->ticket = $ticket;
     }
 
     /**
@@ -27,7 +29,7 @@ class AllMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'All Mail',
+            subject: 'Création de ticket',
         );
     }
 
@@ -37,7 +39,11 @@ class AllMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.all',
+            with:[
+                'sujet' => $this->ticket->sujet,
+                'description'=> $this->ticket->description,
+            ]
         );
     }
 

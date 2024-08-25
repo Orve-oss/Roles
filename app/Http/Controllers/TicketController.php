@@ -83,6 +83,12 @@ class TicketController extends Controller
 
 
         $ticket = Ticket::create($ticketData);
+        $clientEmail = $ticket->client->email;
+        $emails = ['wequipuinternational@gmail.com', $clientEmail];
+
+        foreach ($emails as $email) {
+            Mail::to($email)->send(new AllMail($ticket));
+        }
         // $this->notifyUser($ticket);
 
         return response()->json([
@@ -91,15 +97,15 @@ class TicketController extends Controller
             'ticket' => $ticket
         ]);
     }
-    private function notifyUser($ticket)
-    {
-        $users = User::where('role', 'Agent')
-            ->orWhere('role', 'Admin')
-            ->get();
-        foreach ($users as $key => $user) {
-            Mail::to($user->email)->send(new AllMail());
-        }
-    }
+    // private function notifyUser($ticket)
+    // {
+    //     $users = User::where('role', 'Agent')
+    //         ->orWhere('role', 'Admin')
+    //         ->get();
+    //     foreach ($users as $key => $user) {
+    //         Mail::to($user->email)->send(new AllMail());
+    //     }
+    // }
     public function getUnassigned()
     {
         $tickets = Ticket::whereNull('user_id')

@@ -107,13 +107,13 @@ export const menuItems = [
                 parentId: 43,
                 roles: ['Client']
             },
-            {
-                id: 49,
-                label: "Historique",
-                link: "/historiqueticket",
-                parentId: 43,
-                roles: ['Client']
-            },
+            // {
+            //     id: 49,
+            //     label: "Historique",
+            //     link: "/historiqueticket",
+            //     parentId: 43,
+            //     roles: ['Client']
+            // },
             {
                 id: 50,
                 label: "Liste des rapports",

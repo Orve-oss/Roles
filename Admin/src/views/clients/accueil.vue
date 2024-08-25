@@ -104,7 +104,7 @@ export default {
             }
         },
         gotoclients() {
-            this.$router.push('/listTicketClient');
+            this.$router.push('/activite/client');
         },
         windowScroll() {
             const navbar = document.getElementById("navbar");
@@ -163,7 +163,7 @@ export default {
                     <div class="col-lg-12">
                         <h1 class="display-4">Comment pouvons nous vous aider?</h1>
                         <p>
-                            <a class="btn btn-secondary btn-lg me-1" role="button">Plus d'infos</a>
+                            <a href="www.wequipu.com" class="btn btn-secondary btn-lg me-1" role="button">Plus d'infos</a>
                             <a class="btn btn-primary btn-lg" @click="gotoclients" role="button">Espace Client</a>
                         </p>
                     </div>
@@ -315,7 +315,7 @@ export default {
         <footer class="footer-expand-lg bg-dark text-center py-4" id="footer">
             <div class="container">
                 <p class="text-white">Pour plus d'informations, contactez le mail suivant <a
-                        href="mailto:info@example.com">info@example.com</a></p>
+                        href="mailto:info@wequipuinternational.com">info@wequipuinternational.com</a></p>
 
             </div>
         </footer>
