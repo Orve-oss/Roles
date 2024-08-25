@@ -46,13 +46,13 @@ export default {
 
         };
     },
-    created(){
+    created() {
         this.disableStatus();
     },
 
     mounted() {
         this.fetchTicket();
-        this.disableStatus();
+
         const id = this.$route.params.id;
         this.comment.ticket_id = id;
         console.log(this.comment.ticket_id);
@@ -79,7 +79,7 @@ export default {
             this.showWorkModal = true;
             this.showNoteModal = true;
         },
-        disableStatus(){
+        disableStatus() {
             if (this.ticket.status === 'Fermé') {
                 this.isStatusDisabled = true;
                 console.log(this.isStatusDisabled);
@@ -98,6 +98,7 @@ export default {
                         console.log('Données du ticket:', this.ticket); // Affiche les données du ticket après l'assignation
                     }
                     console.log(this.ticket)
+                    this.disableStatus();
                 })
                 .catch((err) => {
                     return err;
@@ -267,6 +268,9 @@ export default {
                 }
             })
         },
+        gotoagent() {
+            this.$router.push('/agent/tickets');
+        },
         generateRapport() {
             axios.post(`http://127.0.0.1:8000/api/ticket/${this.ticketId}/rapport`)
                 .then(response => {
@@ -349,6 +353,9 @@ export default {
 
 
     },
+    closeTicket(){
+        Swal.fire('Information', 'Ce ticket est dejà fermé', 'info');
+    }
 
 };
 
@@ -400,6 +407,10 @@ export default {
                                                 <BFormSelectOption value="Résolu">Résolu</BFormSelectOption>
                                                 <BFormSelectOption value="Fermé"> Fermé</BFormSelectOption>
                                             </BFormSelect>
+                                            <BButton variant="warning"  @click="closeTicket" size="sm" v-if="isStatusDisabled"
+                                                class="text-white me-1" style="height: 32px; width: 60px;">
+                                                Clos
+                                            </BButton>
                                         </BFormGroup>
                                     </div>
                                     <div class="mb-3">
@@ -428,10 +439,10 @@ export default {
                             </BRow>
 
                             <div class="mt-2">
-                                <BButton variant="primary" type="submit" class="me-1">
+                                <BButton variant="primary" type="submit" class="me-1" v-if="!isStatusDisabled">
                                     Save Changes
                                 </BButton>
-                                <BButton variant="danger"  class="me-1">Fermer
+                                <BButton variant="danger" @click="gotoagent" class="me-1">Retour
                                 </BButton>
                                 <!-- <BButton variant="success" class="me-1" v-if="showbutton" @click="generateRapport">
                                     Rapport
@@ -512,8 +523,8 @@ export default {
                 </BCard>
             </BCol>
         </BRow> -->
-        <BModal v-model="showWorkModal" v-if="['En cours', 'Résolu'].includes(ticket.status)" hide-header :no-close-on-backdrop="true"
-            @ok="updateTicketStatus">
+        <BModal v-model="showWorkModal" v-if="['En cours', 'Résolu'].includes(ticket.status)" hide-header
+            :no-close-on-backdrop="true" @ok="updateTicketStatus">
             <BAlert :model-value="true" variant="success" class="text-center mb-4">
                 Ajouter une description du travail en cours
             </BAlert>

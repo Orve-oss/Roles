@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\AllMail;
 use App\Mail\FeedbackMail;
 use App\Mail\ResolutionMail;
+use App\Mail\TicketAssignMail;
 use App\Mail\TicketMailDescription;
 use App\Mail\TicketReassign;
 use App\Mail\TicketReportMail;
@@ -142,7 +143,7 @@ class TicketController extends Controller
         $perPage = $request->get('perPage', 5);
 
         // Récupère les tickets par statut avec pagination
-        $tickets = Ticket::where('status', $status)->with(['type', 'service', 'priorite'])->orderBy('created_at', 'desc')->paginate($perPage);
+        $tickets = Ticket::where('status', $status)->with(['type', 'service', 'priorite', 'user'])->orderBy('created_at', 'desc')->paginate($perPage);
 
         // Retourne la réponse en JSON avec les données paginées
         return response()->json($tickets);
@@ -198,9 +199,9 @@ class TicketController extends Controller
                 'totalAssigned' => $totalAssigned,
                 'chartSeries' => [
                     $totalAssigned > 0 ? 100 : 0,
-                    $totalAssigned > 0 ? ($pending / $totalAssigned) * 100 : 0,
-                    $totalAssigned > 0 ? ($progress / $totalAssigned) * 100 : 0,
-                    $totalAssigned > 0 ? ($resolved / $totalAssigned) * 100 : 0,
+                    $totalAssigned > 0 ? intval(($pending / $totalAssigned) * 100) : 0,
+                    $totalAssigned > 0 ? intval(($progress / $totalAssigned) * 100) : 0,
+                    $totalAssigned > 0 ? intval(($resolved / $totalAssigned) * 100) : 0,
 
                 ]
             ];
@@ -298,6 +299,8 @@ class TicketController extends Controller
         $ticket->assigned_by = $request->assigned_by;
         $ticket->status = 'Assigné';
         $ticket->save();
+        $agentEmail = $ticket->user->email;
+        Mail::to($agentEmail)->send(new TicketAssignMail($ticket));
         return response()->json(['message' => 'Ticket assigné aves succès']);
     }
 

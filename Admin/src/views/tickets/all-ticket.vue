@@ -289,19 +289,19 @@ export default {
                                         Tout
                                     </BButton>
                                     <BButton @click="fetchTickets('En attente')" class="btn-rounded mb-2 me-2"
-                                        variant="dark">
+                                        variant="secondary">
 
                                         En attente
                                     </BButton>
-                                    <BButton @click="fetchTickets('En cours')" variant="primary"
+                                    <BButton @click="fetchTickets('En cours')" variant="secondary"
                                         class="btn-rounded mb-2 me-2">
                                         En cours
                                     </BButton>
-                                    <BButton @click="fetchTickets('Résolu')" variant="success"
+                                    <BButton @click="fetchTickets('Résolu')" variant="secondary"
                                         class="btn-rounded mb-2 me-2">
                                         Résolu
                                     </BButton>
-                                    <BButton @click="fetchTickets('Fermé')" variant="danger"
+                                    <BButton @click="fetchTickets('Fermé')" variant="secondary"
                                         class="btn-rounded mb-2 me-2">
                                         Fermé
                                     </BButton>
