@@ -15,9 +15,7 @@ export const useAuthStore = defineStore("authClient", {
         async logIn({ email, password, role }) {
             try {
                 const response = await axios.post("http://127.0.0.1:8000/api/login", { email, password, role });
-                if (role !== 'Client') {
-                    throw new Error('Vous n\'êtes pas autorisé à vous connecter ici');
-                }
+                
                 if (response.data.status === "success") {
                     this.authSucces = response.data.message;
                     this.isAuthSucces = true;

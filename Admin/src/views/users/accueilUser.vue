@@ -2,7 +2,7 @@
 import { timelineData } from "./data"
 import logo1 from "@/assets/images/logo1.png"
 import support1 from "@/assets/images/support1.jpg"
-// import accueil from "@/assets/images/accueil.jpg"
+import accueil from "@/assets/images/accueil.jpg"
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -39,7 +39,7 @@ export default {
                 { title: 'Problème', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
 
             ],
-            support1, logo1,
+            support1, logo1,accueil,
             logo, Navigation, Pagination,
             email: "",
             password: "",
@@ -179,7 +179,7 @@ export default {
             </BContainer>
         </nav>
         <div v-scroll-spy>
-            <section class="section hero-section image" :style="{ backgroundImage: `url(${support1})` }" id="home">
+            <section class="section hero-section image" :style="{ backgroundImage: `url(${accueil})` }" id="home">
                 <div class="bg-overlay "></div>
                 <BContainer>
                     <BRow class="align-items-center">

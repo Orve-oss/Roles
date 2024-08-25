@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-export const useAuthStore = defineStore("authClient", {
+export const useAuthStore = defineStore("auth", {
     state: () => ({
         currentUser: null,
         loggedIn: false,
@@ -39,7 +39,7 @@ export const useAuthStore = defineStore("authClient", {
         setUser(user) {
             this.currentUser = user;
             this.loggedIn = true;
-            this.saveState("authClient.currentUser", user);
+            this.saveState("auth.currentUser", user);
         },
         saveState(key, state) {
             window.sessionStorage.setItem(key, JSON.stringify(state));

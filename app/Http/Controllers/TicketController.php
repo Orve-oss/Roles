@@ -9,6 +9,7 @@ use App\Mail\TicketAssignMail;
 use App\Mail\TicketMailDescription;
 use App\Mail\TicketReassign;
 use App\Mail\TicketReportMail;
+use App\Models\Client;
 use App\Models\Historique;
 use App\Models\Service;
 use App\Models\Ticket;
@@ -182,56 +183,101 @@ class TicketController extends Controller
      * Show the form for editing the specified resource.
      */
     public function getdashboard($agentId)
-    {
-        $services = Service::all();
-        $dashboardData = [];
-        foreach ($services as $key => $service) {
-            $tickets = Ticket::where('user_id', $agentId)
-                ->where('service_id', $service->id)
-                ->with(['type', 'priorite', 'service'])->get();
-            $totalAssigned = $tickets->count();
-            $pending = $tickets->where('status', 'En attente')->count();
-            $progress = $tickets->where('status', 'En cours')->count();
-            $resolved = $tickets->where('status', 'Résolu')->count();
+{
+    $services = Service::all();
+    $dashboardData = [];
+    foreach ($services as $key => $service) {
+        $tickets = Ticket::where('user_id', $agentId)
+            ->where('service_id', $service->id)
+            ->with(['type', 'priorite', 'service'])->get();
+        $totalAssigned = $tickets->count();
+        $pending = $tickets->where('status', 'En attente')->count();
+        $progress = $tickets->where('status', 'En cours')->count();
+        $resolved = $tickets->whereIn('status', ['Résolu', 'Fermé'])->count(); // Modification ici
 
-            $dashboardData[] = [
-                'service' => $service->nom_service,
-                'totalAssigned' => $totalAssigned,
-                'chartSeries' => [
-                    $totalAssigned > 0 ? 100 : 0,
-                    $totalAssigned > 0 ? intval(($pending / $totalAssigned) * 100) : 0,
-                    $totalAssigned > 0 ? intval(($progress / $totalAssigned) * 100) : 0,
-                    $totalAssigned > 0 ? intval(($resolved / $totalAssigned) * 100) : 0,
 
-                ]
+        $monthlyStats = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $monthlyTickets = $tickets->filter(function ($ticket) use ($month) {
+                return \Carbon\Carbon::parse($ticket->created_at)->month == $month;
+            });
+
+            $monthlyStats[] = [
+                'month' => \Carbon\Carbon::create()->month($month)->format('F'),
+                'tickets' => $monthlyTickets->count()
             ];
         }
-        return response()->json(['serviceData' => $dashboardData]);
+
+        $dashboardData[] = [
+            'service' => $service->nom_service,
+            'totalAssigned' => $totalAssigned,
+            'chartSeries' => [
+                $totalAssigned > 0 ? 100 : 0,
+                $totalAssigned > 0 ? intval(($pending / $totalAssigned) * 100) : 0,
+                $totalAssigned > 0 ? intval(($progress / $totalAssigned) * 100) : 0,
+                $totalAssigned > 0 ? intval(($resolved / $totalAssigned) * 100) : 0,
+            ],
+            'monthlyStats' => $monthlyStats // Ajoutez les statistiques mensuelles
+        ];
     }
-    public function getdashboardClient($clientId)
-    {
-        $services = Service::all();
-        $dashboardData = [];
-        foreach ($services as $key => $service) {
-            $tickets = Ticket::where('client_id', $clientId)
-                ->where('service_id', $service->id)
-                ->with(['type', 'priorite', 'service'])->get();
-            $totalCreated = $tickets->count();
-            $pending = $tickets->where('status', 'En attente')->count();
-            $progress = $tickets->where('status', 'En cours')->count();
-            $resolved = $tickets->where('status', 'Résolu')->count();
+    return response()->json(['serviceData' => $dashboardData]);
+}
 
-            $dashboardData[] = [
-                'service' => $service->nom_service,
-                'created' => $totalCreated,
-                'pending' => $pending,
-                'progress' => $progress,
-                'resolved' => $resolved
+    public function getdashboardClient($clientId, Request $request)
+{
+    $serviceId = $request->input('service_id');
+    $dashboardData = [];
 
+    // Récupérer les services ou le service spécifié
+    $services = Service::when($serviceId, function ($query, $serviceId) {
+        return $query->where('id', $serviceId);
+    })->get();
+
+    foreach ($services as $service) {
+        // Récupérer les tickets associés au client et au service actuel
+        $tickets = Ticket::where('client_id', $clientId)
+            ->where('service_id', $service->id)
+            ->with(['type', 'priorite', 'service'])
+            ->get();
+
+        // Calcul des statistiques
+        $totalCreated = $tickets->count();
+        $pending = $tickets->where('status', 'En attente')->count();
+        $progress = $tickets->where('status', 'En cours')->count();
+        $resolved = $tickets->whereIn('status', ['Résolu', 'Fermé'])->count(); // Modification ici
+
+        // Statistiques mensuelles
+        $monthlyStats = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $monthlyTickets = $tickets->filter(function ($ticket) use ($month) {
+                return \Carbon\Carbon::parse($ticket->created_at)->month == $month;
+            });
+
+            $monthlyStats[] = [
+                'month' => \Carbon\Carbon::create()->month($month)->format('F'),
+                'created' => $monthlyTickets->count(),
+                'pending' => $monthlyTickets->where('status', 'En attente')->count(),
+                'progress' => $monthlyTickets->where('status', 'En cours')->count(),
+                'resolved' => $monthlyTickets->whereIn('status', ['Résolu', 'Fermé'])->count(),
             ];
         }
-        return response()->json($dashboardData);
+
+        // Ajouter les données pour ce service au tableau de résultats
+        $dashboardData = [
+            'service' => $service->nom_service,
+            'created' => $totalCreated,
+            'pending' => $pending,
+            'progress' => $progress,
+            'resolved' => $resolved,
+            'monthlyStats' => $monthlyStats, // Ajouter les statistiques mensuelles
+        ];
     }
+
+    return response()->json($dashboardData);
+}
+
+
+
 
     /**
      * Update the specified resource in storage.
@@ -306,7 +352,8 @@ class TicketController extends Controller
 
     public function getticketsByAgent($agentId)
     {
-        $tickets = Ticket::where('user_id', $agentId)->with(['type', 'priorite', 'service'])->get();
+        $tickets = Ticket::where('user_id', $agentId)->with(['type', 'priorite', 'service'])
+            ->orderBy('created_at', 'desc')->get();
         return response()->json($tickets);
     }
     public function getStatusByAgent($agentId, $status)
@@ -400,7 +447,8 @@ class TicketController extends Controller
     public function getTicketByClient($clientId)
     {
 
-        $ticket = Ticket::where('client_id', $clientId)->with(['type', 'priorite', 'service'])->get();
+        $ticket = Ticket::where('client_id', $clientId)->with(['type', 'priorite', 'service'])
+            ->orderBy('created_at', 'desc')->get();
         return response()->json($ticket);
     }
     public function getComments($ticketId)

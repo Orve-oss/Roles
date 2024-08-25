@@ -217,6 +217,31 @@ export default {
                     console.error("Une erreur s'est produite lors de l'envoi du feedback.");
                 });
         },
+        handleImageUpload(event) {
+            const file = event.target.files[0];
+            const fileType = file.type;
+            const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            const validFileTypes = ['application/pdf'];
+            const maxFileSize = 2 * 1024 * 1024 * 1024;
+            if (file) {
+                this.editTicket.image = file.name;
+            }
+            if (validImageTypes.includes(fileType) || validFileTypes.includes(fileType)) {
+                if (file.size <= maxFileSize) {
+                    this.ticket.image = file;
+                }
+                else {
+                    Swal.fire('Erreur', 'Le fichier dépasse la taille maximale d 2Go.', 'error');
+                    event.target.value = '';
+                }
+            } else {
+                Swal.fire('Erreur', 'Seuls les fichiers au format JPEG, PNG, JPG, GIF et PDF sont autorisés', 'error');
+                event.target.value = '';
+            }
+        },
+        extractFileName(filePath) {
+            return filePath.split('/').pop();
+        },
 
     }
 }
@@ -369,17 +394,19 @@ export default {
                         </BFormTextarea>
                     </div>
                 </BCol>
-                <!-- <BCol cols="12">
-                    <div class="mb-3">
-                        <BFormGroup label="Priorite">
-                            <BFormSelect v-model="editTicket.priorite.id" class="form-select">
-                                <BFormSelectOption v-for="priorite in priorites" :key="priorite.id"
-                                    :value="priorite.id">{{
-                                        priorite.niveau }}</BFormSelectOption>
-                            </BFormSelect>
-                        </BFormGroup>
+                <BCol cols="12">
+                <BFormGroup class="row mb-4">
+                    <div class="d-flex flex-column flex-lg-row">
+                        <label for="image" class="col-form-label col-lg-2">Image</label>
+                        <BCol lg="5">
+                            <input id="image" @change="handleImageUpload" type="file" class="form-control" />
+                        </BCol>
+                        <BCol lg="5" v-if="editTicket.image">
+                            <span class="mt-2 ms-lg-3">{{ extractFileName(editTicket.image) }}</span>
+                        </BCol>
                     </div>
-                </BCol> -->
+                </BFormGroup>
+            </BCol>
 
             </BRow>
             <div class="text-end pt-2 mt-1">
