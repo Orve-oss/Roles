@@ -15,7 +15,7 @@ export const useAuthStore = defineStore("authClient", {
         async logIn({ email, password, role }) {
             try {
                 const response = await axios.post("http://127.0.0.1:8000/api/login", { email, password, role });
-                
+
                 if (response.data.status === "success") {
                     this.authSucces = response.data.message;
                     this.isAuthSucces = true;
@@ -54,7 +54,7 @@ export const useAuthStore = defineStore("authClient", {
                 switch (role) {
 
                     case 'Client':
-                        return 'Accueil Client';
+                        return 'dashboard';
                     case 'Admin':
                         return 'page403';
                     default:

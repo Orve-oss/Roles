@@ -85,8 +85,8 @@ class TicketController extends Controller
 
 
         $ticket = Ticket::create($ticketData);
-        $clientEmail = $ticket->client->email;
-        $emails = ['wequipuinternational@gmail.com', $clientEmail];
+        // $clientEmail = $ticket->client->email;
+        $emails = ['wequipuinternational@gmail.com'];
 
         foreach ($emails as $email) {
             Mail::to($email)->send(new AllMail($ticket));
@@ -462,13 +462,11 @@ class TicketController extends Controller
         $validated = $request->validate([
             'description' => 'required|string|max:5000',
         ]);
-        Mail::to('sikamagnou@gmail.com')->send(new FeedbackMail($ticket, $validated['description']));
-
-        // Envoyer un e-mail aux admins
-        // $admins = User::where('role', 'admin')->get();
-        // foreach ($admins as $admin) {
-        //     Mail::to($admin->email)->send(new FeedbackMail($ticket, $validated['description']));
-        // }
+        $user = $ticket->user;
+        $emails = ['wequipuinternational@gmail.com', $user->email];
+        foreach ($emails as $email) {
+            Mail::to($email)->send(new FeedbackMail($ticket, $validated['description']));
+        }
 
         return response()->json(['message' => 'Feedback envoyé avec succès!'], 200);
     }

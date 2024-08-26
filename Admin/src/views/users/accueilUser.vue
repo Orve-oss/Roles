@@ -39,7 +39,7 @@ export default {
                 { title: 'Problème', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
 
             ],
-            support1, logo1,accueil,
+            support1, logo1, accueil,
             logo, Navigation, Pagination,
             email: "",
             password: "",
@@ -145,7 +145,10 @@ export default {
         },
         toggleAccordion(item) {
             item.open = !item.open;
-        }
+        },
+        gotoadmins() {
+            this.$router.push('/connexionAdmin');
+        },
     },
 };
 </script>
@@ -180,77 +183,17 @@ export default {
         </nav>
         <div v-scroll-spy>
             <section class="section hero-section image" :style="{ backgroundImage: `url(${accueil})` }" id="home">
-                <div class="bg-overlay "></div>
+                <div class="bg-overlay"></div>
                 <BContainer>
                     <BRow class="align-items-center">
-                        <BCol lg="5">
-                            <div class="text-dark-50">
-                                <h1 class="text-dark fw-semibold mb-3 hero-title">Bienvenue sur votre portail</h1>
-                                <p class="font-size-14">Veuillez vous connecter pour avoir accès à votre espace
-                                    d'administateur</p>
+                        <BCol lg="12">
+                            <div class="text-white text-center">
+                                <h1 class="text-white fw-semibold mb-3 hero-title">Assistance à portée de clic</h1>
+                                <p class="text-white font-size-16">
+                                    Besoin d'aide ? Notre système de tickets est là pour vous
+                                </p>
+                                <BButton variant="primary" @click="gotoadmins" class="mt-3">Espace Utilisateur</BButton>
                             </div>
-                        </BCol>
-                        <BCol lg="5" md="8" sm="10" class="ms-lg-auto">
-                            <BCard no-body class="overflow-hidden mb-0 mt-5 mt-lg-0 fly-in-right">
-                                <BRow>
-
-                                    <BCol>
-                                        <BCardBody class="pt-0">
-                                            <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{
-                                                authError }}
-                                            </BAlert>
-                                            <div v-if="notification.message" :class="'alert ' + notification.type">
-                                                {{ notification.message }}
-                                            </div>
-                                            <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{
-                                                authSucces
-                                                }}
-                                            </BAlert>
-                                            <div v-if="notification.message" :class="'alert ' + notification.type">
-                                                {{ notification.message }}
-                                            </div>
-
-                                            <BForm class="p-5" @submit.prevent="tryToLogIn">
-                                                <BFormGroup class="mb-3" id="input-group-1" label="Email"
-                                                    label-for="input-1">
-                                                    <BFormInput id="input-1" v-model="email" class="w-100 mb-2"
-                                                        type="text" placeholder="Enter email" :class="{
-                                                            'is-invalid': submitted && v$.email.$error,
-                                                        }"></BFormInput>
-                                                    <div v-for="(item, index) in v$.email.$errors" :key="index"
-                                                        class="invalid-feedback">
-                                                        <span v-if="item.$message">{{ item.$message }}</span>
-                                                    </div>
-                                                </BFormGroup>
-
-                                                <BFormGroup class="mb-3" id="input-group-2" label="Password"
-                                                    label-for="input-2">
-                                                    <BFormInput id="input-2" v-model="password" type="password"
-                                                        placeholder="Enter password" :class="{
-                                                            'is-invalid': submitted && v$.password.$error,
-                                                        }"></BFormInput>
-                                                    <div v-if="submitted && v$.password.$error"
-                                                        class="invalid-feedback">
-                                                        <span v-if="v$.password.required.$message">{{
-                                                            v$.password.required.$message
-                                                            }}</span>
-                                                    </div>
-                                                </BFormGroup>
-
-                                                <div class="mt-3 d-grid">
-                                                    <BButton type="submit" variant="success" class="btn-block">Log In
-                                                    </BButton>
-                                                </div>
-                                                <div class="mt-4 text-center">
-                                                    <router-link to="/email" class="text-muted">
-                                                        <i class="mdi mdi-lock me-1"></i> Forgot your password?
-                                                    </router-link>
-                                                </div>
-                                            </BForm>
-                                        </BCardBody>
-                                    </BCol>
-                                </BRow>
-                            </BCard>
                         </BCol>
                     </BRow>
                 </BContainer>
@@ -379,18 +322,60 @@ export default {
     width: 100%;
     height: 600px;
 }
+
 @keyframes flyInFromRight {
-  0% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 .fly-in-right {
-  animation: flyInFromRight 0.5s ease-out;
+    animation: flyInFromRight 0.5s ease-out;
 }
+.hero-section {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(88, 170, 242, 0.5);
+}
+
+.text-center {
+  position: relative;
+  z-index: 1;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.mt-3 {
+  margin-top: 1.5rem;
+}
+
 </style>

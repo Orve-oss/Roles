@@ -86,7 +86,7 @@ export default {
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
                     const userRole = localStorage.getItem('userRole');
                     console.log('User role from local storage:', userRole);
-                    if (userRole !== 'Admin') {
+                    if (userRole !== 'Agent') {
                         // Si l'utilisateur n'est pas un client, déconnectez-le et redirigez-le vers une page 403
                         authStore.logOut();
                         this.$router.push({ name: 'page403' });
@@ -117,7 +117,7 @@ export default {
                     <BRow>
                         <BCol md="5" class="bg-light p-4 d-flex flex-column justify-content-center">
                             <div class="text-center">
-                                <h4> Bienvenue sur votre portail Administrateur</h4>
+                                <h4> Bienvenue sur votre portail d'agent de support</h4>
                                 <p class="mb-0"> Merci de vous connecter</p>
                             </div>
                         </BCol>

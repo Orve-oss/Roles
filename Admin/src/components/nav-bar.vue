@@ -18,13 +18,19 @@ export default {
         const auth = useAuthStore()
 
         const handleLogout = () => {
+            const role = localStorage.getItem('userRole');
+            if (role) {
+            localStorage.setItem('tempUserRole', role);
+        }
+            console.log(role);
             auth.logOut();
             const redirectLink = getLogoutLink();
             router.push(redirectLink);
         };
 
         const getLogoutLink = () => {
-            const role = auth.currentUser ? auth.currentUser.role[0] : null;
+            const role = localStorage.getItem('tempUserRole');
+
             console.log(role);
             if (role === 'Admin') {
                 return '/';

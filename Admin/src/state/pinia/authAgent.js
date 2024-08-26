@@ -52,7 +52,7 @@ export const useAuthStore = defineStore("authAgent", {
                 const role = this.currentUser.role[0]; // Assurez-vous d'accéder directement à la propriété
                 switch (role) {
                     case 'Agent':
-                        return 'AccueilAgent';
+                        return 'statistiques';
 
                     default:
                         return 'page 403';

@@ -1,25 +1,29 @@
 <script>
+
+import logo1 from "@/assets/images/logo1.png"
+import support1 from "@/assets/images/support1.jpg"
 import accueil from "@/assets/images/accueil.jpg"
-import logo from "@/assets/images/logo.jpg"
-import googleCloud from "@/assets/images/googleCloud.jpg"
-import googleWorkspace from "@/assets/images/googleWorkspace.jpg"
-import application from "@/assets/images/application.jpeg"
-
-
-// import { Autoplay } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/autoplay";
-// import axios from "axios";
-import { useAuthStore } from "../../state/pinia/authClient";
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { required, helpers } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import { useAuthStore } from "../../state/pinia/auth";
 
 import { useNotificationStore } from '@/state/pinia'
-import { required, helpers } from "@vuelidate/validators";
-import useVuelidate from "@vuelidate/core"
+
+import logo from "@/assets/images/logo.jpg"
 const notificationStore = useNotificationStore();
 
-export default {
-    name: "HomePage",
 
+/**
+ * Crypto ICO-landing page
+ */
+export default {
+    components: { Swiper, SwiperSlide },
     setup() {
         return {
             v$: useVuelidate(),
@@ -27,13 +31,16 @@ export default {
     },
     data() {
         return {
-            showModal: true,
-            accueil,
-            logo,
+            tickets: [
+                { title: 'Incident', incident: 'Serveur en panne', description: 'Le serveur principal est hors ligne depuis 3 heures.' },
+                { title: 'Problème', incident: 'Connexion lente', description: 'Les utilisateurs rapportent une lenteur dans la connexion.' },
+                { title: 'Incident', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
+                { title: 'Demande', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
+                { title: 'Problème', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
 
-            googleCloud,
-            googleWorkspace,
-            application,
+            ],
+            support1, logo1, accueil,
+            logo, Navigation, Pagination,
             email: "",
             password: "",
             submitted: false,
@@ -42,7 +49,10 @@ export default {
             authError: null,
             tryingToLogIn: false,
             isAuthError: false,
-            role: null
+            role: null,
+
+            Autoplay: Autoplay,
+            breakpoints: { 576: { slidesPerView: 2 }, 768: { slidesPerView: 3 }, 992: { slidesPerView: 4 } }
         };
     },
     validations: {
@@ -60,14 +70,18 @@ export default {
         },
     },
     created() {
+        window.addEventListener("scroll", this.windowScroll);
         const userRole = localStorage.getItem('userRole');
         console.log('User role from local storage:', userRole);
         if (userRole) {
             this.userRole = userRole;
         }
     },
+    // mounted() {
+
+    // },
     methods: {
-        changePassword() { },
+
         async tryToLogIn() {
             this.submitted = true;
             // stop here if form is invalid
@@ -81,8 +95,8 @@ export default {
                     const authStore = useAuthStore();
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
                     const userRole = localStorage.getItem('userRole');
-                    if (userRole !== 'Client') {
-                        // Si l'utilisateur n'est pas un client, déconnectez-le et redirigez-le vers une page 403
+                    if (userRole !== 'Admin') {
+                        // Si l'utilisateur n'est pas un agent, déconnectez-le et redirigez-le vers une page 403
                         authStore.logOut();
                         this.$router.push({ name: 'page403' });
                         return;
@@ -90,22 +104,26 @@ export default {
                     console.log('User role from local storage:', userRole);
 
 
-
                     this.authSucces = "Connexion réussie";
                     this.isAuthSucces = true;
                     this.$router.push({ name: redirectRoute });
-                    this.showModal = false
                 } catch (error) {
                     console.error("Login error: ", error);
-                    this.authError = "Email ou mot de passe invalide";
+                    if (error.response && error.response.status === 403) {
+                        this.authError = "Compte bloqué; Veuillez contacter votre administrateur"
+                    } else {
+                        this.authError = "Email ou mot de passe invalide";
+                    }
+
                     this.isAuthError = true;
                 }
 
             }
         },
-        gotoclients() {
-            this.$router.push('/activite/client');
-        },
+
+        /**
+         * Window scroll method
+         */
         windowScroll() {
             const navbar = document.getElementById("navbar");
             if (navbar) {
@@ -119,257 +137,184 @@ export default {
                 }
             }
         },
-    }
-
+        /**
+         * Toggle menu
+         */
+        toggleMenu() {
+            document.getElementById("topnav-menu-content").classList.toggle("show");
+        },
+        toggleAccordion(item) {
+            item.open = !item.open;
+        },
+        gotoclients() {
+            this.$router.push('/connexion');
+        },
+    },
 };
 </script>
 
 <template>
     <div>
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white sticky" id="navbar">
-            <div class="container">
-                <a class="navbar-brand" href="#">
-                    <img :src="logo" alt="Logo" height="50">
-                </a>
-                <BButton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+        <nav class="navbar navbar-expand-lg navigation fixed-top sticky" id="navbar">
+            <BContainer>
+                <router-link class="navbar-logo" to="/">
+                    <img :src=logo alt height="50" class="logo logo-dark" />
+                </router-link>
+
+                <BButton variant="white" class="btn btn-sm px-3 font-size-16 d-lg-none header-item"
+                    data-toggle="collapse" @click="toggleMenu()">
+                    <i class="fa fa-fw fa-bars"></i>
                 </BButton>
-                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#head">Accueil</a>
+
+                <div class="collapse navbar-collapse" id="topnav-menu-content">
+                    <ul class="navbar-nav ms-auto" id="topnav-menu" v-scroll-spy-active="{ selector: 'a.nav-link' }">
+                        <li class="nav-item">
+                            <BLink class="nav-link" v-scroll-to="'#home'" href="#home">Accueil</BLink>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#services">Services</a>
+                            <BLink class="nav-link" v-scroll-to="'#home'" href="#exemple">Exemples</BLink>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#footer">Contact</a>
+                            <BLink class="nav-link" v-scroll-to="'#home'" href="#contact">Contact</BLink>
                         </li>
-                        <!-- <li class="nav-item">
-                     <a class="btn btn-primary" href="#">SIGN IN / SIGN UP</a>
-                  </li> -->
                     </ul>
                 </div>
-            </div>
+            </BContainer>
         </nav>
-
-        <!-- Header -->
-        <header id="head" class="text-center image" :style="{ backgroundImage: `url(${accueil})` }">
-            <!-- <img :src="Acuueil" alt="Background Image" class="img-fluid" /> -->
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h1 class="display-4">Comment pouvons nous vous aider?</h1>
-                        <p>
-                            <a href="www.wequipu.com" class="btn btn-secondary btn-lg me-1" role="button">Plus d'infos</a>
-                            <a class="btn btn-primary btn-lg" @click="gotoclients" role="button">Espace Client</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Services Section -->
-        <section class="services text-center my-5" id="services">
-            <div class="container">
-                <h2 class="font-weight-light">Nos services</h2>
-                <p class="text-muted">Parcourez ici nos services</p>
-                <Layout>
-                    <BRow class="justify-content-center">
-                        <BCol lg="10">
-                            <BRow>
-                                <BCol xs="12" sm="6" md="4" class="mb-4">
-                                    <BCard no-body class="card-hover h-100">
-                                        <BCardBody>
-                                            <div class="d-flex align-items-center mb-3">
-                                                <h2 class="font-size-14 mb-0"><strong>Google Workspace
-                                                        Expertise</strong></h2>
-                                            </div>
-                                            <div class="text-muted mt-4">
-                                                <div class="d-flex">
-                                                    <span class="ms-2" style="white-space: normal;">
-                                                        Lorem ipsum, in graphical and textual context, refers to filler
-                                                        text that is placed in a document or visual presentation. Lorem
-                                                        ipsum is derived from the Latin “dolorem ipsum” roughly
-                                                        translated as “pain itself.”
-                                                    </span>
-                                                </div>
-                                                <img :src="googleWorkspace" alt="" class="img-fluid mt-3">
-                                            </div>
-                                        </BCardBody>
-                                    </BCard>
-                                </BCol>
-                                <BCol xs="12" sm="6" md="4" class="mb-4">
-                                    <BCard no-body class="card-hover h-100">
-                                        <BCardBody>
-                                            <div class="d-flex align-items-center mb-3">
-                                                <h5 class="font-size-14 mb-0"><strong>Google Workspace</strong></h5>
-                                            </div>
-                                            <div class="text-muted mt-4">
-                                                <div class="d-flex">
-                                                    <span class="ms-2" style="white-space: normal;">
-                                                        Lorem ipsum, in graphical and textual context, refers to filler
-                                                        text that is placed in a document or visual presentation. Lorem
-                                                        ipsum is derived from the Latin “dolorem ipsum” roughly
-                                                        translated as “pain itself.”
-                                                    </span>
-                                                </div>
-                                                <img :src="googleCloud" alt="" class="img-fluid mt-3">
-                                            </div>
-                                        </BCardBody>
-                                    </BCard>
-                                </BCol>
-                                <BCol xs="12" sm="6" md="4" class="mb-4">
-                                    <BCard no-body class="card-hover h-100">
-                                        <BCardBody>
-                                            <div class="d-flex align-items-center mb-3">
-                                                <h2 class="font-size-14 mb-0"><strong>Application Development</strong>
-                                                </h2>
-                                            </div>
-                                            <div class="text-muted mt-4">
-                                                <div class="d-flex">
-                                                    <span class="ms-2" style="white-space: normal;">
-                                                        Lorem ipsum, in graphical and textual context, refers to filler
-                                                        text that is placed in a document or visual presentation. Lorem
-                                                        ipsum is derived from the Latin “dolorem ipsum” roughly
-                                                        translated as “pain itself.”
-                                                    </span>
-                                                </div>
-                                                <img :src="application" alt="" class="img-fluid mt-3">
-                                            </div>
-                                        </BCardBody>
-                                    </BCard>
-                                </BCol>
-                            </BRow>
+        <div v-scroll-spy>
+            <section class="section hero-section image" :style="{ backgroundImage: `url(${accueil})` }" id="home">
+                <div class="bg-overlay"></div>
+                <BContainer>
+                    <BRow class="align-items-center">
+                        <BCol lg="12">
+                            <div class="text-white text-center">
+                                <h1 class="text-white fw-semibold mb-3 hero-title">Assistance à portée de clic</h1>
+                                <p class="text-white font-size-16">
+                                    Besoin d'aide ? Notre système de tickets est là pour vous
+                                </p>
+                                <BButton variant="primary" @click="gotoclients" class="mt-3">Espace Utilisateur</BButton>
+                            </div>
                         </BCol>
                     </BRow>
-                </Layout>
-            </div>
-            <BModal md="12" v-model="showModal" hide-footer hide-header :no-close-on-backdrop="true">
+                </BContainer>
+            </section>
 
-                <div class="p-2">
+            <section class="section bg-white" id="exemple">
+                <BContainer>
                     <BRow>
-
-                        <BCol>
-                            <BCardBody class="pt-0 fly-in-top">
-                                <h4>Se connecter</h4>
-                                <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{ authError }}
-                                </BAlert>
-                                <div v-if="notification.message" :class="'alert ' + notification.type">
-                                    {{ notification.message }}
-                                </div>
-                                <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{ authSucces
-                                    }}
-                                </BAlert>
-                                <div v-if="notification.message" :class="'alert ' + notification.type">
-                                    {{ notification.message }}
-                                </div>
-
-                                <BForm class="p-4 " @submit.prevent="tryToLogIn">
-                                    <BFormGroup class="mb-3" id="input-group-1" label="Email" label-for="input-1">
-                                        <BFormInput id="input-1" v-model="email" class="w-100 mb-2" type="text"
-                                            placeholder="Enter email" :class="{
-                                                'is-invalid': submitted && v$.email.$error,
-                                            }"></BFormInput>
-                                        <div v-for="(item, index) in v$.email.$errors" :key="index"
-                                            class="invalid-feedback">
-                                            <span v-if="item.$message">{{ item.$message }}</span>
-                                        </div>
-                                    </BFormGroup>
-
-                                    <BFormGroup class="mb-3" id="input-group-2" label="Password" label-for="input-2">
-                                        <BFormInput id="input-2" v-model="password" type="password"
-                                            placeholder="Enter password" :class="{
-                                                'is-invalid': submitted && v$.password.$error,
-                                            }"></BFormInput>
-                                        <div v-if="submitted && v$.password.$error" class="invalid-feedback">
-                                            <span v-if="v$.password.required.$message">{{
-                                                v$.password.required.$message
-                                            }}</span>
-                                        </div>
-                                    </BFormGroup>
-
-                                    <div class="mt-3 d-grid">
-                                        <BButton type="submit" variant="primary" class="btn-block">Log In</BButton>
-                                    </div>
-                                    <div class="mt-4 text-center">
-                                        <router-link to="/emailClient" class="text-muted">
-                                            <i class="mdi mdi-lock me-1"></i> Forgot your password?
-                                        </router-link>
-                                    </div>
-                                </BForm>
-                            </BCardBody>
+                        <BCol lg="12">
+                            <div class="text-center mb-5">
+                                <div class="small-title">Tickets</div>
+                                <h4>Exemples</h4>
+                            </div>
                         </BCol>
                     </BRow>
-                </div>
+                    <BRow class="mt-4">
+                        <BCol lg="12">
+                            <div class="hori-timeline">
+                                <swiper class="swiper-wrapper" :loop="true"
+                                    :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="3"
+                                    :space-between="20" :breakpoints="breakpoints"
+                                    :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                                    :navigation="{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }"
+                                    :pagination="{ clickable: true, el: '.swiper-pagination' }">
 
-            </BModal>
-        </section>
+                                    <!-- Example Ticket Cards -->
+                                    <swiper-slide v-for="(ticket, index) in tickets" :key="index">
+                                        <BCard class="text-center h-100">
+                                            <BCardHeader class="bg-primary text-white">
+                                                <h5>{{ ticket.title }}</h5>
+                                            </BCardHeader>
+                                            <BCardBody>
+                                                <BCardTitle>{{ ticket.incident }}</BCardTitle>
+                                                <BCardText>
+                                                    {{ ticket.description }}
+                                                </BCardText>
+                                            </BCardBody>
+                                        </BCard>
+                                    </swiper-slide>
+
+                                    <!-- Navigation buttons -->
+                                    <div class="owl-nav">
+                                        <BButton role="presentation" class="owl-prev swiper-button-prev"></BButton>
+                                        <BButton role="presentation" class="owl-next swiper-button-next"></BButton>
+                                    </div>
+                                </swiper>
+                            </div>
+                        </BCol>
+                    </BRow>
 
 
+                    <!-- <BRow class="mt-4">
+                        <BCol lg="12">
+                            <div class="hori-timeline">
+                                <swiper class="swiper-wrapper" :loop="true"
+                                    :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="3"
+                                    :space-between="20" :breakpoints="breakpoints"
+                                    :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                                    :navigation="{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }"
+                                    :pagination="{ clickable: true, el: '.swiper-pagination' }">
+                                    <swiper-slide v-for="(event, index) in timelineData" :key="index">
+                                        <div class="item event-list text-center" :class="{ active: event.active }">
+                                            <div>
+                                                <div class="event-date">
+                                                    <div class="text-primary mb-1">{{ event.date }}</div>
+                                                    <h5 class="mb-4">{{ event.title }}</h5>
+                                                </div>
+                                                <div class="event-down-icon">
+                                                    <i
+                                                        class="bx bx-down-arrow-circle h1 text-primary down-arrow-icon"></i>
+                                                </div>
 
+                                                <div class="mt-3 px-3">
+                                                    <p class="text-muted">{{ event.description }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </swiper-slide>
+                                    <div class="owl-nav">
+                                        <BButton role="presentation" class="owl-prev swiper-button-prev"></BButton>
+                                        <BButton role="presentation" class="owl-next swiper-button-next"></BButton>
+                                    </div>
+                                </swiper>
+                            </div>
+                        </BCol>
+                    </BRow> -->
+                </BContainer>
+            </section>
 
-        <!-- Footer -->
-        <footer class="footer-expand-lg bg-dark text-center py-4" id="footer">
-            <div class="container">
-                <p class="text-white">Pour plus d'informations, contactez le mail suivant <a
-                        href="mailto:info@wequipuinternational.com">info@wequipuinternational.com</a></p>
+            <footer class="bg-dark text-center" id="contact">
+                <BRow>
+                    <BCol lg="6">
+                        <div class="mb-4">
+                            <img :src=logo1 alt height="50" />
+                        </div>
+                        <p class="text-white">Pour plus d'informations contactez le mail suivant </p>
+                    </BCol>
+                </BRow>
 
-            </div>
-        </footer>
+            </footer>
+        </div>
     </div>
 </template>
 
-
-
-<style scoped>
-/* Add your custom styles here */
-.header-background {
-    position: relative;
-    height: 100vh;
-    overflow: hidden;
-}
-
-.header-background img {
+<style>
+.teambg {
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
-#head {
-    color: white;
-    padding: 150px 0;
-    text-align: center;
+.form-slide-in {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.5s ease-in-out;
 }
 
-.header-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
+.form-slide-in.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.services .service-item {
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-.footer {
-    background-color: #f8f9fa;
-    color: #6c757d;
-}
-
-.card-hover:hover {
-    transform: translateX(10px);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
 
 .image {
 
@@ -378,19 +323,59 @@ export default {
     height: 600px;
 }
 
-@keyframes flyInFromTop {
+@keyframes flyInFromRight {
     0% {
-        transform: translateY(-100%);
+        transform: translateX(100%);
         opacity: 0;
     }
 
     100% {
-        transform: translateY(0);
+        transform: translateX(0);
         opacity: 1;
     }
 }
 
-.fly-in-top {
-    animation: flyInFromTop 0.5s ease-out;
+.fly-in-right {
+    animation: flyInFromRight 0.5s ease-out;
 }
+.hero-section {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(88, 170, 242, 0.5);
+}
+
+.text-center {
+  position: relative;
+  z-index: 1;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.mt-3 {
+  margin-top: 1.5rem;
+}
+
 </style>

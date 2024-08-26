@@ -318,6 +318,21 @@ export default [
       }
     }
   },
+    {
+    path: "/connexion",
+    name: "Login Client",
+    component: () => import("../views/sample-pages/loginClient"),
+     },
+     {
+        path: "/connexionAgent",
+        name: "Login Agent",
+        component: () => import("../views/sample-pages/loginAgent"),
+         },
+         {
+            path: "/connexionAdmin",
+            name: "Login Admin",
+            component: () => import("../views/sample-pages/login-sample"),
+             },
 //   {
 //     path: "/",
 //     name: "Login sample",

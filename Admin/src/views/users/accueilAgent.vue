@@ -1,8 +1,8 @@
 <script>
-import { timelineData } from "./data"
+
 import logo1 from "@/assets/images/logo1.png"
 import support1 from "@/assets/images/support1.jpg"
-import agent from "@/assets/images/agent.jpg"
+import accueil from "@/assets/images/accueil.jpg"
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -11,7 +11,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { required, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-import { useAuthStore } from "../../state/pinia/authAgent";
+import { useAuthStore } from "../../state/pinia/auth";
 
 import { useNotificationStore } from '@/state/pinia'
 
@@ -32,14 +32,14 @@ export default {
     data() {
         return {
             tickets: [
-                { title: 'Incident', incident: 'Serveur en panne', description: 'Le serveur principal est hors ligne depuis 3 heures.' },
-                { title: 'Problème', incident: 'Connexion lente', description: 'Les utilisateurs rapportent une lenteur dans la connexion.' },
-                { title: 'Incident', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
-                { title: 'Demande', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
-                { title: 'Problème', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
+                { title: 'Google Workspace', incident: 'Serveur en panne', description: 'Le serveur principal est hors ligne depuis 3 heures.' },
+                { title: 'Developpement d\'application', incident: 'Connexion lente', description: 'Les utilisateurs rapportent une lenteur dans la connexion.' },
+                { title: 'Google Cloud', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
+                { title: 'Marketing Digital', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
+                { title: 'SEO', incident: 'Mise à jour système', description: 'La mise à jour du système est prévue pour cette nuit.' },
 
             ],
-            support1, logo1, agent,
+            support1, logo1, accueil,
             logo, Navigation, Pagination,
             email: "",
             password: "",
@@ -49,9 +49,8 @@ export default {
             authError: null,
             tryingToLogIn: false,
             isAuthError: false,
-            showLoginForm: false,
             role: null,
-            timelineData,
+
             Autoplay: Autoplay,
             breakpoints: { 576: { slidesPerView: 2 }, 768: { slidesPerView: 3 }, 992: { slidesPerView: 4 } }
         };
@@ -78,10 +77,9 @@ export default {
             this.userRole = userRole;
         }
     },
-    mounted() {
-        this.showLoginForm = true;
+    // mounted() {
 
-    },
+    // },
     methods: {
 
         async tryToLogIn() {
@@ -97,7 +95,7 @@ export default {
                     const authStore = useAuthStore();
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
                     const userRole = localStorage.getItem('userRole');
-                    if (userRole !== 'Agent') {
+                    if (userRole !== 'Admin') {
                         // Si l'utilisateur n'est pas un agent, déconnectez-le et redirigez-le vers une page 403
                         authStore.logOut();
                         this.$router.push({ name: 'page403' });
@@ -108,7 +106,6 @@ export default {
 
                     this.authSucces = "Connexion réussie";
                     this.isAuthSucces = true;
-                    this.showLoginForm = false;
                     this.$router.push({ name: redirectRoute });
                 } catch (error) {
                     console.error("Login error: ", error);
@@ -148,16 +145,17 @@ export default {
         },
         toggleAccordion(item) {
             item.open = !item.open;
-        }
+        },
+        gotoagents() {
+            this.$router.push('/connexionAgent');
+        },
     },
 };
 </script>
 
 <template>
-
     <div>
-        <nav class="navbar navbar-expand-lg navigation fixed-top sticky" :style="{ backgroundColor: '#FFFFFF' }"
-            id="navbar">
+        <nav class="navbar navbar-expand-lg navigation fixed-top sticky" id="navbar">
             <BContainer>
                 <router-link class="navbar-logo" to="/">
                     <img :src=logo alt height="50" class="logo logo-dark" />
@@ -173,122 +171,41 @@ export default {
                         <li class="nav-item">
                             <BLink class="nav-link" v-scroll-to="'#home'" href="#home">Accueil</BLink>
                         </li>
+                        <li class="nav-item">
+                            <BLink class="nav-link" v-scroll-to="'#home'" href="#exemple">Exemples</BLink>
+                        </li>
+                        <li class="nav-item">
+                            <BLink class="nav-link" v-scroll-to="'#home'" href="#contact">Contact</BLink>
+                        </li>
                     </ul>
-
-                    <div class="ms-lg-2">
-                        <BLink href="/activite/agent" class="btn btn-outline-success w-xs">Espace agent</BLink>
-                    </div>
                 </div>
             </BContainer>
         </nav>
         <div v-scroll-spy>
-            <section class="section hero-section image" :style="{ height: '600px', backgroundColor: '#D2D2E6' }"
-                id="home">
-                <div class="bg-overlay" style="background: none;"></div>
-                <div class="container text-center">
-                    <h1 class="display-4 fw-bold" style="font-family: 'Times New Roman', Times, serif">Bienvenue dans
-                        votre espace</h1>
-                    <p class="lead">Trouvez des articles et des discussions pour répondre à vos questions</p>
-                    <!-- <form class="search-bar mx-auto" @submit.prevent="onSearch" style="max-width: 500px; ">
-                        <div class="input-group position-relative">
-                            <input type="text" class="form-control" placeholder="Rechercher" v-model="searchQuery"
-                                style="padding-right: 40px; height: 40px; border: 1px solid gray; border-radius: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
-                            <button class="btn btn-primary" type="submit"
-                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background-color: transparent;">
-                                <i class="mdi mdi-magnify"></i>
-                            </button>
-                        </div>
-                    </form> -->
-
-                </div>
-                <!-- <BContainer>
-                    <BRow class="justify-content-center align-items-center text-center">
-                        <BCol lg="8">
-                            <div class="welcome-text mb-4">
-                                <h1 class="text-dark fw-bold">Bienvenue sur votre espace agent</h1>
-                            </div>
-                            <div class="search-bar mb-5">
-                                <BFormInput v-model="searchQuery" class="rounded-pill" type="text"
-                                    placeholder="Rechercher..." />
+            <section class="section hero-section image" :style="{ backgroundImage: `url(${accueil})` }" id="home">
+                <div class="bg-overlay"></div>
+                <BContainer>
+                    <BRow class="align-items-center">
+                        <BCol lg="12">
+                            <div class="text-white text-center">
+                                <h1 class="text-white fw-semibold mb-3 hero-title">Assistance à portée de clic</h1>
+                                <p class="text-white font-size-16">
+                                    Besoin d'aide ? Notre système de tickets est là pour vous
+                                </p>
+                                <BButton variant="primary" @click="gotoagents" class="mt-3">Espace Utilisateur</BButton>
                             </div>
                         </BCol>
                     </BRow>
-                </BContainer>-->
-                <transition class="fly-in-top">
-                    <div v-if="showLoginForm" class="login-overlay">
-                        <BRow class="justify-content-center align-items-center min-vh-100">
-                            <BCol lg="12" md="12" sm="12">
-                                <BCard no-body class="overflow-hidden card-large">
-                                    <BCol class="bg-light p-4 d-flex flex-column justify-content-center">
-                                        <div class="text-center">
-                                            <h4> Bienvenue sur votre portail</h4>
-                                            <p class="mb-0"> Merci de vous connecter</p>
-                                        </div>
-                                    </BCol>
-                                    <BCol>
-                                        <BCardBody class="p-5">
-                                            <BAlert v-model="isAuthError" variant="danger" class="mt-3" dismissible>{{
-                                                authError }}</BAlert>
-                                            <BAlert v-model="isAuthSucces" variant="success" class="mt-3" dismissible>{{
-                                                authSucces }}</BAlert>
-
-                                            <BForm @submit.prevent="tryToLogIn">
-                                                <BFormGroup class="mb-3" id="input-group-1" label="Email"
-                                                    label-for="input-1">
-                                                    <BFormInput id="input-1" v-model="email" class="w-100 mb-2"
-                                                        type="text" placeholder="Enter email"
-                                                        :class="{ 'is-invalid': submitted && v$.email.$error }">
-                                                    </BFormInput>
-                                                    <div v-for="(item, index) in v$.email.$errors" :key="index"
-                                                        class="invalid-feedback">
-                                                        <span v-if="item.$message">{{ item.$message }}</span>
-                                                    </div>
-                                                </BFormGroup>
-
-                                                <BFormGroup class="mb-3" id="input-group-2" label="Password"
-                                                    label-for="input-2">
-                                                    <BFormInput id="input-2" v-model="password" type="password"
-                                                        placeholder="Enter password"
-                                                        :class="{ 'is-invalid': submitted && v$.password.$error }">
-                                                    </BFormInput>
-                                                    <div v-if="submitted && v$.password.$error"
-                                                        class="invalid-feedback">
-                                                        <span v-if="v$.password.required.$message">{{
-                                                            v$.password.required.$message }}</span>
-                                                    </div>
-                                                </BFormGroup>
-
-                                                <div class="mt-3 d-grid">
-                                                    <BButton type="submit" variant="primary" class="btn-block">Log In
-                                                    </BButton>
-                                                </div>
-                                                <div class="mt-4 text-center">
-                                                    <router-link to="/email" class="text-muted">
-                                                        <i class="mdi mdi-lock me-1"></i> Forgot your password?
-                                                    </router-link>
-                                                </div>
-                                            </BForm>
-                                        </BCardBody>
-                                    </BCol>
-
-                                </BCard>
-                            </BCol>
-                        </BRow>
-                    </div>
-                </transition>
-
-
-
-
+                </BContainer>
             </section>
 
-            <section class="section bg-white" id="roadmap">
+            <section class="section bg-white" id="exemple">
                 <BContainer>
                     <BRow>
                         <BCol lg="12">
                             <div class="text-center mb-5">
-                                <div class="small-title">Tickets</div>
-                                <h4>Exemples</h4>
+                                <div class="small-title">Services</div>
+                                <h4>Découvrez nos services</h4>
                             </div>
                         </BCol>
                     </BRow>
@@ -366,7 +283,7 @@ export default {
                 </BContainer>
             </section>
 
-            <footer class="bg-dark text-center">
+            <footer class="bg-dark text-center" id="contact">
                 <BRow>
                     <BCol lg="6">
                         <div class="mb-4">
@@ -406,85 +323,59 @@ export default {
     height: 600px;
 }
 
-/*.hero-section {
-    background-color: #fdfdfd;
-
-    padding: 80px 0;
-
-} */
-
-/* .hero-section h1 {
-    color: #333;
-
-    margin-bottom: 20px;
-} */
-
-/* .search-bar {
-    max-width: 500px;
-
-}
-
-.input-group {
-    display: flex;
-    align-items: center;
-}
-
-.input-group .form-control {
-    border-radius: 50px;
-    padding: 15px;
-}
-
-.input-group .btn {
-    border-radius: 50px;
-    background-color: #6c63ff;
-} */
-
-.background {
-    background-color: #f9f9f9;
-
-
-}
-
-@keyframes flyInFromTop {
+@keyframes flyInFromRight {
     0% {
-        transform: translateY(-100%);
+        transform: translateX(100%);
         opacity: 0;
     }
 
     100% {
-        transform: translateY(0);
+        transform: translateX(0);
         opacity: 1;
     }
 }
 
-.fly-in-top {
-    animation: flyInFromTop 0.5s ease-out;
+.fly-in-right {
+    animation: flyInFromRight 0.5s ease-out;
+}
+.hero-section {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
 }
 
-.min-vh-100 {
-    min-height: 100vh;
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(88, 170, 242, 0.5);
 }
 
-.login-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Ajouter une couleur de fond semi-transparente pour le survol */
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.text-center {
+  position: relative;
+  z-index: 1;
 }
 
-.card-large {
-    margin: auto;
-    width: 150%;
-    /* S'assurer que la carte prenne toute la largeur du conteneur */
-    max-width: 700px;
-    /* Ajustez cette valeur pour augmenter la taille */
-    margin: 0 auto;
+.text-white {
+  color: #ffffff;
 }
+
+.hero-title {
+  font-size: 2.5rem;
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.mt-3 {
+  margin-top: 1.5rem;
+}
+
 </style>

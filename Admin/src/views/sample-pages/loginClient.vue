@@ -7,7 +7,7 @@ import Layout from "../../layouts/auth";
 import { required, helpers } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 // import { useRouter } from "vue-router";
-import { useAuthStore } from "../../state/pinia/auth";
+import { useAuthStore } from "../../state/pinia/authClient";
 
 import { useNotificationStore } from '@/state/pinia'
 // import router from "../../router";
@@ -86,14 +86,12 @@ export default {
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
                     const userRole = localStorage.getItem('userRole');
                     console.log('User role from local storage:', userRole);
-                    if (userRole !== 'Admin') {
+                    if (userRole !== 'Client') {
                         // Si l'utilisateur n'est pas un client, déconnectez-le et redirigez-le vers une page 403
                         authStore.logOut();
                         this.$router.push({ name: 'page403' });
                         return;
                     }
-
-
                     this.authSucces = "Connexion réussie";
                     this.isAuthSucces = true;
                     this.$router.push({ name: redirectRoute });
@@ -117,7 +115,7 @@ export default {
                     <BRow>
                         <BCol md="5" class="bg-light p-4 d-flex flex-column justify-content-center">
                             <div class="text-center">
-                                <h4> Bienvenue sur votre portail Administrateur</h4>
+                                <h4> Bienvenue sur votre portail Client</h4>
                                 <p class="mb-0"> Merci de vous connecter</p>
                             </div>
                         </BCol>

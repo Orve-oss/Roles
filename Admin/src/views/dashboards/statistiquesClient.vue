@@ -43,24 +43,21 @@
 
                 <!-- Statistiques en Donut -->
                 <BRow class="mt-4">
+                    <!-- Statistiques en Donut -->
                     <BCol md="6">
-                        <apexchart class="apex-charts" type="donut" height="360"
+                        <apexchart class="apex-charts" type="donut" height="300"
                             :series="[stats.pending, stats.progress, stats.resolved]" :options="donutOptions">
                         </apexchart>
                     </BCol>
-                    <BCol md="6">
-                        <!-- Légende ou autre contenu -->
-                    </BCol>
-                </BRow>
 
-                <!-- Statistiques en Courbes -->
-                <BRow class="mt-4">
-                    <BCol md="12">
-                        <apexchart class="apex-charts" type="line" height="360" :series="series"
+                    <!-- Statistiques en Courbes -->
+                    <BCol md="6">
+                        <apexchart class="apex-charts" type="line" height="300" :series="series"
                             :options="chartOptions">
                         </apexchart>
                     </BCol>
                 </BRow>
+
 
             </BCardBody>
         </BCard>

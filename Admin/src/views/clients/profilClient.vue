@@ -120,7 +120,7 @@ export default {
                                     </div>
                                 </div>
                             </li>
-                           
+
                         </ul>
                     </BCardBody>
                 </BCard>
@@ -142,11 +142,7 @@ export default {
                                             <BFormInput type="email" v-model="client.email" placeholder="Entrez un mail" />
                                         </BFormGroup>
                                     </div>
-                                    <div class="mb-3">
-                                        <BFormGroup label="Role">
-                                            <BFormInput type="text" v-model="client.role" placeholder="Entrez un role" />
-                                        </BFormGroup>
-                                    </div>
+                                    
                                 </BCol>
                             </BRow>
 
