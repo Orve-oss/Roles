@@ -32,6 +32,8 @@ export default {
                 created_at: '',
                 image: null
             },
+            types: [],
+            services: [],
             selectedTicket: null,
             showTicketModal: false,
             showFeedbackModal: false,
@@ -47,7 +49,7 @@ export default {
         emitter.on('ticket-status', this.fetchTickets);
         this.fetchTypes();
         this.fetchServices();
-        this.fetchPriorites();
+
 
     },
     beforeUnmount() {
@@ -92,14 +94,30 @@ export default {
                     console.error('Erreur lors de la récupération des tickets:', error);
                 });
         },
-        fetchTypes() {
-            axios.get('http://127.0.0.1:8000/api/types')
+        fetchTypes(serviceId) {
+            axios.get(`http://127.0.0.1:8000/api/services/${serviceId}/types`)
                 .then(response => {
                     this.types = response.data;
                 })
                 .catch(error => {
-                    console.error('Error fetching roles:', error);
+                    console.error('Error fetching types:', error);
                 });
+        },
+        handleServiceChange() {
+            this.fetchTypes(this.editTicket.service);
+            this.editTicket.type = ''; // Réinitialiser le type sélectionné
+        },
+        showProblems() {
+            const selectedType = this.types.find(type => type.id === this.editTicket.type);
+            if (selectedType) {
+                Swal.fire({
+                    title: `Problèmes pour ${selectedType.libelle}`,
+                    text: selectedType.problemes.map(p => p.libelle).join(', '),
+                    icon: 'info'
+                });
+            } else {
+                Swal.fire('Info', 'Aucun type sélectionné.', 'info');
+            }
         },
         fetchServices() {
             axios.get('http://127.0.0.1:8000/api/services')
@@ -110,18 +128,38 @@ export default {
                     console.error('Error fetching services:', error);
                 });
         },
-        fetchPriorites() {
-            axios.get('http://127.0.0.1:8000/api/priorites')
-                .then(response => {
-                    this.priorites = response.data;
-                })
-                .catch(error => {
-                    console.error('Error fetching priorites:', error);
-                });
+        handleImageUpload(event) {
+            const file = event.target.files[0];
+            const fileType = file.type;
+            const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            const validFileTypes = ['application/pdf'];
+            const maxFileSize = 2 * 1024 * 1024 * 1024;
+            if (validImageTypes.includes(fileType) || validFileTypes.includes(fileType)) {
+                if (file.size <= maxFileSize) {
+                    this.editTicket.image = file;
+                }
+                else {
+                    Swal.fire('Erreur', 'Le fichier dépasse la taille maximale d 2Go.', 'error');
+                    event.target.value = '';
+                }
+            } else {
+                Swal.fire('Erreur', 'Seuls les fichiers au format JPEG, PNG, JPG, GIF et PDF sont autorisés', 'error');
+                event.target.value = '';
+            }
         },
         editticket(ticket) {
-            this.editTicket = { ...ticket };
+            this.editTicket = {
+                id: ticket.id,
+                sujet: ticket.sujet || '',
+                description: ticket.description || '',
+                service: ticket.service_id || '',
+                type: ticket.type_ticket_id || '',
+                priorite: ticket.priorite_id || '',
+                image: ticket.image || null,
+            };
+            // this.editTicket = { ...ticket };
             this.showEditModal = true;
+            this.fetchTypes(this.editTicket.service);
         },
         async updateTicket() {
             const formData = new FormData();
@@ -131,21 +169,35 @@ export default {
             formData.append('type_ticket_id', this.editTicket.type);
             formData.append('priorite_id', this.editTicket.priorite);
             if (this.editTicket.image) {
-                formData.append('sujet', this.editTicket.sujet);
+                formData.append('image', this.editTicket.image); // Corrigé ici
             }
-            await axios.post(`http://127.0.0.1:8000/api/updateticket/${this.editTicket.id}`, formData)
-                .then(response => {
+            for (let pair of formData.entries()) {
+                console.log(`${pair[0]}: ${pair[1]}`);
+            }
+            try {
+                const response = await axios.put(`http://127.0.0.1:8000/api/updateticket/${this.editTicket.id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
 
-                    console.log(response);
-                    this.fetchTickets();
-                    Swal.fire(
-                        'Mis à jour!',
-                        'ticket mis à jour',
-                        'success'
-                    );
-
-                })
+                console.log(response);
+                this.fetchTickets();
+                Swal.fire(
+                    'Mis à jour!',
+                    'Ticket mis à jour avec succès',
+                    'success'
+                );
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour du ticket:', error);
+                Swal.fire(
+                    'Erreur!',
+                    "Une erreur s'est produite lors de la mise à jour du ticket",
+                    'error'
+                );
+            }
         },
+
         removeTicket(ticketId) {
             // Afficher une boîte de dialogue de confirmation avant de supprimer
             Swal.fire({
@@ -217,30 +269,30 @@ export default {
                     console.error("Une erreur s'est produite lors de l'envoi du feedback.");
                 });
         },
-        handleImageUpload(event) {
-            const file = event.target.files[0];
-            const fileType = file.type;
-            const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-            const validFileTypes = ['application/pdf'];
-            const maxFileSize = 2 * 1024 * 1024 * 1024;
-            if (file) {
-                this.editTicket.image = file.name;
-            }
-            if (validImageTypes.includes(fileType) || validFileTypes.includes(fileType)) {
-                if (file.size <= maxFileSize) {
-                    this.ticket.image = file;
-                }
-                else {
-                    Swal.fire('Erreur', 'Le fichier dépasse la taille maximale d 2Go.', 'error');
-                    event.target.value = '';
-                }
+
+        extractFileName(file) {
+            if (file instanceof File) {
+                return file.name;
             } else {
-                Swal.fire('Erreur', 'Seuls les fichiers au format JPEG, PNG, JPG, GIF et PDF sont autorisés', 'error');
-                event.target.value = '';
+                // Au cas où le fichier ne serait pas un objet File, on pourrait extraire en fonction du chemin
+                return file.split('/').pop();
             }
         },
-        extractFileName(filePath) {
-            return filePath.split('/').pop();
+        getStatusColor(status) {
+            switch (status) {
+                case 'En attente':
+                    return 'yellow';
+                case 'Assigné':
+                    return 'gray';
+                case 'En cours':
+                    return 'blue';
+                case 'Résolu':
+                    return 'green';
+                case 'Fermé':
+                    return 'red';
+                default:
+                    return 'transparent'; // Si le statut est inconnu
+            }
         },
 
     }
@@ -298,7 +350,17 @@ export default {
                                     <BTr v-for="(ticket, index) in filteredTickets" :key="index">
                                         <BTd> {{ index + 1 }} </BTd>
                                         <BTd> {{ ticket.sujet }} </BTd>
-                                        <BTd> {{ ticket.status }} </BTd>
+                                        <BTd>
+                                            <span :style="{
+                                                'background-color': getStatusColor(ticket?.status),
+                                                'border-radius': '50%',
+                                                display: 'inline-block',
+                                                width: '10px',
+                                                height: '10px',
+                                                marginRight: '8px',
+                                            }"></span>
+                                            {{ ticket?.status || 'N/A' }}
+                                        </BTd>
                                         <!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
                                         <!-- <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd> -->
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
@@ -320,8 +382,7 @@ export default {
                                                     Aucun
                                                 </BDropdownItem>
 
-                                                <BDropdownItem
-                                                    v-if="!['Assigné', 'En cours', 'En attente', 'Fermé'].includes(ticket.status)"
+                                                <BDropdownItem v-if="['Résolu'].includes(ticket.status)"
                                                     @click="openFeedbackModal(ticket)">
                                                     <i class="fas fa-pencil-alt text-success me-1"></i>
                                                     Feedback
@@ -360,26 +421,31 @@ export default {
             <BRow>
                 <BCol cols="12">
                     <div class="mb-3">
-
-                        <BFormGroup label="Type de ticket">
-                            <BFormSelect v-model="editTicket.type.id" class="form-select">
-                                <BFormSelectOption v-for="type in types" :key="type.id" :value="type.id">{{
-                                    type.libelle }}</BFormSelectOption>
-                            </BFormSelect>
-                        </BFormGroup>
-
-                    </div>
-                </BCol>
-                <BCol cols="12">
-                    <div class="mb-3">
                         <BFormGroup label="Service">
-                            <BFormSelect v-model="editTicket.service.id" class="form-select">
+                            <BFormSelect v-model="editTicket.service" class="form-select" @change="handleServiceChange">
                                 <BFormSelectOption v-for="service in services" :key="service.id" :value="service.id">{{
                                     service.nom_service }}</BFormSelectOption>
                             </BFormSelect>
                         </BFormGroup>
                     </div>
                 </BCol>
+                <BCol cols="12">
+                    <div class="mb-3">
+                        <BCol lg="11">
+                            <BFormGroup label="Type de ticket">
+                                <BFormSelect v-model="editTicket.type" class="form-select">
+                                    <BFormSelectOption v-for="type in types" :key="type.id" :value="type.id">{{
+                                        type.libelle }}</BFormSelectOption>
+                                </BFormSelect>
+                            </BFormGroup>
+                        </BCol>
+                        <BCol lg="1">
+                            <i class="fas fa-info-circle" @click="showProblems"></i>
+                        </BCol>
+
+                    </div>
+                </BCol>
+
                 <BCol cols="12">
                     <div class="mb-3">
                         <label for="sujet">Sujet </label>
@@ -395,18 +461,18 @@ export default {
                     </div>
                 </BCol>
                 <BCol cols="12">
-                <BFormGroup class="row mb-4">
-                    <div class="d-flex flex-column flex-lg-row">
-                        <label for="image" class="col-form-label col-lg-2">Image</label>
-                        <BCol lg="5">
-                            <input id="image" @change="handleImageUpload" type="file" class="form-control" />
-                        </BCol>
-                        <BCol lg="5" v-if="editTicket.image">
-                            <span class="mt-2 ms-lg-3">{{ extractFileName(editTicket.image) }}</span>
-                        </BCol>
-                    </div>
-                </BFormGroup>
-            </BCol>
+                    <BFormGroup class="row mb-4">
+                        <div class="d-flex flex-column flex-lg-row">
+                            <label for="image" class="col-form-label col-lg-2">Image</label>
+                            <BCol lg="5">
+                                <input id="image" @change="handleImageUpload" type="file" class="form-control" />
+                            </BCol>
+                            <BCol lg="5" v-if="editTicket.image">
+                                <span class="mt-2 ms-lg-3">{{ extractFileName(editTicket.image) }}</span>
+                            </BCol>
+                        </div>
+                    </BFormGroup>
+                </BCol>
 
             </BRow>
             <div class="text-end pt-2 mt-1">

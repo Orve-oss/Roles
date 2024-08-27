@@ -70,14 +70,27 @@ export default {
             this.userRole = userRole;
         }
     },
+
+
     methods: {
+        watch: {
+            email() {
+                this.v$.email.$touch();
+                this.v$.password.$touch();
+            },
+            password() {
+                this.v$.email.$touch();
+                this.v$.password.$touch();
+            }
+        },
+
 
         async tryToLogIn() {
             this.submitted = true;
             // stop here if form is invalid
-            this.v$.$touch();
-
-            if (this.v$.$invalid) {
+            this.v$.email.$touch();
+            this.v$.password.$touch();
+            if (this.v$.email.$invalid || this.v$.password.$invalid) {
                 return;
             } else {
                 try {
@@ -137,10 +150,10 @@ export default {
 
                                 <BForm class="p-5 " @submit.prevent="tryToLogIn">
                                     <BFormGroup class="mb-3" id="input-group-1" label="Email" label-for="input-1">
-                                        <BFormInput id="input-1" v-model="email" class="w-100 mb-2" type="text" placeholder="Enter email"
-                                            :class="{
+                                        <BFormInput id="input-1" v-model="email" class="w-100 mb-2" type="text"
+                                            placeholder="Enter email" :class="{
                                                 'is-invalid': submitted && v$.email.$error,
-                                            }"></BFormInput>
+                                            }" @input="validateEmail"></BFormInput>
                                         <div v-for="(item, index) in v$.email.$errors" :key="index"
                                             class="invalid-feedback">
                                             <span v-if="item.$message">{{ item.$message }}</span>
@@ -151,7 +164,7 @@ export default {
                                         <BFormInput id="input-2" v-model="password" type="password"
                                             placeholder="Enter password" :class="{
                                                 'is-invalid': submitted && v$.password.$error,
-                                            }"></BFormInput>
+                                            }" @input="validateEmail"></BFormInput>
                                         <div v-if="submitted && v$.password.$error" class="invalid-feedback">
                                             <span v-if="v$.password.required.$message">{{
                                                 v$.password.required.$message

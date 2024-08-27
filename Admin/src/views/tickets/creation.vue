@@ -123,15 +123,6 @@ export default {
                     console.error('Error fetching services:', error);
                 });
         },
-        //   fetchPriorites() {
-        //      axios.get('http://127.0.0.1:8000/api/priorites')
-        //         .then(response => {
-        //            this.priorites = response.data;
-        //         })
-        //         .catch(error => {
-        //            console.error('Error fetching priorites:', error);
-        //         });
-        //   },
         handleImageUpload(event) {
             const file = event.target.files[0];
             const fileType = file.type;

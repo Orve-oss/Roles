@@ -9,7 +9,7 @@
     <p><strong>Description :</strong> {{ $ticket->description }}</p>
     <p><strong>Priorité :</strong> {{ $ticket->priorite->niveau }}</p>
     <p><strong>Assigné par :</strong> {{ $ticket->assignedBy->email }}</p>
-    <p>Cliquez <a href="http://localhost:8080/accueil/agent">ici</a> pour accéder à votre espace</p>
+    <p>Cliquez <a href="http://localhost:8080/connexionAgent">ici</a> pour accéder à votre espace</p>
     <p>Merci de prendre en charge ce ticket dès que possible.</p>
 </body>
 </html>

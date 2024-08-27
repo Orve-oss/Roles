@@ -75,7 +75,7 @@ export default {
                             alert('Compte activé avec succès!');
                             const userRole = localStorage.getItem('userRole');
                             if (userRole === 'Agent') {
-                                this.$router.push('/accueil/agent');
+                                this.$router.push('/connexionAgent');
 
                             } else {
                                 this.$router.push('/');

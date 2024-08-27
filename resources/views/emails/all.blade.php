@@ -9,6 +9,6 @@
     <p><strong>Sujet :</strong> {{ $ticket->sujet }}</p>
     <p><strong>Description :</strong> {{ $ticket->description }}</p>
     <p>Merci de prendre les mesures nécessaires.</p>
-    <p>Cliquez <a href="http://localhost:8080/">ici</a> pour accéder à votre expace</p>
+    <p>Cliquez <a href="http://localhost:8080/connexionAdmin">ici</a> pour accéder à votre expace</p>
 </body>
 </html>

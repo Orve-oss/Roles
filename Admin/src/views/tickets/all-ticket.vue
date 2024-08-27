@@ -259,6 +259,22 @@ export default {
 
                 })
         },
+        getStatusColor(status) {
+            switch (status) {
+                case 'En attente':
+                    return 'yellow';
+                case 'Assigné':
+                    return 'gray';
+                case 'En cours':
+                    return 'blue';
+                case 'Résolu':
+                    return 'green';
+                case 'Fermé':
+                    return 'red';
+                default:
+                    return 'transparent'; // Si le statut est inconnu
+            }
+        },
     }
 }
 
@@ -326,7 +342,19 @@ export default {
                                     <BTr v-for="(ticket, index) in filteredTickets" :key="index">
                                         <BTd> {{ index + 1 }} </BTd>
                                         <BTd> {{ ticket.sujet || 'Sujet indisponible' }} </BTd>
-                                        <BTd> {{ ticket?.status || 'N/A' }} </BTd>
+                                        <BTd>
+                                            <span :style="{
+                                                'background-color': getStatusColor(ticket?.status),
+                                                'border-radius': '50%',
+                                                display: 'inline-block',
+                                                width: '10px',
+                                                height: '10px',
+                                                marginRight: '8px',
+                                            }"></span>
+                                            {{ ticket?.status || 'N/A' }}
+                                        </BTd>
+
+                                        <!-- <BTd> {{ ticket?.status || 'N/A' }} </BTd> -->
                                         <!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
                                         <!-- <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd> -->
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
@@ -358,8 +386,7 @@ export default {
                                                     Edit
                                                 </BDropdownItem> -->
 
-                                                <BDropdownItem
-                                                    v-if="[ 'Fermé'].includes(ticket.status)">
+                                                <BDropdownItem v-if="['Fermé'].includes(ticket.status)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
                                                 </BDropdownItem>
