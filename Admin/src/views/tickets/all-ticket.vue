@@ -275,6 +275,47 @@ export default {
                     return 'transparent'; // Si le statut est inconnu
             }
         },
+        async updateTicketResolved() {
+            const id = this.$route.params.id;
+            console.log(id);
+
+            Swal.fire({
+                title: 'Voulez vous fermer ce ticket?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Oui, fermer'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.put(`http://127.0.0.1:8000/api/tickets/${id}/close`, { status: this.ticket.status })
+                        .then(() => {
+
+
+                            Swal.fire('Succes!', 'Ticket fermé', 'success');
+
+
+                        })
+
+                } else {
+                    Swal.fire(
+                        'Erreur!',
+                        'Erreur de génération de rapport',
+                        'error'
+                    );
+                }
+            }).catch((error) => {
+                if (error.response) {
+                    Swal.fire(
+                        'Erreur',
+                        'erreur',
+                        'error'
+                    );
+                }
+            })
+
+
+        },
     }
 }
 
@@ -389,6 +430,10 @@ export default {
                                                 <BDropdownItem v-if="['Fermé'].includes(ticket.status)">
                                                     <i class="fas fa-trash-alt text-danger me-1"></i>
                                                     Delete
+                                                </BDropdownItem>
+                                                <BDropdownItem v-if="['Résolu'].includes(ticket.status)" @click="updateTicketResolved">
+                                                    <i class="fas fa-trash-alt text-danger me-1"></i>
+                                                    Fermer
                                                 </BDropdownItem>
                                                 <BDropdownItem @click="openAssignModal(ticket.id)"
                                                     v-if="!['En cours', 'Résolu', 'Assigné', 'Fermé'].includes(ticket.status)">

@@ -133,7 +133,7 @@ export default {
                                     {{ notification.message }}
                                 </div>
 
-                                <BForm class="p-5 " @submit.prevent="tryToLogIn">
+                                <BForm class="p-4 " @submit.prevent="tryToLogIn">
                                     <BFormGroup class="mb-3" id="input-group-1" label="Email" label-for="input-1">
                                         <BFormInput id="input-1" v-model="email" class="w-100 mb-2" type="text" placeholder="Enter email"
                                             :class="{

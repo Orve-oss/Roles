@@ -10,27 +10,27 @@
                             <p>Nombre total de tickets assignés : {{ data.totalAssigned }}</p>
 
                             <BRow>
-                                <BCol cols="4">
+                                <BCol cols="3" class="mx-2">
                                     <div class="ticket-stats">
                                         <div class="status-box bg-warning">
-                                            <p class="mb-2">En attente</p>
-                                            <h5>{{ data.chartSeries[1] }}</h5>
+                                            <p class="mb-2">Attente</p>
+                                            <h5>{{ data.pendingCount }}</h5>
                                         </div>
                                     </div>
                                 </BCol>
-                                <BCol cols="4">
+                                <BCol cols="3" class="mx-2">
                                     <div class="ticket-stats">
                                         <div class="status-box bg-info">
                                             <p class="mb-2">En cours</p>
-                                            <h5>{{ data.chartSeries[2] }}</h5>
+                                            <h5>{{ data.progressCount }}</h5>
                                         </div>
                                     </div>
                                 </BCol>
-                                <BCol cols="4">
+                                <BCol cols="3">
                                     <div class="ticket-stats">
                                         <div class="status-box bg-success">
                                             <p class="mb-2">Résolus</p>
-                                            <h5>{{ data.chartSeries[3] }}</h5>
+                                            <h5>{{ data.resolvedCount }}</h5>
                                         </div>
                                     </div>
                                 </BCol>
@@ -152,11 +152,12 @@ export default {
 <style scoped>
 .ticket-stats {
     text-align: center;
+    width: 90px;
 }
 
 .status-box {
-    padding: 15px;
-    border-radius: 5px;
+    padding: 8px;
+    border-radius: 2px;
     color: white;
 }
 

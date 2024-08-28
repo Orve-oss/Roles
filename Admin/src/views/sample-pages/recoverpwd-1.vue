@@ -72,13 +72,13 @@ export default {
                     })
                     .then((res) => {
                         if (res.data.message) {
-                            alert('Compte activé avec succès!');
+                            alert('Mot de passe  changé!');
                             const userRole = localStorage.getItem('userRole');
                             if (userRole === 'Agent') {
                                 this.$router.push('/connexionAgent');
 
                             } else {
-                                this.$router.push('/');
+                                this.$router.push('/connexionAdmin');
                             }
 
                         } else {

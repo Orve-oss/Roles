@@ -146,10 +146,10 @@ export default {
                     axios.put(`http://127.0.0.1:8000/api/tickets/${id}/close`, { status: this.ticket.status })
                         .then(() => {
 
-                            this.generateRapport();
+                            //this.generateRapport();
                             this.isStatusDisabled = true;
                             console.log(this.isStatusDisabled);
-                            Swal.fire('Succes!', 'Un mail est envoyé au client avec son rapport de résolution', 'success');
+                            Swal.fire('Succes!', 'Un mail est envoyé au client', 'success');
                             this.$router.push({ name: 'opentickets' });
 
                         })

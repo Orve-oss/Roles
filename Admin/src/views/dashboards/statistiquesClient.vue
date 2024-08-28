@@ -133,6 +133,16 @@ export default {
         },
         fetchTicketStats() {
             this.updating = true;
+            if (!this.selectedService) {
+            this.stats = {
+                pending: 0,
+                progress: 0,
+                resolved: 0,
+            };
+            this.updateSeries([]); // Vider les données des séries
+            this.updating = false; // Arrêter le loader
+            return; // Sortir de la fonction
+        }
             const clientId = this.getClientId();
             const serviceId = this.selectedService || '';
             axios.get(`http://127.0.0.1:8000/api/ticket/${clientId}/client`, {

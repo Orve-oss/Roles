@@ -56,6 +56,22 @@ export default {
         any() {
             Swal.fire('Information', 'Vous n\'avez pas la possibilité de modidier ou de supprimer ce ticket', 'info');
         },
+        getStatusColor(status) {
+            switch (status) {
+                case 'En attente':
+                    return 'yellow';
+                case 'Assigné':
+                    return 'gray';
+                case 'En cours':
+                    return 'blue';
+                case 'Résolu':
+                    return 'green';
+                case 'Fermé':
+                    return 'red';
+                default:
+                    return 'transparent'; // Si le statut est inconnu
+            }
+        },
 
     }
 }
@@ -113,8 +129,17 @@ export default {
                                     <BTr v-for="(ticket, index) in tickets" :key="index">
                                         <BTd> {{ index + 1 }} </BTd>
                                         <BTd> {{ ticket.sujet }} </BTd>
-                                        <BTd> {{ ticket.status }} </BTd>
-                                        <!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
+                                        <BTd> {{ ticket.status }} </BTd><BTd>
+                                            <span :style="{
+                                                'background-color': getStatusColor(ticket?.status),
+                                                'border-radius': '50%',
+                                                display: 'inline-block',
+                                                width: '10px',
+                                                height: '10px',
+                                                marginRight: '8px',
+                                            }"></span>
+                                            {{ ticket?.status || 'N/A' }}
+                                        </BTd><!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
                                         <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd>
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
                                         <BTd>

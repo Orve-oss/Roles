@@ -211,6 +211,15 @@ class TicketController extends Controller
             $dashboardData[] = [
                 'service' => $service->nom_service,
                 'totalAssigned' => $totalAssigned,
+                'pendingCount' => $pending,
+                'progressCount' => $progress,
+                'resolvedCount' => $resolved,
+                // 'chartSeries' => [
+                //     'totalAssigned' => $totalAssigned,
+                //     'pending' => $pending,
+                //     'progress' => $progress,
+                //     'resolved' => $resolved,
+                // ],
                 'chartSeries' => [
                     $totalAssigned > 0 ? 100 : 0,
                     $totalAssigned > 0 ? intval(($pending / $totalAssigned) * 100) : 0,
