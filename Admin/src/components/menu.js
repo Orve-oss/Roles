@@ -74,7 +74,7 @@ export const menuItems = [
         subItems: [
             {
                 id: 44,
-                label: "All tickets",
+                label: "Tout les tickets",
                 link: "/listticket",
                 parentId: 43,
                 roles: ['Admin']

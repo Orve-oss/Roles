@@ -38,9 +38,9 @@ export default {
             if (!this.agentId) {
                 console.error('Agent Id is not defined');
             }
-            let url= `http://127.0.0.1:8000/api/tickets/agent/${this.agentId}`;
+            let url = `http://127.0.0.1:8000/api/tickets/agent/${this.agentId}`;
             if (status) {
-                url= `http://127.0.0.1:8000/api/tickets/agent/${this.agentId}/status/${status}`;
+                url = `http://127.0.0.1:8000/api/tickets/agent/${this.agentId}/status/${status}`;
             }
             axios.get(url)
                 .then(response => {
@@ -101,7 +101,7 @@ export default {
 
                                         <template v-slot:button-content>
 
-                                           Filtrer les tickets
+                                            Filtrer les tickets
 
                                             <i class="mdi mdi-chevron-down"></i>
                                         </template>
@@ -129,7 +129,8 @@ export default {
                                     <BTr v-for="(ticket, index) in tickets" :key="index">
                                         <BTd> {{ index + 1 }} </BTd>
                                         <BTd> {{ ticket.sujet }} </BTd>
-                                        <BTd> {{ ticket.status }} </BTd><BTd>
+                                        
+                                        <BTd>
                                             <span :style="{
                                                 'background-color': getStatusColor(ticket?.status),
                                                 'border-radius': '50%',
@@ -139,7 +140,8 @@ export default {
                                                 marginRight: '8px',
                                             }"></span>
                                             {{ ticket?.status || 'N/A' }}
-                                        </BTd><!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
+                                        </BTd>
+                                       <!-- <BTd> {{ ticket.type?.libelle || 'N/A' }} </BTd> -->
                                         <BTd> {{ ticket.priorite?.niveau || 'N/A' }} </BTd>
                                         <BTd> {{ new Date(ticket.created_at).toLocaleDateString() }} </BTd>
                                         <BTd>
